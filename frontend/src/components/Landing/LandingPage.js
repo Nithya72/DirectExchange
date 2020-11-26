@@ -1,11 +1,18 @@
 import React, {Component} from 'react';
 import cookie from 'react-cookies';
 import './landing.css';
+import axios from "axios";
 
 //create the LandingPage Component
 class LandingPage extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            successFlag: false,
+            msg: ""
+        }
+
         this.handleLogout = this.handleLogout.bind(this);
     }
 
@@ -21,6 +28,7 @@ class LandingPage extends Component {
             <div className="navbar">
                 Direct Exchange
                 <span className="landing-nav-auth">English <i className="fas fa-caret-down"></i></span>
+                <span className="landing-auth"><a href={"/"}>Home</a></span>
                 <span className="landing-auth"><a href={"/signup"}>Sign Up</a></span>
                 <span className="landing-auth">Log In</span>
                 <span className="landing-auth">Help</span>
@@ -29,6 +37,7 @@ class LandingPage extends Component {
                 <td>Prevailing Rates</td>
                 <td>Post Exchange Offer</td>
                 <td>Accept Exchange Offer</td>
+                <td><a href="/allExchangeOffers">Get All Offers</a></td>
             </table>
 
             <div className="hr"></div>

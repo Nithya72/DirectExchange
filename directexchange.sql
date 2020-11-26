@@ -11,31 +11,32 @@ CREATE TABLE exchange_offer (
   dest_currency varchar(3) NOT NULL,
   exchange_rate integer,
   final_amount integer,
-  exp_date varchar(15),
+  exp_date date,
   counter_offer_flag boolean default true,
   split_offer_flag boolean default true,
+  user_id integer,
   PRIMARY KEY (offer_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-insert into exchange_offer (src_country, src_currency, remit_amount, dest_country, dest_currency, final_amount, exchange_rate, exp_date, counter_offer_flag, split_offer_flag)
-values ('United States','USD','1000','India','INR', '74000', '74', '2020-12-31', true, true);
+insert into exchange_offer (src_country, src_currency, remit_amount, dest_country, dest_currency, final_amount, exchange_rate, exp_date, counter_offer_flag, split_offer_flag, user_id)
+values ('United States','USD','1000','India','INR', '74000', '74', '2020-12-31', true, true, 1);
 
-insert into exchange_offer (src_country, src_currency, remit_amount, dest_country, dest_currency, final_amount, exchange_rate, exp_date, counter_offer_flag, split_offer_flag)
-values ('United States','USD','1000','India','INR', '74000', '74', '2020-12-31', true, false);
+insert into exchange_offer (src_country, src_currency, remit_amount, dest_country, dest_currency, final_amount, exchange_rate, exp_date, counter_offer_flag, split_offer_flag, user_id)
+values ('United States','USD','1000','India','INR', '74000', '74', '2020-12-31', true, false, 2);
 
-insert into exchange_offer (src_country, src_currency, remit_amount, dest_country, dest_currency, final_amount, exchange_rate, exp_date, counter_offer_flag, split_offer_flag)
-values ('United States','USD','1000','India','INR', '74000', '74', '2020-12-31', false, true);
+insert into exchange_offer (src_country, src_currency, remit_amount, dest_country, dest_currency, final_amount, exchange_rate, exp_date, counter_offer_flag, split_offer_flag, user_id)
+values ('United States','USD','1000','India','INR', '74000', '74', '2020-12-31', false, true, 2);
 
-insert into exchange_offer (src_country, src_currency, remit_amount, dest_country, dest_currency, exchange_rate, final_amount, exp_date, counter_offer_flag, split_offer_flag)
-values ('India','INR','75000','United States','USD','1014', '74', '2020-12-31', true, true);
+insert into exchange_offer (src_country, src_currency, remit_amount, dest_country, dest_currency, exchange_rate, final_amount, exp_date, counter_offer_flag, split_offer_flag, user_id)
+values ('India','INR','75000','United States','USD','1014', '74', '2020-12-31', true, true, 3);
 
-insert into exchange_offer (src_country, src_currency, remit_amount, dest_country, dest_currency, exchange_rate, final_amount, exp_date, counter_offer_flag, split_offer_flag)
-values ('India','INR','74000','United States','USD','1000', '74', '2020-12-31', true, true);
+insert into exchange_offer (src_country, src_currency, remit_amount, dest_country, dest_currency, exchange_rate, final_amount, exp_date, counter_offer_flag, split_offer_flag, user_id)
+values ('India','INR','74000','United States','USD','1000', '74', '2020-12-31', true, true, 6);
 
-insert into exchange_offer (src_country, src_currency, remit_amount, dest_country, dest_currency, exchange_rate, final_amount, exp_date, counter_offer_flag, split_offer_flag)
-values ('India','INR','44400','United States','USD','600', '74', '2020-12-31', true, true);
+insert into exchange_offer (src_country, src_currency, remit_amount, dest_country, dest_currency, exchange_rate, final_amount, exp_date, counter_offer_flag, split_offer_flag, user_id)
+values ('India','INR','44400','United States','USD','600', '74', '2020-12-31', true, true, 4);
 
-insert into exchange_offer (src_country, src_currency, remit_amount, dest_country, dest_currency, exchange_rate, final_amount, exp_date, counter_offer_flag, split_offer_flag)
-values ('India','INR','29600','United States','USD','400', '74', '2020-12-31', true, true);
+insert into exchange_offer (src_country, src_currency, remit_amount, dest_country, dest_currency, exchange_rate, final_amount, exp_date, counter_offer_flag, split_offer_flag, user_id)
+values ('India','INR','29600','United States','USD','400', '74', '2020-12-31', true, true, 5);
 
-select * from exchange_offer;
+select * from exchange_offer where user_id!=4

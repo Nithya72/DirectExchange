@@ -139,4 +139,8 @@ public class ExchangeOffer {
     public void setSplitOfferFlag(Boolean splitOfferFlag) {
         this.splitOfferFlag = splitOfferFlag;
     }
+
+    public Integer getUserId() { return userId; }
+
+    public void setUserId(Integer userId) { this.userId = userId; }
 }

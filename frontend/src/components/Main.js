@@ -3,8 +3,9 @@ import {Router, Route, Switch} from 'react-router-dom';
 
 import LandingPage from './Landing/LandingPage';
 import SignUp from './Auth/SignUp';
-import AllExchangeOffers from "./ExchangeOffers/AllExchangeOffers";
+import GetMyOffers from "./ExchangeOffers/GetMyOffers";
 import {history} from '../helpers/history';
+import ViewOfferMatches from "./ExchangeOffers/ViewOfferMatches";
 
 //Create a Main Component
 class Main extends Component {
@@ -15,7 +16,8 @@ class Main extends Component {
                     <Switch>
                         <Route exact path="/" component={LandingPage}/>
                         <Route exact path="/signup" component={SignUp}/>
-                        <Route exact path="/allExchangeOffers" component={AllExchangeOffers}/>
+                        <Route exact path="/getMyOffers" component={GetMyOffers}/>
+                        <Route exact path="/viewOfferMatches" component={ViewOfferMatches}/>
                     </Switch>
                 </Router>
             </div>

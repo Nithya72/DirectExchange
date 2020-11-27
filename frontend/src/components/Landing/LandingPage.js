@@ -36,8 +36,8 @@ class LandingPage extends Component {
             <table className="landing-nav-table">
                 <td>Prevailing Rates</td>
                 <td>Post Exchange Offer</td>
-                <td>Accept Exchange Offer</td>
-                <td><a href="/allExchangeOffers">Get All Offers</a></td>
+                <td><a href="/acceptExchangeOffers">Accept Exchange Offer</a></td>
+                <td><a href="/getMyOffers">Get My Offers</a></td>
             </table>
 
             <div className="hr"></div>

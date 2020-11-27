@@ -24,7 +24,7 @@ class LandingPage extends Component {
   render() {
     return (
       <body>
-        <div className="navbar1">
+        <div className="navbar">
           Direct Exchange
           <span className="landing-nav-auth">
             English <i className="fas fa-caret-down"></i>
@@ -41,9 +41,11 @@ class LandingPage extends Component {
         <table className="landing-nav-table">
           <td>Prevailing Rates</td>
           <td>Post Exchange Offer</td>
-          <td>Accept Exchange Offer</td>
           <td>
-            <a href="/allExchangeOffers">Get All Offers</a>
+            <a href="/acceptExchangeOffers">Accept Exchange Offer</a>
+          </td>
+          <td>
+            <a href="/getMyOffers">Get My Offers</a>
           </td>
         </table>
 

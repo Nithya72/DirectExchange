@@ -16,12 +16,15 @@ class Main extends Component {
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/dashboard" component={Dashboard} />
+            <Route exact path="/getMyOffers" component={GetMyOffers} />
+            <Route
+              exact
+              path="/viewOfferMatches"
+              component={ViewOfferMatches}
+            />
           </Switch>
         </Router>
       </div>
     );
   }
 }
-
-//Export The Main Component
-export default Main;

@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import LandingPage from "./Landing/LandingPage";
-import SignUp from "./Auth/SignUp";
+import SignUp from "./Signup/SignUp";
+import Login from "./Login/Login";
 import Offers from "./ExchangeOffers/Offers";
 import GetMyOffers from "./ExchangeOffers/GetMyOffers";
 import ViewOfferMatches from "./ExchangeOffers/ViewOfferMatches";
@@ -18,6 +19,7 @@ class Main extends Component {
           <Switch>
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/signup" component={SignUp} />
+            <Route exact path="/login" component={Login} />
             <Route exact path="/offers" component={Offers} />
             <Route exact path="/getMyOffers" component={GetMyOffers} />
             <Route

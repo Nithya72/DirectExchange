@@ -101,3 +101,11 @@
   display: flex;
   flex-direction: column;
 }
+
+.myInputLabel {
+  margin-bottom: 0 !important;
+}
+
+.myFormGroup {
+  margin-bottom: 15px !important;
+}

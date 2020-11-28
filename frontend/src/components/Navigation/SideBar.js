@@ -18,7 +18,7 @@ export class SideBar extends Component {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/Rates" activeClassName="active">
+              <NavLink exact to="/rates" activeClassName="active">
                 <span><i className="mdi mdi-repeat" /></span>
                 <span className="nav-text">Prevailing Rates</span>
               </NavLink>

@@ -18,7 +18,6 @@ import viewAllOffers from "./Screens/ViewAllOffers/viewAllOffers";
 class Main extends Component {
   render() {
     return (
-        <Router history={history}>
           <Switch>
             <Route exact path="/" component={viewAllOffers} />
             <Route exact path="/signup" component={SignUp} />
@@ -30,10 +29,9 @@ class Main extends Component {
               path="/viewOfferMatches"
               component={ViewOfferMatches}
             />
-            <Route path="/transact" component={Transact} />
-            <Route path="/rates" component={PrevailingRates} />
+            <Route exact path="/transact" component={Transact} />
+            <Route exact path="/rates" component={PrevailingRates} />
           </Switch>
-        </Router>
     );
   }
 }

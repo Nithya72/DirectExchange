@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import { Router, Route, Switch } from "react-router-dom";
+import { history } from "../helpers/history";
+
+
 import LandingPage from "./Landing/LandingPage";
 import SignUp from "./Signup/SignUp";
 import Login from "./Login/Login";
@@ -8,7 +11,7 @@ import GetMyOffers from "./ExchangeOffers/GetMyOffers";
 import ViewOfferMatches from "./ExchangeOffers/ViewOfferMatches";
 import Transact from "./Transact/Transact";
 import PrevailingRates from "./Rates/PrevailingRates";
-import { history } from "../helpers/history";
+
 
 //Create a Main Component
 class Main extends Component {

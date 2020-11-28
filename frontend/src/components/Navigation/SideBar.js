@@ -1,33 +1,53 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./Navigation.css";
 
 export class SideBar extends Component {
   render() {
     return (
-      <div className="side-nav">
-        <ul class="navigation-link">
-          <li className="dashboardSideBar">
-            <Link to="/offers">
-              <i class="fas fa-history" aria-hidden="true"></i>Exchange
-            </Link>
-          </li>
-          <li className="dashboardSideBar">
-            <Link to="/transact">
-              <i class="fa fa-credit-card" aria-hidden="true"></i>Transact
-            </Link>
-          </li>
-          <li className="dashboardSideBar">
-            <Link to="/rates">
-              <i class="fa fa-usd" aria-hidden="true"></i>Prevailing Rates
-            </Link>
-          </li>
-          <li className="dashboardSideBar">
-            <Link to="/">
-              <i class="fa fa-cog" aria-hidden="true"></i>Settings
-            </Link>
-          </li>
-        </ul>
+      <div className="sidebar">
+        <a className="brand-logo">
+          <img src="images/logo.png" alt="" />
+          <span>Direct Exchange </span></a>
+        <div className="menu">
+          <ul>
+            <li>
+              <NavLink to="/Home" activeClassName="active">
+                <span><i className="mdi mdi-view-dashboard" /></span>
+                <span className="nav-text">Home</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/Rates" activeClassName="active">
+                <span><i className="mdi mdi-repeat" /></span>
+                <span className="nav-text">Prevailing Rates</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/PostOffer">
+                <span><i className="la la-money-check" /></span>
+                <span className="nav-text">Post Offer</span>
+                </NavLink>
+            </li>
+            <li>
+              <NavLink to="/Notifications">
+                <span><i className="mdi mdi-bell" /></span>
+                <span className="nav-text">Notifications</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/MyAccount">
+                <span><i className="mdi mdi-account" /></span>
+                <span className="nav-text">Account</span>
+              </NavLink>
+            </li>
+          </ul>
+        </div>
+        <div className="sidebar-footer">
+          <div className="copy_right">
+            275 Project Group 5
+          </div>
+        </div>
       </div>
     );
   }

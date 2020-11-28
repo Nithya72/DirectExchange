@@ -1,14 +1,14 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
 
 .main-dasbhoard {
   background-color: #eff2f7;
   font-family: "Open Sans", sans-serif;
   height: 100vh;
-}
+} */
 
 /** HEADER **/
 
-#main-top-header {
+/* #main-top-header {
   background: #fff;
   border-bottom: 1px solid #edeef1;
 }
@@ -37,7 +37,7 @@
   position: absolute !important;
 }
 
-/** SIDE NAVIGATION BAR **/
+/** SIDE NAVIGATION BAR *
 .side-nav {
   position: absolute;
   width: 300px;
@@ -75,4 +75,4 @@
 .side-nav ul li a:hover {
   color: #66a6ff;
   border-right: 5px solid #66a6ff;
-}
+} */

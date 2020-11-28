@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import '../../App.css';
 import axios from 'axios';
 import LandingPage from "../Landing/LandingPage";
+import Header from "../Navigation/Header";
+import SideBar from "../Navigation/SideBar";
 
 export class ViewOfferMatches extends Component {
     constructor(props) {
@@ -55,37 +57,41 @@ export class ViewOfferMatches extends Component {
         console.log("msg from java controller: ", this.state.allOffersList);
 
         return (
+
             <div>
-                <LandingPage/>
-                Inside View Matches Page
+                <Header/>
+                <SideBar/>
 
-                <div style={{marginLeft: "100px"}}>
-                    {(this.state.allSingleMatches && this.state.allSingleMatches.length !== 0) ?
+                <div className="content-body">
+                    <div className="myContainer">
+                        <span className="PageTitle">View Offer Matches</span>
+                        {(this.state.allSingleMatches && this.state.allSingleMatches.length !== 0) ?
 
-                        this.state.allSingleMatches.map(offer => (
-                            <table>
-                                <tr>
-                                    <td>SOURCE COUNTRY: {offer.srcCurrency}</td>
-                                </tr>
-                                <tr>
-                                    <td>REMIT AMOUNT: {offer.remitAmount}</td>
-                                </tr>
-                                <tr>
-                                    <td>DESTINATION CURRENCY: {offer.destCurrency}</td>
-                                </tr>
-                                <tr>
-                                    <td>COUNTER OFFER FLAG: {offer.counterOfferFlag.toString()}</td>
-                                </tr>
-                                <tr>
-                                    <td>SPLIT OFFER FLAG: {offer.splitOfferFlag.toString()}</td>
-                                </tr>
-                                <tr>
-                                    <td>EXPIRATION DATE: {offer.expDate.substring(0,10)}</td>
-                                </tr>
-                                <br/>
-                            </table>
-                        )) : <div> No matches yet!</div>
-                    }
+                            this.state.allSingleMatches.map(offer => (
+                                <table>
+                                    <tr>
+                                        <td>SOURCE COUNTRY: {offer.srcCurrency}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>REMIT AMOUNT: {offer.remitAmount}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>DESTINATION CURRENCY: {offer.destCurrency}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>COUNTER OFFER FLAG: {offer.counterOfferFlag.toString()}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>SPLIT OFFER FLAG: {offer.splitOfferFlag.toString()}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>EXPIRATION DATE: {offer.expDate.substring(0, 10)}</td>
+                                    </tr>
+                                    <br/>
+                                </table>
+                            )) : <div> No matches yet!</div>
+                        }
+                    </div>
                 </div>
             </div>
         )

@@ -7,7 +7,7 @@ export class SideBar extends Component {
     return (
       <div className="sidebar">
         <a className="brand-logo">
-          <img src="images/logo.png" alt="" />
+          {/*<img src="images/logo.png" alt="" />*/}
           <span>Direct Exchange </span></a>
         <div className="menu">
           <ul>

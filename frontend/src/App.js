@@ -12,9 +12,10 @@ class App extends Component {
     return (
       //Use Browser Router to route to different pages
       <BrowserRouter>
-        <div className="main-wrapper">
+        <div>
           <Header />
           <SideBar />
+          
           <div className="content-body">
             <Main />
           </div>

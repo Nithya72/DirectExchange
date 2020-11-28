@@ -11,16 +11,16 @@ import GetMyOffers from "./ExchangeOffers/GetMyOffers";
 import ViewOfferMatches from "./ExchangeOffers/ViewOfferMatches";
 import Transact from "./Transact/Transact";
 import PrevailingRates from "./Rates/PrevailingRates";
+import viewAllOffers from "./Screens/ViewAllOffers/viewAllOffers";
 
 
 //Create a Main Component
 class Main extends Component {
   render() {
     return (
-      <div>
         <Router history={history}>
           <Switch>
-            <Route exact path="/" component={LandingPage} />
+            <Route exact path="/" component={viewAllOffers} />
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/offers" component={Offers} />
@@ -34,7 +34,6 @@ class Main extends Component {
             <Route path="/rates" component={PrevailingRates} />
           </Switch>
         </Router>
-      </div>
     );
   }
 }

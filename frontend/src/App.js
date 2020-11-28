@@ -1,19 +1,26 @@
-import React, { Component } from 'react';
-import './App.css';
-import Main from './components/Main';
-import {BrowserRouter} from 'react-router-dom';
+import React, { Component } from "react";
+import "./App.css";
+import "./styles/css/style.css";
+import Header from "./components/Navigation/Header.js";
+import SideBar from "./components/Navigation/SideBar";
+import Main from "./components/Main";
+import { BrowserRouter } from "react-router-dom";
 
 //App Component
 class App extends Component {
   render() {
     return (
-        //Use Browser Router to route to different pages
-        <BrowserRouter>
-          <div>
-            {/* App Component Has a Child Component called Main*/}
-            <Main/>
+      //Use Browser Router to route to different pages
+      <BrowserRouter>
+        <div>
+          <Header />
+          <SideBar />
+          
+          <div className="content-body">
+            <Main />
           </div>
-        </BrowserRouter>
+        </div>
+      </BrowserRouter>
     );
   }
 }

@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { currencyList, countries } from "../../helpers/currencies";
 import { exchangerates } from "../../helpers/exchangerates";
+import Header from "../Navigation/Header";
+import SideBar from "../Navigation/SideBar";
 import "./Offers.css";
 
 export class Offers extends Component {
@@ -103,176 +105,180 @@ export class Offers extends Component {
       destinationCountries = this.getCountries(this.state.destination_currency);
     }
     return (
-      <div>
-        <div className="offer-search-box">
-          Get Automatched with verified users
-          <br /> Search Box details
-        </div>
-        <div className="display-offers">
-          <button
-            className="post-offer-button"
-            data-toggle="modal"
-            data-target="#newOfferModalPopup"
-          >
-            New Offer
-          </button>
-          <div
-            class="modal fade"
-            id="newOfferModalPopup"
-            role="dialog"
-            aria-labelledby="exampleModalCenterTitle"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div
-                class="modal-content"
-                style={{ width: "850px", background: "#eff2f7" }}
-              >
-                <div class="modal-body" style={{ padding: "0px" }}>
-                  <button
-                    type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-label="Close"
-                    style={{ padding: "10px" }}
-                  >
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                  <form onSubmit={this.onSubmit}>
-                    <div className="offer-details">
-                      <h4 class="main-title">Offer Details</h4>
+      <div className="main-dasbhoard">
+        <Header />
+        <SideBar />
+        <div style={{ marginLeft: "300px", padding: "50px 70px" }}>
+          <div className="offer-search-box">
+            Get Automatched with verified users
+            <br /> Search Box details
+          </div>
+          <div className="display-offers">
+            <button
+              className="post-offer-button"
+              data-toggle="modal"
+              data-target="#newOfferModalPopup"
+            >
+              New Offer
+            </button>
+            <div
+              class="modal fade"
+              id="newOfferModalPopup"
+              role="dialog"
+              aria-labelledby="exampleModalCenterTitle"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div
+                  class="modal-content"
+                  style={{ width: "850px", background: "#eff2f7" }}
+                >
+                  <div class="modal-body" style={{ padding: "0px" }}>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                      style={{ padding: "10px" }}
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    <form onSubmit={this.onSubmit}>
+                      <div className="offer-details">
+                        <h4 class="main-title">Offer Details</h4>
 
-                      <div class="form-group">
-                        <input
-                          type="number"
-                          min="0"
-                          class="form-control"
-                          placeholder="Amount"
-                          name="amount"
-                          value={this.state.amount}
-                          onChange={this.onChange}
-                          required
-                        />
-                      </div>
-                      <div class="form-group">
-                        <select
-                          class="form-control"
-                          name="source_currency"
-                          value={this.state.source_currency}
-                          onChange={this.onChange}
-                          required
-                        >
-                          <option defaultValue value="">
-                            Source Currency
-                          </option>
-                          {this.getCurrencies()}
-                        </select>
-                      </div>
-                      <div class="form-group">
-                        <select
-                          class="form-control"
-                          name="source_country"
-                          value={this.state.source_country}
-                          onChange={this.onChange}
-                          required
-                        >
-                          <option defaultValue value="">
-                            Source Country
-                          </option>
-                          {sourceCountries}
-                        </select>
-                      </div>
-                      <div class="form-group">
-                        <select
-                          class="form-control"
-                          name="destination_currency"
-                          value={this.state.destination_currency}
-                          onChange={this.onChange}
-                          required
-                        >
-                          <option defaultValue value="">
-                            Destination Currency
-                          </option>
-                          {this.getCurrencies()}
-                        </select>
-                      </div>
-                      <div class="form-group">
-                        <select
-                          class="form-control"
-                          name="destination_country"
-                          value={this.state.destination_country}
-                          onChange={this.onChange}
-                          required
-                        >
-                          <option defaultValue value="">
-                            Destination Country
-                          </option>
-                          {destinationCountries}
-                        </select>
-                      </div>
-                      <div class="form-group">
-                        <input
-                          type="date"
-                          class="form-control"
-                          placeholder="Expiration Date"
-                          min={this.getMinDate()}
-                          name="expirationdate"
-                          value={this.state.expirationdate}
-                          onChange={this.onChange}
-                          required
-                        />
-                        <small class="form-text text-muted">
-                          Please select an expiration date for this offer
-                        </small>
-                      </div>
-                      <button type="submit" class="custom-btn1">
-                        POST OFFER
-                      </button>
-                    </div>
-                    <div className="modal-sidebar">
-                      <div
-                        ref={this.amountDetailsRef}
-                        id="amount-details"
-                        class="hidden"
-                      >
-                        <h5>They will recieve</h5>
-                        <div class="return-output">
-                          {this.state.destination_currency}{" "}
-                          {this.calculateAmountRecieved()}
-                        </div>
-                        <small
-                          class="form-text text-muted"
-                          style={{ marginBottom: "20px" }}
-                        >
-                          Transaction fee of 0.05%
-                        </small>
-                        <div class="form-group form-check">
+                        <div class="form-group">
                           <input
-                            type="checkbox"
-                            class="form-check-input"
-                            name="allowCounterOffers"
-                            onChange={this.handleCheckboxChange}
-                            checked={this.state.allowCounterOffers}
+                            type="number"
+                            min="0"
+                            class="form-control"
+                            placeholder="Amount"
+                            name="amount"
+                            value={this.state.amount}
+                            onChange={this.onChange}
+                            required
                           />
-                          <label class="form-check-label">
-                            Allow Counter offers
-                          </label>
                         </div>
-                        <div class="form-group form-check">
+                        <div class="form-group">
+                          <select
+                            class="form-control"
+                            name="source_currency"
+                            value={this.state.source_currency}
+                            onChange={this.onChange}
+                            required
+                          >
+                            <option defaultValue value="">
+                              Source Currency
+                            </option>
+                            {this.getCurrencies()}
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <select
+                            class="form-control"
+                            name="source_country"
+                            value={this.state.source_country}
+                            onChange={this.onChange}
+                            required
+                          >
+                            <option defaultValue value="">
+                              Source Country
+                            </option>
+                            {sourceCountries}
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <select
+                            class="form-control"
+                            name="destination_currency"
+                            value={this.state.destination_currency}
+                            onChange={this.onChange}
+                            required
+                          >
+                            <option defaultValue value="">
+                              Destination Currency
+                            </option>
+                            {this.getCurrencies()}
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <select
+                            class="form-control"
+                            name="destination_country"
+                            value={this.state.destination_country}
+                            onChange={this.onChange}
+                            required
+                          >
+                            <option defaultValue value="">
+                              Destination Country
+                            </option>
+                            {destinationCountries}
+                          </select>
+                        </div>
+                        <div class="form-group">
                           <input
-                            type="checkbox"
-                            class="form-check-input"
-                            name="allowOfferSplit"
-                            onChange={this.handleCheckboxChange}
-                            checked={this.state.allowOfferSplit}
+                            type="date"
+                            class="form-control"
+                            placeholder="Expiration Date"
+                            min={this.getMinDate()}
+                            name="expirationdate"
+                            value={this.state.expirationdate}
+                            onChange={this.onChange}
+                            required
                           />
-                          <label class="form-check-label">
-                            Allow Offer split
-                          </label>
+                          <small class="form-text text-muted">
+                            Please select an expiration date for this offer
+                          </small>
+                        </div>
+                        <button type="submit" class="custom-btn1">
+                          POST OFFER
+                        </button>
+                      </div>
+                      <div className="modal-sidebar">
+                        <div
+                          ref={this.amountDetailsRef}
+                          id="amount-details"
+                          class="hidden"
+                        >
+                          <h5>They will recieve</h5>
+                          <div class="return-output">
+                            {this.state.destination_currency}{" "}
+                            {this.calculateAmountRecieved()}
+                          </div>
+                          <small
+                            class="form-text text-muted"
+                            style={{ marginBottom: "20px" }}
+                          >
+                            Transaction fee of 0.05%
+                          </small>
+                          <div class="form-group form-check">
+                            <input
+                              type="checkbox"
+                              class="form-check-input"
+                              name="allowCounterOffers"
+                              onChange={this.handleCheckboxChange}
+                              checked={this.state.allowCounterOffers}
+                            />
+                            <label class="form-check-label">
+                              Allow Counter offers
+                            </label>
+                          </div>
+                          <div class="form-group form-check">
+                            <input
+                              type="checkbox"
+                              class="form-check-input"
+                              name="allowOfferSplit"
+                              onChange={this.handleCheckboxChange}
+                              checked={this.state.allowOfferSplit}
+                            />
+                            <label class="form-check-label">
+                              Allow Offer split
+                            </label>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </form>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>

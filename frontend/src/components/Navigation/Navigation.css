@@ -53,7 +53,7 @@
   transition: all 3s;
 }
 
-.side-nav ul li {
+.side-nav ul li a {
   font-size: 17px;
   font-weight: 600;
   display: block;
@@ -69,8 +69,10 @@
   padding-right: 10px;
 }
 
-.side-nav ul li:hover,
-.side-nav ul .active {
+.side-nav ul li a {
+  text-decoration: none;
+}
+.side-nav ul li a:hover {
   color: #66a6ff;
   border-right: 5px solid #66a6ff;
 }

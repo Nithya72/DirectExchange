@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { Router, Route, Switch } from "react-router-dom";
-
 import LandingPage from "./Landing/LandingPage";
 import SignUp from "./Auth/SignUp";
-import Dashboard from "./Dashboard/Dashboard";
+import Offers from "./ExchangeOffers/Offers";
 import GetMyOffers from "./ExchangeOffers/GetMyOffers";
 import ViewOfferMatches from "./ExchangeOffers/ViewOfferMatches";
+import Transact from "./Transact/Transact";
+import PrevailingRates from "./Rates/PrevailingRates";
 import { history } from "../helpers/history";
 
 //Create a Main Component
@@ -17,13 +18,15 @@ class Main extends Component {
           <Switch>
             <Route exact path="/" component={LandingPage} />
             <Route exact path="/signup" component={SignUp} />
-            <Route exact path="/dashboard" component={Dashboard} />
+            <Route exact path="/offers" component={Offers} />
             <Route exact path="/getMyOffers" component={GetMyOffers} />
             <Route
               exact
               path="/viewOfferMatches"
               component={ViewOfferMatches}
             />
+            <Route path="/transact" component={Transact} />
+            <Route path="/rates" component={PrevailingRates} />
           </Switch>
         </Router>
       </div>

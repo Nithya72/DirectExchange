@@ -12,7 +12,7 @@ export class SideBar extends Component {
         <div className="menu">
           <ul>
             <li>
-              <NavLink to="/Home" activeClassName="active">
+              <NavLink exact to="/" activeClassName="active">
                 <span><i className="mdi mdi-view-dashboard" /></span>
                 <span className="nav-text">Home</span>
               </NavLink>

@@ -2,6 +2,19 @@ drop database if exists DirectExchange;
 create database DirectExchange;
 use DirectExchange;
 
+CREATE TABLE `DirectExchange`.`users` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(50) NOT NULL,
+  `nickname` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(100) NULL,
+  `registrationType` VARCHAR(45) NOT NULL,
+  `emailVerified` TINYINT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE,
+  UNIQUE INDEX `nickname_UNIQUE` (`nickname` ASC) VISIBLE
+  );
+
 CREATE TABLE exchange_offer (
   offer_id int NOT NULL AUTO_INCREMENT,
   src_country varchar(30) NOT NULL,

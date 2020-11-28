@@ -3,6 +3,8 @@ package edu.sjsu.cmpe275.service;
 import edu.sjsu.cmpe275.dao.User;
 import edu.sjsu.cmpe275.dao.enums.RegistrationType;
 import edu.sjsu.cmpe275.repository.UserRepository;
+import edu.sjsu.cmpe275.representation.AuthenticationResponse;
+import edu.sjsu.cmpe275.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,9 @@ public class AuthService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     public ResponseEntity registerUser(String emailId, String nickName, String password, RegistrationType registrationType) {
         try{
@@ -62,7 +67,7 @@ public class AuthService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username/Password does not match");
         }
-        // TODO: We need to generate token
-        return ResponseEntity.status(HttpStatus.OK).body(user);
+        String token = jwtTokenProvider.createToken(user);
+        return ResponseEntity.status(HttpStatus.OK).body(new AuthenticationResponse(token));
     }
 }

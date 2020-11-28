@@ -5,13 +5,16 @@ import SideBar from "../Navigation/SideBar";
 export class PrevailingRates extends Component {
   render() {
     return (
-      <div className="main-dasbhoard">
-        <Header />
-        <SideBar />
-        <div style={{ marginLeft: "300px", padding: "50px 70px" }}>
-          Put your component stuff here!
+        <div>
+            <Header/>
+            <SideBar/>
+
+            <div className="content-body">
+                <div className="myContainer">
+                    <span className="PageTitle">Prevailing rates component</span>
+                </div>
+            </div>
         </div>
-      </div>
     );
   }
 }

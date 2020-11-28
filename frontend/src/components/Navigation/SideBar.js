@@ -24,23 +24,35 @@ export class SideBar extends Component {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/PostOffer">
+              <NavLink to="/getMyOffers" activeClassName="active">
                 <span><i className="la la-money-check" /></span>
-                <span className="nav-text">Post Offer</span>
-                </NavLink>
-            </li>
-            <li>
-              <NavLink to="/Notifications">
-                <span><i className="mdi mdi-bell" /></span>
-                <span className="nav-text">Notifications</span>
+                <span className="nav-text">My Offers</span>
               </NavLink>
             </li>
+            {/*<li>*/}
+            {/*  <NavLink to="/PostOffer">*/}
+            {/*    <span><i className="la la-money-check" /></span>*/}
+            {/*    <span className="nav-text">Post Offer</span>*/}
+            {/*    </NavLink>*/}
+            {/*</li>*/}
             <li>
-              <NavLink to="/MyAccount">
-                <span><i className="mdi mdi-account" /></span>
-                <span className="nav-text">Account</span>
+              <NavLink to="/transact">
+                <span><i className="mdi mdi-repeat" /></span>
+                <span className="nav-text">Transact</span>
               </NavLink>
             </li>
+            {/*<li>*/}
+            {/*  <NavLink to="/Notifications">*/}
+            {/*    <span><i className="mdi mdi-bell" /></span>*/}
+            {/*    <span className="nav-text">Notifications</span>*/}
+            {/*  </NavLink>*/}
+            {/*</li>*/}
+            {/*<li>*/}
+            {/*  <NavLink to="/MyAccount">*/}
+            {/*    <span><i className="mdi mdi-account" /></span>*/}
+            {/*    <span className="nav-text">Account</span>*/}
+            {/*  </NavLink>*/}
+            {/*</li>*/}
           </ul>
         </div>
         <div className="sidebar-footer">

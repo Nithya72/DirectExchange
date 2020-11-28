@@ -12,17 +12,20 @@ class App extends Component {
     return (
       //Use Browser Router to route to different pages
       <BrowserRouter>
-        <div>
-          <Header />
-          <SideBar />
-          
-          <div className="content-body">
-            <Main />
-          </div>
-        </div>
+          <Main />
       </BrowserRouter>
     );
   }
 }
 //Export the App component so that it can be used in index.js
 export default App;
+
+
+// <div>
+//   <Header />
+//   <SideBar />
+//
+//   <div className="content-body">
+//     <Main />
+//   </div>
+// </div>

@@ -7,7 +7,9 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -55,6 +57,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return bean;
     }
 
+    @Override
+    public void configure(WebSecurity webSecurity) {
+        String pattern = "*/directexchange/*";
+        webSecurity.ignoring()
+                .mvcMatchers(HttpMethod.POST, pattern)
+                .mvcMatchers(HttpMethod.GET, pattern)
+                .mvcMatchers(HttpMethod.PUT, pattern)
+                .mvcMatchers(HttpMethod.DELETE, pattern)
+                .mvcMatchers(HttpMethod.PATCH, pattern);
+
+    }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -64,12 +78,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .csrf()
-                .disable()
-                .formLogin()
-                .disable()
-                .httpBasic()
-                .disable()
+                .csrf().disable()
+                .formLogin().disable()
+                .httpBasic().disable()
 //                .exceptionHandling()
 //                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
 //                .and()
@@ -85,7 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/auth/**", "/oauth2/**")
+                .antMatchers("/auth/**", "/oauth2/**", "/user/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated();

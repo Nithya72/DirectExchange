@@ -4,6 +4,8 @@ import { Router, Route, Switch } from "react-router-dom";
 import LandingPage from "./Landing/LandingPage";
 import SignUp from "./Auth/SignUp";
 import Dashboard from "./Dashboard/Dashboard";
+import GetMyOffers from "./ExchangeOffers/GetMyOffers";
+import ViewOfferMatches from "./ExchangeOffers/ViewOfferMatches";
 import { history } from "../helpers/history";
 
 //Create a Main Component
@@ -28,3 +30,5 @@ class Main extends Component {
     );
   }
 }
+
+export default Main;

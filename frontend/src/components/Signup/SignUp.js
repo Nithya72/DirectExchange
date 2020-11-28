@@ -48,29 +48,28 @@ export class SignUp extends Component {
                         successFlag: true,
                         msg: response.data
                     })
-                } else if (response.status === 409) {
-                    console.log("User Already Present: ", response.data);
-                    this.setState({
-                        successFlag: false,
-                        msg: response.data
-                    })
                 }
             })
             .catch(error => {
                 console.log("Error ******** :", error);
                 this.setState({
                     successFlag: false,
-                    msg: "Error"
+                    errorFlag:true,
+                    msg: error.response.data
                 })
             });
     }
 
     render() {
 
-        var final_msg = null;
+        var final_msg = null, redirectUrl=null;
 
+        if(localStorage.getItem("token")) {
+            redirectUrl = <Redirect to="/transact"></Redirect>
+        }
+        
         if (this.state.successFlag === true) {
-            final_msg = <div class="alert alert-success" role="alert">{this.state.msg}<a href={'/customerLogin'} > Login Here.</a></div>
+            final_msg = <div class="alert alert-success" role="alert">{this.state.msg}<a href={'/login'}> Login Here.</a></div>
         } else if (this.state.successFlag === false) {
             final_msg = <div class="alert alert-danger" role="alert">{this.state.msg}</div>
         }
@@ -80,8 +79,8 @@ export class SignUp extends Component {
         return (
 
             <div>
-            <Header/>
             {final_msg}
+            {redirectUrl}
             <div className="container">
                 <div className="content">
 

@@ -100,7 +100,7 @@ export class Header extends Component {
                         <a href="lock.html" className="dropdown-item">
                           <i className="la la-lock" /> Lock
                         </a>
-                        <a href="signin.html" className="dropdown-item logout">
+                        <a href="/login" className="dropdown-item logout">
                           <i className="la la-sign-out" /> Logout
                         </a>
                       </div>

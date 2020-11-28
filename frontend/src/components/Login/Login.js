@@ -23,6 +23,15 @@ export class Login extends Component {
 
     }
 
+    componentDidMount() {
+        var token = localStorage.getItem("token");
+        if (token) {
+            this.setState({
+                successFlag:true,
+            })
+        }
+    }
+
     changeHandler(e) {
         this.setState({
             [e.target.name] : e.target.value
@@ -42,44 +51,37 @@ export class Login extends Component {
             .then(response => {
                 console.log("Status Code : ", response.status);
                 if (response.status === 200) {
-                    console.log("Successful registration: ", response.data);
+                    console.log("Successful Login: ", response.data);
+                    localStorage.setItem("token", response.data.accessToken);
                     this.setState({
                         successFlag: true,
-                        msg: response.data
-                    })
-                } else if (response.status === 409) {
-                    console.log("User Already Present: ", response.data);
-                    this.setState({
-                        successFlag: false,
                         msg: response.data
                     })
                 }
             })
             .catch(error => {
-                console.log("Error ******** :", error);
+                console.log("Error ******** :", error.response);
                 this.setState({
+                    errorFlag: true,
                     successFlag: false,
-                    msg: "Error"
+                    msg: error.response.data,
                 })
             });
     }
 
     render() {
 
-        // var final_msg = null;
-
-        // if (this.state.successFlag === true) {
-        //     final_msg = <div class="alert alert-success" role="alert">{this.state.msg}<a href={'/customerLogin'} > Login Here.</a></div>
-        // } else if (this.state.successFlag === false) {
-        //     final_msg = <div class="alert alert-danger" role="alert">{this.state.msg}</div>
-        // }
-
-        // console.log("msg from java controller: ", this.state.msg);
+        var redirectUrl, errorMessage;
+        if (this.state.successFlag === true) {
+            redirectUrl = <Redirect to="/transact"></Redirect>
+        } else if ( this.state.errorFlag === true ) {
+            errorMessage = <div style={{color:'red'}}>{this.state.msg}</div>
+        }
 
         return (
 
             <div>
-            <Header/>
+            {redirectUrl}
             <div className="container">
                 <div className="content">
 
@@ -98,7 +100,7 @@ export class Login extends Component {
                     </div>
 
                     <div className="or-separator"><div className="or-text">OR</div></div>
-
+                                        
                     <form>
                         <div className="form-item">
                             <input onChange={this.changeHandler} type="email" className="form-control" name="emailID"
@@ -115,6 +117,7 @@ export class Login extends Component {
                                 Login
                             </button>
                         </div>
+                        {errorMessage}
                     </form>
                     <span className="signup-link">New user? <Link to="/signup">Sign up!</Link></span>
 

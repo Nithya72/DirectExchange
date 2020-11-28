@@ -119,7 +119,7 @@ export class Offers extends Component {
               data-toggle="modal"
               data-target="#newOfferModalPopup"
             >
-              New Offer
+              Post an Offer
             </button>
             <div
               class="modal fade"

@@ -19,4 +19,7 @@ public interface ExchangeOfferRepository extends JpaRepository<ExchangeOffer, St
 
     @Query(value="select * from exchange_offer where user_id!=:userId and src_currency = :srcCurrency and exp_date > now() and remit_amount between :remitAmount*0.9 and :remitAmount*1.1 order by remit_amount desc", nativeQuery = true)
     List<ExchangeOffer> findSingleMatches(Long userId, Integer remitAmount, String srcCurrency);
+
+    @Query(value="select * from exchange_offer where user_id!=:id and src_currency = :srcCurrency and exp_date > now()", nativeQuery = true)
+    List<ExchangeOffer> getOffersBySrcCurrency(Long id, String srcCurrency);
 }

@@ -38,6 +38,18 @@ public class ExchangeOfferController {
 
         return exchangeOfferService.getSingleMatches(userId1, remitAmount1, srcCurrency);
     }
+
+
+    @GetMapping(value = "/allmatches/{userId}/{remitAmount}/{srcCurrency}", produces = {"application/json"})
+    public ResponseEntity<?> allmatches(@PathVariable(value = "userId") String userId, @PathVariable(value = "remitAmount") String remitAmount,@PathVariable(value = "srcCurrency") String srcCurrency) {
+
+        Long userId1 = Long.parseLong(userId);
+        Integer remitAmount1 = Integer.parseInt(remitAmount);
+
+        return exchangeOfferService.getAllMatches(userId1, remitAmount1, srcCurrency);
+    }
+
+
 }
 
 

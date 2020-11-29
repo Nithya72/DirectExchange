@@ -1833,7 +1833,7 @@ fieldset:disabled a.btn {
 
 .btn-primary {
   color: #fff;
-  background-color: #5E37FF;
+  background-color: #5E37FF !important;
   border-color: #5E37FF; }
   .btn-primary:hover {
     color: #fff;
@@ -1879,7 +1879,7 @@ fieldset:disabled a.btn {
 
 .btn-success {
   color: #fff;
-  background-color: #10d876;
+  background-color: #10d876 !important;
   border-color: #10d876; }
   .btn-success:hover {
     color: #fff;

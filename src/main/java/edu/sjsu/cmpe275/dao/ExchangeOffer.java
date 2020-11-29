@@ -143,4 +143,22 @@ public class ExchangeOffer {
     public Integer getUserId() { return userId; }
 
     public void setUserId(Integer userId) { this.userId = userId; }
+
+    @Override
+    public String toString() {
+        return "ExchangeOffer{" +
+            "offerId=" + offerId +
+            ", srcCountry='" + srcCountry + '\'' +
+            ", srcCurrency='" + srcCurrency + '\'' +
+            ", remitAmount=" + remitAmount +
+            ", destCountry='" + destCountry + '\'' +
+            ", destCurrency='" + destCurrency + '\'' +
+            ", exchangeRate=" + exchangeRate +
+            ", finalAmount=" + finalAmount +
+            ", expDate=" + expDate +
+            ", counterOfferFlag=" + counterOfferFlag +
+            ", splitOfferFlag=" + splitOfferFlag +
+            ", userId=" + userId +
+            '}';
+    }
 }

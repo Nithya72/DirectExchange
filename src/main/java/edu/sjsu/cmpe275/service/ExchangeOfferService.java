@@ -1,6 +1,5 @@
 package edu.sjsu.cmpe275.service;
 
-import edu.sjsu.cmpe275.aspect.LoggingAdvice;
 import edu.sjsu.cmpe275.dao.ExchangeOffer;
 import edu.sjsu.cmpe275.repository.ExchangeOfferRepository;
 import org.slf4j.Logger;
@@ -10,57 +9,135 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ExchangeOfferService {
 
-    @Autowired
-    private ExchangeOfferRepository exchangeOfferRepository;
+  Logger log = LoggerFactory.getLogger(ExchangeOfferService.class);
+  @Autowired
+  private ExchangeOfferRepository exchangeOfferRepository;
 
-    Logger log = LoggerFactory.getLogger(ExchangeOfferService.class);
-
-    public ResponseEntity<?> getOffersByOthers(Long userId) {
-        try {
-            List<ExchangeOffer> exchangeOffersList = exchangeOfferRepository.getOffersByOthers(userId);
-            if (exchangeOffersList == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No offers yet!");
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(exchangeOffersList);
-        } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
-        }
+  /**
+   * @param status
+   * @param singleMatches
+   * @return ResponseEntity Object
+   * This method generates the json output in desired format - message, status and timestamp
+   */
+  public static ResponseEntity<Object> generateResponse(HttpStatus status, List<ExchangeOffer> singleMatches, List<List<ExchangeOffer>> splitMatches) {
+    Map<String, Object> response = new HashMap<>();
+    try {
+      response.put("status", status.value());
+      response.put("singleMatches", singleMatches);
+      response.put("splitMatches", splitMatches);
+      return new ResponseEntity<Object>(response, status);
+    } catch (Exception e) {
+      response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+      response.put("singleMatches", null);
+      response.put("splitMatches", null);
+      return new ResponseEntity<Object>(response, status);
     }
+  }
 
-
-    public ResponseEntity<?> getMyOffers(Long userId) {
-        try {
-            List<ExchangeOffer> exchangeOffersList = exchangeOfferRepository.findByUserId(userId);
-
-            if (exchangeOffersList == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("You haven't posted any offers yet!");
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(exchangeOffersList);
-        } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
-        }
+  public ResponseEntity<?> getOffersByOthers(Long userId) {
+    try {
+      List<ExchangeOffer> exchangeOffersList = exchangeOfferRepository.getOffersByOthers(userId);
+      if (exchangeOffersList == null) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No offers yet!");
+      }
+      return ResponseEntity.status(HttpStatus.OK).body(exchangeOffersList);
+    } catch (Exception exception) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
     }
+  }
+
+  public ResponseEntity<?> getMyOffers(Long userId) {
+    try {
+      List<ExchangeOffer> exchangeOffersList = exchangeOfferRepository.findByUserId(userId);
+
+      if (exchangeOffersList == null) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("You haven't posted any offers yet!");
+      }
+      return ResponseEntity.status(HttpStatus.OK).body(exchangeOffersList);
+    } catch (Exception exception) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
+    }
+  }
 
 //Expiration date check - time zone??
 
-    public ResponseEntity<?> getSingleMatches(Long userId, Integer remitAmount, String srcCurrency) {
-        try {
-            List<ExchangeOffer> exchangeOffersList = exchangeOfferRepository.findSingleMatches(userId, remitAmount, srcCurrency); //LocalDate.now()
+  public ResponseEntity<?> getSingleMatches(Long userId, Integer remitAmount, String srcCurrency) {
+    try {
+      List<ExchangeOffer> exchangeOffersList = exchangeOfferRepository.findSingleMatches(userId, remitAmount, srcCurrency); //LocalDate.now()
 
-            if (exchangeOffersList == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("You haven't posted any offers yet!");
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(exchangeOffersList);
-        } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
-        }
+      if (exchangeOffersList == null) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("You haven't posted any offers yet!");
+      }
+      return ResponseEntity.status(HttpStatus.OK).body(exchangeOffersList);
+    } catch (Exception exception) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
     }
+  }
+
+
+  public ResponseEntity<?> getAllMatches(Long userId, Integer remitAmount, String srcCurrency) {
+    try {
+
+      List<ExchangeOffer> singleMatches = exchangeOfferRepository.findSingleMatches(userId, remitAmount, srcCurrency); //LocalDate.now()
+      List<ExchangeOffer> exchangeOffersList = exchangeOfferRepository.getOffersBySrcCurrency(userId, srcCurrency);
+
+      List<List<ExchangeOffer>> splitMatches = fetchSplitMatches(exchangeOffersList, remitAmount);
+
+      return generateResponse(HttpStatus.OK, singleMatches, splitMatches);
+
+    } catch (Exception exception) {
+      return generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+    }
+  }
+
+
+  public List<List<ExchangeOffer>> fetchSplitMatches(List<ExchangeOffer> exchangeOffersList, Integer remitAmount) {
+    List<List<ExchangeOffer>> splitMatches = new ArrayList<>();
+
+    List<List<ExchangeOffer>> generateSubsets = generateSubsets(exchangeOffersList);
+    int counter = 1;
+
+    for (List<ExchangeOffer> subset : generateSubsets) {
+      if (subset.size() == 2) {
+        int sum = subset.get(0).getRemitAmount() + subset.get(1).getRemitAmount();
+//                System.out.println("sum: " + sum);
+        if (sum >= remitAmount * 0.9 && sum <= remitAmount * 1.1) {
+          splitMatches.add(subset);
+          counter++;
+        }
+      }
+    }
+    return splitMatches;
+  }
+
+
+  public List<List<ExchangeOffer>> generateSubsets(List<ExchangeOffer> exchangeOffersList) {
+
+    List<List<ExchangeOffer>> subsets = new ArrayList();
+    subsets.add(new ArrayList<>());
+
+    for (ExchangeOffer exchangeOffer : exchangeOffersList) {
+
+      List<List<ExchangeOffer>> newSubsets = new ArrayList<>();
+      for (List<ExchangeOffer> subset : subsets) {
+        newSubsets.add(new ArrayList<ExchangeOffer>(subset) {{
+          add(exchangeOffer);
+        }});
+      }
+
+      for (List<ExchangeOffer> subset1 : newSubsets) {
+        subsets.add(subset1);
+      }
+    }
+
+    return subsets;
+  }
 }

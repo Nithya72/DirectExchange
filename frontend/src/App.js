@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
 import "./styles/css/style.css";
-import Header from "./components/Navigation/Header.js";
-import SideBar from "./components/Navigation/SideBar";
 import Main from "./components/Main";
 import { BrowserRouter } from "react-router-dom";
 

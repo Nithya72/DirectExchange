@@ -66,7 +66,7 @@ export class SignUp extends Component {
         
         if (this.state.successFlag === true) {
             redirectUrl = <Redirect to={{pathname: "/login", state: {"from":"verified", "msg": "Successfully Verified Code"}}}></Redirect>
-            message = <div class="alert alert-success" role="alert">Successfully Registered, Please Verify Your Email!<a href={'/login'}> Verify here.</a></div>
+            message = <div class="alert alert-success" role="alert">Successfully Registered, Please Verify Your Email!<a href={'/verify'}> Verify here.</a></div>
         } else if (this.state.errorFlag === true) {
             message = <div class="alert alert-danger" role="alert">{this.state.msg}</div>
         }

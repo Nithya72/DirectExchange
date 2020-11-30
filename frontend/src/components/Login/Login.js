@@ -86,7 +86,7 @@ export class Login extends Component {
                     localStorage.setItem("token", response.data.accessToken);
                     this.setState({
                         successFlag: true,
-                        msg: response.data
+                        msg: 'Successfully Login!'
                     })
                 }
             })
@@ -95,7 +95,7 @@ export class Login extends Component {
                 this.setState({
                     errorFlag: true,
                     successFlag: false,
-                    msg: error.response.data,
+                    msg: typeof error.response === undefined ? '' : error.response.data,
                 })
             });
     }

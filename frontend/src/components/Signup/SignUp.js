@@ -48,6 +48,7 @@ export class SignUp extends Component {
                     console.log("Successful registration: ", response.data);
                     this.setState({
                         successFlag: true,
+                        msg: 'Successfully Registered!'
                     })
                 }
             })

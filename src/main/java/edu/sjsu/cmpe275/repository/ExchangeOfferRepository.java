@@ -22,4 +22,12 @@ public interface ExchangeOfferRepository extends JpaRepository<ExchangeOffer, St
 
     @Query(value="select * from exchange_offer where user_id!=:id and src_currency = :srcCurrency and exp_date > now()", nativeQuery = true)
     List<ExchangeOffer> getOffersBySrcCurrency(Long id, String srcCurrency);
+
+    ExchangeOffer findByofferId(long offer_id);
+
+    @Query(value="select * from exchange_offer where offer_id in(:offer_id) and status='active' ", nativeQuery = true)
+    List<ExchangeOffer> getOtherOffers(List<Long> offer_id);
+
+    ExchangeOffer findByOfferIdAndStatus(Long offer_id, String status);
+
 }

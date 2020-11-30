@@ -23,8 +23,11 @@ export class GetMyOffers extends Component {
 
   componentDidMount() {
     // axios.defaults.withCredentials = true;
+
+    axios.defaults.headers.common['authorization']= localStorage.getItem('token');
+
     axios
-      .get("http://localhost:8080/directexchange/user/myoffer/1")
+      .get("http://localhost:8080/directexchange/user/myoffer/8")
       .then((response) => {
         console.log("Status Code : ", response.status);
         if (response.status === 200) {

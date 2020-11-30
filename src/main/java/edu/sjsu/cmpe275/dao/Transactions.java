@@ -10,7 +10,6 @@ import java.time.ZonedDateTime;
 @Table(name="transactions")
 public class Transactions {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,7 +18,7 @@ public class Transactions {
     private String transactionId;
 
     @Column(name="user_id", nullable = false)
-    private Integer userId;
+    private long userId;
 
     @ManyToOne
     @JoinColumn(name = "offerid")
@@ -36,7 +35,7 @@ public class Transactions {
 
     public Transactions() {
     }
-    public Transactions(String transactionId, ExchangeOffer offerid, Integer userid, ZonedDateTime expirationDate){
+    public Transactions(String transactionId, ExchangeOffer offerid, long userid, ZonedDateTime expirationDate){
         this.transactionId=transactionId;
         this.offerid=offerid;
         this.userId=userid;
@@ -72,11 +71,11 @@ public class Transactions {
         this.transactionId = transactionId;
     }
 
-    public Integer getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

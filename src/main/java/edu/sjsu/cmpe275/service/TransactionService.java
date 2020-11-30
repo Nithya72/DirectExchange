@@ -45,15 +45,17 @@ public class TransactionService {
             ZonedDateTime expirationDate = ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(10);
 
             System.out.println("DATETIME = " + expirationDate);
-            Transactions newTransaction = new Transactions(trans_id, sourceOffer, sourceOffer.getUserId(),expirationDate);
+            Transactions newTransaction = new Transactions(trans_id, sourceOffer, sourceOffer.getUser().getUserId(),expirationDate);
             transactionsRepository.save(newTransaction);
 
             for (ExchangeOffer offer : otheroffers) {
-                Transactions otherofferTransaction = new Transactions(trans_id, offer, offer.getUserId(),expirationDate);
+                Transactions otherofferTransaction = new Transactions(trans_id, offer, offer.getUser().getUserId(),expirationDate);
                 transactionsRepository.save(otherofferTransaction);
             }
 
             return ResponseEntity.status(HttpStatus.OK).body(newTransaction);
+
+//            return ResponseEntity.status(HttpStatus.OK).body(null);
         }catch (Exception e){
             System.out.println("Error "+e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong! Please try again later!");

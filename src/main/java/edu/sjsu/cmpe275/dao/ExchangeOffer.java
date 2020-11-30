@@ -1,11 +1,12 @@
 package edu.sjsu.cmpe275.dao;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.Date;
 
 /*
@@ -49,11 +50,12 @@ public class ExchangeOffer {
     @Column(name="split_offer_flag", nullable = false)
     private Boolean splitOfferFlag;
 
-    @Column(name="user_id", nullable = false)
-    private Integer userId;
-
     @Column(name="status", nullable = false)
     private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public long getOfferId() {
         return offerId;
@@ -143,10 +145,6 @@ public class ExchangeOffer {
         this.splitOfferFlag = splitOfferFlag;
     }
 
-    public Integer getUserId() { return userId; }
-
-    public void setUserId(Integer userId) { this.userId = userId; }
-
     public String getStatus() {
         return status;
     }
@@ -155,22 +153,11 @@ public class ExchangeOffer {
         this.status = status;
     }
 
+    public User getUser() {
+        return user;
+    }
 
-    @Override
-    public String toString() {
-        return "ExchangeOffer{" +
-            "offerId=" + offerId +
-            ", srcCountry='" + srcCountry + '\'' +
-            ", srcCurrency='" + srcCurrency + '\'' +
-            ", remitAmount=" + remitAmount +
-            ", destCountry='" + destCountry + '\'' +
-            ", destCurrency='" + destCurrency + '\'' +
-            ", exchangeRate=" + exchangeRate +
-            ", finalAmount=" + finalAmount +
-            ", expDate=" + expDate +
-            ", counterOfferFlag=" + counterOfferFlag +
-            ", splitOfferFlag=" + splitOfferFlag +
-            ", userId=" + userId +
-            '}';
+    public void setUser(User user) {
+        this.user = user;
     }
 }

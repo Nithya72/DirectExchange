@@ -42,6 +42,9 @@ public class User {
     @ToString.Exclude
     @Column(name = "emailVerificationCode", nullable = false, unique = true)
     private String emailVerificationCode;
+
+
+
 }
 
 

@@ -88,7 +88,6 @@
   padding: 0;
 } */
 
-
 .PageTitle {
 	font-size: 30px;
   	letter-spacing: 0px;
@@ -100,4 +99,82 @@
 .myContainer { 
   display: flex;
   flex-direction: column;
+}
+
+.myInputLabel {
+  margin-bottom: 0 !important;
+}
+
+.myFormGroup {
+  margin-bottom: 15px !important;
+}
+
+.offerContainer {
+  justify-content: center;
+  border: 0px;
+  margin-bottom: 40px;
+  border-radius: 15px;
+  box-shadow: 0px 10px 20px rgba(55, 55, 89, 0.08);
+  background: #fff;
+  display: flex;
+  /* background-color: #f0f2f9; */
+  padding: 10px 30px;
+  width: fit-content;
+  height: fit-content;
+  flex-direction: column;
+}
+
+.offerDetails { 
+  display: flex;
+  flex-direction: column;
+}
+
+.offerDetailTop { 
+  font-size: 15px;
+}
+
+.offerCountry { 
+  font-size: 18px;
+  color: #252525;
+}
+
+.offerCurrency { 
+  font-size: 18px;
+  color: #252525;
+}
+
+.offerAmount { 
+  font-size: 18px;
+  color: #0e0e0e;
+}
+
+.arrowContainer {
+  display: flex;
+  align-items: center;
+  margin: 0 30px;
+}
+
+.arrowC { 
+  font-size: 40px;
+  color: #adb1d0;
+}
+
+.postedBy { 
+  margin-bottom: 10px;
+  color: #515769;
+}
+
+.customBtn { 
+  align-self: center;
+  padding: 6px 26px;
+    font-size: 15.2px;
+    border-radius: 12px;
+    background-color: #efeff4;
+    color: #0067ff;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    position: relative;
+    border: 1px solid transparent;
+    width: fit-content;
 }

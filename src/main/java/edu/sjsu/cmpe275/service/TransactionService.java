@@ -65,7 +65,6 @@ public class TransactionService {
                                             String transaction_id){
 
         try {
-
             ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneOffset.UTC);
             String currentStatus = transactionsRepository.getTransactionStatus(transaction_id,currentDateTime);
             if(currentStatus==null){
@@ -110,6 +109,22 @@ public class TransactionService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong! Please try again later!");
         }
 
+    }
+
+    public ResponseEntity getTransactions(Long userid){
+
+        try {
+
+            ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneOffset.UTC);
+
+            System.out.println("current time: "+currentDateTime);
+            List<Transactions> currentTransactions = transactionsRepository.fetchTransactionsByUserID(userid, currentDateTime);
+
+            return ResponseEntity.status(HttpStatus.OK).body(currentTransactions);
+        }catch (Exception e){
+            System.out.println("Error "+e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong! Please try again later!");
+        }
     }
 
 }

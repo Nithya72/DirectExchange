@@ -5,6 +5,7 @@ import { Redirect } from "react-router";
 import Header from "../Navigation/Header";
 import SideBar from "../Navigation/SideBar";
 import PostOffer from "./PostOffer";
+import jwt_decode from "jwt-decode";
 
 export class GetMyOffers extends Component {
   constructor(props) {
@@ -24,10 +25,12 @@ export class GetMyOffers extends Component {
   componentDidMount() {
     // axios.defaults.withCredentials = true;
 
-    axios.defaults.headers.common['authorization']= localStorage.getItem('token');
+    axios.defaults.headers.common['authorization']= 'Bearer ' + localStorage.getItem('token');
+    var decodedToken = jwt_decode(localStorage.getItem('token'));
+    console.log("decodedUserId: ", decodedToken.sub);
 
     axios
-      .get("http://localhost:8080/directexchange/user/myoffer/8")
+      .get("http://localhost:8080/directexchange/user/myoffer/"+decodedToken.sub)
       .then((response) => {
         console.log("Status Code : ", response.status);
         if (response.status === 200) {

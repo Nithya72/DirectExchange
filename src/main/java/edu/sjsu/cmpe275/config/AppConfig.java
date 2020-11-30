@@ -13,11 +13,23 @@ public class AppConfig {
 
     private JwtProps jwtProps;
 
+    private Email email;
+
+    private String baseUrl;
+
     @Data
     @NoArgsConstructor
     public static class JwtProps {
         private String tokenSecret;
         private long tokenExpirationMsec;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class Email {
+        private String username;
+        private String password;
+        private String testEmail;
     }
 
 

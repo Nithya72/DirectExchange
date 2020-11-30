@@ -25,4 +25,11 @@ public interface UserRepository extends JpaRepository<User, String> {
      * Returns the User object based on the nickname provided
      */
     User findByNickName(String nickName);
+
+    /**
+     * Find user based on the verification code.
+     * @param emailVerificationCode verification code to look up for.
+     * @return User if found, else null.
+     */
+    User findByEmailVerificationCode(String emailVerificationCode);
 }

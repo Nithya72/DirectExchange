@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe275.security;
 
+import edu.sjsu.cmpe275.config.AppConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
@@ -17,13 +18,13 @@ import java.io.IOException;
 @Component
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    @Value("${app.redirectBaseUrl}")
-    private String redirectBaseUrl;
+    @Autowired
+    private AppConfig appConfig;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
-        String targetUrl = UriComponentsBuilder.fromUriString(redirectBaseUrl + "/oauth2/redirect")
+        String targetUrl = UriComponentsBuilder.fromUriString(appConfig.getBaseUrl() + "/oauth2/redirect")
                 .queryParam("error", exception.getLocalizedMessage())
                 .build().toUriString();
 

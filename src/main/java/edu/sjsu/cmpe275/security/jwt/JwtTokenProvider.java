@@ -1,4 +1,4 @@
-package edu.sjsu.cmpe275.security;
+package edu.sjsu.cmpe275.security.jwt;
 
 import edu.sjsu.cmpe275.config.AppConfig;
 import edu.sjsu.cmpe275.dao.User;

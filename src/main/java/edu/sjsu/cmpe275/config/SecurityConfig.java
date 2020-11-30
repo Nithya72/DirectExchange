@@ -1,6 +1,8 @@
 package edu.sjsu.cmpe275.config;
 
 import edu.sjsu.cmpe275.security.*;
+import edu.sjsu.cmpe275.security.jwt.JWTAuthorizationFilter;
+import edu.sjsu.cmpe275.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

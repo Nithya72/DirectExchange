@@ -1,6 +1,9 @@
 package edu.sjsu.cmpe275.security;
 
+import edu.sjsu.cmpe275.config.AppConfig;
+import edu.sjsu.cmpe275.dao.User;
 import edu.sjsu.cmpe275.repository.UserRepository;
+import edu.sjsu.cmpe275.security.jwt.JwtTokenProvider;
 import edu.sjsu.cmpe275.security.oauthuser.OAuth2UserInfo;
 import edu.sjsu.cmpe275.security.oauthuser.OAuth2UserInfoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +28,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Autowired
     private UserRepository userRepository;
 
-    @Value("${app.redirectBaseUrl}")
-    private String redirectBaseUrl;
+    @Autowired
+    private AppConfig appConfig;
 
     @Autowired
     OAuth2AuthenticationSuccessHandler(JwtTokenProvider jwtTokenProvider) {
@@ -40,13 +43,22 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         DefaultOAuth2User user = (DefaultOAuth2User)authentication.getPrincipal();
         OAuth2UserInfo userInfo = OAuth2UserInfoMapper.getOAuth2UserInfo(((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId(), user.getAttributes());
 
+        User dbUser = userRepository.findByEmailId(userInfo.getEmail());
+        String targetUrl = null;
+        if (dbUser.getEmailVerified()) {
+            String token = jwtTokenProvider.createToken(dbUser);
+            logger.info("OnAuthenticationSuccess with email verified!");
 
-        String token = jwtTokenProvider.createToken(userRepository.findByEmailId(userInfo.getEmail()));
-        logger.info("OnAuthenticationSuccess!!");
+            targetUrl = UriComponentsBuilder.fromUriString(appConfig.getBaseUrl() + "/oauth2/redirect")
+                    .queryParam("token", token)
+                    .build().toUriString();
 
-        String targetUrl = UriComponentsBuilder.fromUriString(redirectBaseUrl + "/oauth2/redirect")
-                .queryParam("token", token)
-                .build().toUriString();
+        } else {
+            logger.info("OnAuthenticationSuccess with email unverified!");
+            targetUrl = UriComponentsBuilder.fromUriString(appConfig.getBaseUrl() + "/oauth2/redirect")
+                    .queryParam("error", "Email is not verified, Please verify your email!")
+                    .build().toUriString();
+        }
 
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);

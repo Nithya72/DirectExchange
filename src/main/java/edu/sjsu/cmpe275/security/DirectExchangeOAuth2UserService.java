@@ -5,6 +5,7 @@ import edu.sjsu.cmpe275.dao.enums.RegistrationType;
 import edu.sjsu.cmpe275.repository.UserRepository;
 import edu.sjsu.cmpe275.security.oauthuser.OAuth2UserInfo;
 import edu.sjsu.cmpe275.security.oauthuser.OAuth2UserInfoMapper;
+import edu.sjsu.cmpe275.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -27,6 +28,9 @@ public class DirectExchangeOAuth2UserService extends DefaultOAuth2UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AuthService authService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
@@ -68,14 +72,8 @@ public class DirectExchangeOAuth2UserService extends DefaultOAuth2UserService {
 
     private User registerNewUser(OAuth2UserInfo oAuth2UserInfo,
                                  RegistrationType registrationType) {
-        User user = new User();
-
-        user.setRegistrationType(registrationType);
-        user.setEmailId(oAuth2UserInfo.getEmail());
-        user.setNickName(registrationType.getValue() + '_' +UUID.randomUUID());
-        user.setEmailVerified(true);
-        user.setPassword(null);
-        return userRepository.save(user);
+        String nickName = registrationType.getValue() + '_' +UUID.randomUUID().toString().substring(1, 10);
+        return authService.registerUser(oAuth2UserInfo.getEmail(), nickName, registrationType);
     }
 
 }

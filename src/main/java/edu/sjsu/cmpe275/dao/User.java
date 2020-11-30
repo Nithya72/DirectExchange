@@ -35,9 +35,11 @@ public class User {
     @Column(name="registrationType", nullable = false)
     private RegistrationType registrationType;
 
-
     @Column(name="emailVerified", columnDefinition = "boolean default 0", nullable = false)
     private Boolean emailVerified;
+
+    @Column(name = "emailVerificationCode", nullable = false, unique = true)
+    private String emailVerificationCode;
 }
 
 

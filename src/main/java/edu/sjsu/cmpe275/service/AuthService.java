@@ -4,16 +4,24 @@ import edu.sjsu.cmpe275.dao.User;
 import edu.sjsu.cmpe275.dao.enums.RegistrationType;
 import edu.sjsu.cmpe275.repository.UserRepository;
 import edu.sjsu.cmpe275.representation.AuthenticationResponse;
-import edu.sjsu.cmpe275.security.JwtTokenProvider;
+import edu.sjsu.cmpe275.security.jwt.JwtTokenProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+
+import java.util.UUID;
 
 @Service
+@Slf4j
 public class AuthService {
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private UserRepository userRepository;
@@ -24,7 +32,18 @@ public class AuthService {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    public ResponseEntity registerUser(String emailId, String nickName, String password, RegistrationType registrationType) {
+    /**
+     * Registers an User with password.
+     * @param emailId emailId of the user to register.
+     * @param nickName nickName of the user to register.
+     * @param password password of the user.
+     * @param registrationType registrationType of the user.
+     * @return saved user's ResponseEntity.
+     */
+    public ResponseEntity registerUser(@NonNull String emailId,
+                                       @NonNull String nickName,
+                                       @NonNull String password,
+                                       @NonNull RegistrationType registrationType) {
         try{
 
             User user = userRepository.findByEmailId(emailId);
@@ -37,15 +56,7 @@ public class AuthService {
             }
 
             try {
-
-                User newUser = new User();
-                newUser.setEmailId(emailId);
-                newUser.setNickName(nickName);
-                newUser.setPassword(passwordEncoder.encode(password));
-                newUser.setRegistrationType(registrationType);
-                newUser.setEmailVerified(false);
-                userRepository.save(newUser);
-
+                User newUser = registerUserAndSendEmail(emailId, nickName, password, registrationType);
                 return  ResponseEntity.status(HttpStatus.OK).body(newUser);
             } catch (Exception exception){
                 return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
@@ -54,6 +65,51 @@ public class AuthService {
         } catch (Exception exception) {
             return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
         }
+    }
+
+    /**
+     * Registers an user without a password.
+     * @param emailId emailId of the user.
+     * @param nickName nickName to be used.
+     * @param registrationType registrationType of the user
+     * @return registerd user.
+     */
+    public User registerUser(@NonNull String emailId,
+                             @NonNull String nickName,
+                             @NonNull RegistrationType registrationType) {
+        if (registrationType == RegistrationType.LOCAL) {
+            throw new IllegalArgumentException("Cannot create user for LOCAL without password");
+        }
+        return registerUserAndSendEmail(emailId, nickName, null, registrationType);
+    }
+
+    /**
+     * Saves the user in DB and sends an email with verification code.
+     * @param emailId emailId of the user.
+     * @param nickName nickName of the user.
+     * @param password password to be used for the user.
+     * @param registrationType registrationType of the user.
+     * @return Saved user.
+     */
+    private User registerUserAndSendEmail(@NonNull String emailId,
+                                          @NonNull String nickName,
+                                          @Nullable String password,
+                                          @NonNull RegistrationType registrationType) {
+        String emailVerificationCode = UUID.randomUUID().toString();
+
+        User newUser = new User();
+        newUser.setEmailId(emailId);
+        newUser.setNickName(nickName);
+        newUser.setPassword(password == null
+                ? null
+                : passwordEncoder.encode(password));
+        newUser.setRegistrationType(registrationType);
+        newUser.setEmailVerified(false);
+        newUser.setEmailVerificationCode(emailVerificationCode);
+        User savedUser = userRepository.save(newUser);
+
+        emailService.sendEmail(emailId, nickName, emailVerificationCode);
+        return savedUser;
     }
 
     public ResponseEntity<?> loginUser(String emailId, String password) {
@@ -69,5 +125,26 @@ public class AuthService {
         }
         String token = jwtTokenProvider.createToken(user);
         return ResponseEntity.status(HttpStatus.OK).body(new AuthenticationResponse(token));
+    }
+
+    /**
+     * Verify user based on the email verification code.
+     * @param emailVerificationCode email verification code of the user.
+     * @return ResponseEntity based on the status of the emailVerificationCode.
+     */
+    public ResponseEntity<?> verifyUserEmail(String emailVerificationCode) {
+        User user = userRepository.findByEmailVerificationCode(emailVerificationCode);
+        if (user == null) {
+            log.warn("Unknown verification code {}", emailVerificationCode);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Unknown verification code");
+        }
+        if (user.getEmailVerified()) {
+            log.warn("User email already verified {}", emailVerificationCode);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Unknown verification code");
+        } else {
+            user.setEmailVerified(true);
+            userRepository.save(user);
+            return ResponseEntity.status(HttpStatus.OK).body("Successfully verified email!");
+        }
     }
 }

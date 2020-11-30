@@ -5,6 +5,8 @@ export class TransactItems extends Component {
     let classValue = "badge badge-danger";
 
     if (this.props.details.transactionStatus === "pending") {
+      classValue = "badge badge-warning";
+    } else if (this.props.details.transactionStatus === "completed") {
       classValue = "badge badge-success";
     }
 
@@ -32,7 +34,7 @@ export class TransactItems extends Component {
           <br />
           {this.props.details.offerDetails.exchangeRate}
         </td>
-        {this.props.details.transactionStatus !== "aborted" ? (
+        {this.props.details.transactionStatus === "pending" ? (
           <td class="text-danger">
             {this.props.details.is_complete ? (
               <React.Fragment>Waiting for other parties</React.Fragment>
@@ -41,7 +43,9 @@ export class TransactItems extends Component {
             )}
           </td>
         ) : (
-          <td></td>
+          <td style={{ fontWeight: "500" }}>
+            Transaction has been {this.props.details.transactionStatus}
+          </td>
         )}
       </tr>
     );

@@ -45,6 +45,21 @@ export class Login extends Component {
                 });
             }, 100);
         }
+        if(this.props.location.state && this.props.location.state.from) {
+            if (this.props.location.state.from === "verified") {
+                this.setState({
+                    errorFlag: false,
+                    successFlag: true,
+                    msg: this.props.location.state.msg
+                });
+            }
+            setTimeout(() => {
+                this.props.history.replace({
+                    pathname: this.props.location.pathname,
+                    state: {}
+                });
+            }, 100);
+        }
     
     }
 
@@ -87,11 +102,14 @@ export class Login extends Component {
 
     render() {
 
-        var redirectUrl, errorMessage;
-        if (this.state.successFlag === true) {
+        var redirectUrl, message;
+        if (localStorage.getItem("token") !== null) {
             redirectUrl = <Redirect to="/"></Redirect>
+        }
+        if (this.state.successFlag === true) {
+            message = <div class="alert alert-success" role="alert">{this.state.msg}</div>
         } else if ( this.state.errorFlag === true ) {
-            errorMessage = <div class="alert alert-danger" role="alert">{this.state.msg}</div>
+            message = <div class="alert alert-danger" role="alert">{this.state.msg}</div>
         }
 
         return (
@@ -133,9 +151,11 @@ export class Login extends Component {
                                 Login
                             </button>
                         </div>
-                        {errorMessage}
+                        {message}
                     </form>
                     <span className="signup-link">New user? <Link to="/signup">Sign up!</Link></span>
+                    <br/>
+                    <span className="signup-link">Verify Code? <Link to="/verify">Verify here!</Link></span>
 
                 </div>
             </div>

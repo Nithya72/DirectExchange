@@ -123,6 +123,10 @@ public class AuthService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username/Password does not match");
         }
+        if (!user.getEmailVerified()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Email is not verified, please verify your email and try again.");
+        }
         String token = jwtTokenProvider.createToken(user);
         return ResponseEntity.status(HttpStatus.OK).body(new AuthenticationResponse(token));
     }

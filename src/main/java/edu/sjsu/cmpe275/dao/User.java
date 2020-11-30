@@ -38,6 +38,8 @@ public class User {
     @Column(name="emailVerified", columnDefinition = "boolean default 0", nullable = false)
     private Boolean emailVerified;
 
+    @JsonIgnore
+    @ToString.Exclude
     @Column(name = "emailVerificationCode", nullable = false, unique = true)
     private String emailVerificationCode;
 }

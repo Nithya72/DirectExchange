@@ -1,8 +1,28 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import "./Navigation.css";
 export class Header extends Component {
+
+  componentDidMount() {
+    if (localStorage.getItem("token") === null) {
+      this.setState({
+        logout: true,
+      })
+    }
+  }
+
+  onLogoutClick = () => {
+    localStorage.removeItem("token");
+    this.setState({
+      logout: true,
+    });
+  }
+
   render() {
+    var redirectUrl = null;
+    if (this.state && this.state.logout) {
+      redirectUrl = <Redirect to="/login"/>;
+    }
     return (
       // <div id="main-top-header">
       //   <div className="container"></div>
@@ -65,6 +85,7 @@ export class Header extends Component {
       //   </nav>
       // </div>
       <div className="header">
+        {redirectUrl}
         <div className="container">
           <div className="row">
             <div className="col-xl-12">
@@ -100,9 +121,9 @@ export class Header extends Component {
                         <a href="lock.html" className="dropdown-item">
                           <i className="la la-lock" /> Lock
                         </a>
-                        <a href="/login" className="dropdown-item logout">
+                        <Link onClick={this.onLogoutClick} to="/login" className="dropdown-item logout">
                           <i className="la la-sign-out" /> Logout
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </div>

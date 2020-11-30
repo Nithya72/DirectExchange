@@ -3,7 +3,7 @@ import '../../App.css';
 import './Signup.css';
 import axios from 'axios';
 import LandingPage from "../Landing/LandingPage";
-import { GOOGLE_AUTH_URL, FACEBOOK_AUTH_URL, GITHUB_AUTH_URL } from '../constants/index';
+import { GOOGLE_AUTH_URL, FACEBOOK_AUTH_URL } from '../constants/index';
 import fbLogo from '../img/fb-logo.png';
 import googleLogo from '../img/google-logo.png';
 import Header from "../Navigation/Header";
@@ -18,7 +18,9 @@ export class SignUp extends Component {
             emailID: "",
             password: "",
             nickname: "",
-            submitted: false
+            submitted: false,
+            successFlag: false,
+            errorFlag: false
         }
         this.changeHandler = this.changeHandler.bind(this);
     }
@@ -46,7 +48,6 @@ export class SignUp extends Component {
                     console.log("Successful registration: ", response.data);
                     this.setState({
                         successFlag: true,
-                        msg: response.data
                     })
                 }
             })
@@ -62,16 +63,16 @@ export class SignUp extends Component {
 
     render() {
 
-        var final_msg = null, redirectUrl=null;
+        var message = null, redirectUrl=null;
 
         if(localStorage.getItem("token")) {
-            redirectUrl = <Redirect to="/transact"></Redirect>
+            redirectUrl = <Redirect to="/"></Redirect>
         }
         
         if (this.state.successFlag === true) {
-            final_msg = <div class="alert alert-success" role="alert">{this.state.msg}<a href={'/login'}> Login Here.</a></div>
-        } else if (this.state.successFlag === false) {
-            final_msg = <div class="alert alert-danger" role="alert">{this.state.msg}</div>
+            message = <div class="alert alert-success" role="alert">Successfully Registered, Please Verify Your Email!<a href={'/login'}> Verify here.</a></div>
+        } else if (this.state.errorFlag === true) {
+            message = <div class="alert alert-danger" role="alert">{this.state.msg}</div>
         }
 
         console.log("msg from java controller: ", this.state.msg);
@@ -79,7 +80,6 @@ export class SignUp extends Component {
         return (
 
             <div>
-            {final_msg}
             {redirectUrl}
             <div className="container">
                 <div className="content">
@@ -121,6 +121,7 @@ export class SignUp extends Component {
                                 Sign Up 
                             </button>
                         </div>
+                        {message}
                     </form>
                     <span className="login-link">Already have an account? <Link to="/login">Login!</Link></span>
                 </div>

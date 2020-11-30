@@ -89,9 +89,9 @@ export class Login extends Component {
 
         var redirectUrl, errorMessage;
         if (this.state.successFlag === true) {
-            redirectUrl = <Redirect to="/transact"></Redirect>
+            redirectUrl = <Redirect to="/"></Redirect>
         } else if ( this.state.errorFlag === true ) {
-            errorMessage = <div style={{color:'red'}}>{this.state.msg}</div>
+            errorMessage = <div class="alert alert-danger" role="alert">{this.state.msg}</div>
         }
 
         return (

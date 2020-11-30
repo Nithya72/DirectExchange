@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Router, Route, Switch } from "react-router-dom";
+import { Router, Route, Switch, Redirect } from "react-router-dom";
 import { history } from "../helpers/history";
 
 
@@ -26,14 +26,15 @@ class Main extends Component {
             <Route exact path="/login" component={Login} />
             <Route exact path="/offers" component={Offers} />
             <Route exact path="/getMyOffers" component={GetMyOffers} />
-            <Route path="/oauth2/redirect" component={OAuth2RedirectHandler}></Route>  
-            <Route
-              exact
-              path="/viewOfferMatches"
-              component={ViewOfferMatches}
-            />
+            <Route exact path="/oauth2/redirect" component={OAuth2RedirectHandler}></Route> 
+            <Route exact path="/viewOfferMatches" component={ViewOfferMatches}/>
             <Route path="/transact" component={Transact} />
             <Route path="/rates" component={PrevailingRates} />
+            
+            {
+              // Make sure this is always last, so we go back to / when we do not know the path.
+            }
+            <Redirect to="/"/>
           </Switch>
         </Router>
     );

@@ -17,7 +17,7 @@ class OAuth2RedirectHandler extends Component {
         if(token) {
             localStorage.setItem("token", token);
             return <Redirect to={{
-                pathname: "/transact",
+                pathname: "/",
                 state: { from: this.props.location }
             }}/>; 
         } else {

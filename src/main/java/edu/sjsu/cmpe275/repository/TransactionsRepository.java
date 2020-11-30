@@ -20,6 +20,9 @@ public interface TransactionsRepository extends JpaRepository<Transactions, Stri
     @Query(value="select distinct transaction_status from transactions where transaction_id=:transactionId and expiration_date>:currentTime", nativeQuery = true)
     String getTransactionStatus(String transactionId, ZonedDateTime currentTime);
 
+    @Query(value="select * from transactions where user_id=:userid and expiration_date>:currentTime order by transaction_status desc", nativeQuery = true)
+    List<Transactions> fetchTransactionsByUserID(Long userid,ZonedDateTime currentTime);
+
     List<Transactions> findByTransactionId(String transactionId);
 
     @Modifying

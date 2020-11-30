@@ -34,4 +34,10 @@ public class TransactionController {
         return transactionService.updateTransaction(offer_id,transaction_id);
 
     }
+
+    @GetMapping("/{userid}")
+    public ResponseEntity getTransactions(@PathVariable(name="userid") Long userid ){
+
+        return transactionService.getTransactions(userid);
+    }
 }

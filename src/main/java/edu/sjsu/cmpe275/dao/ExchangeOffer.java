@@ -52,6 +52,9 @@ public class ExchangeOffer {
     @Column(name="user_id", nullable = false)
     private Integer userId;
 
+    @Column(name="status", nullable = false)
+    private String status;
+
     public long getOfferId() {
         return offerId;
     }
@@ -143,6 +146,15 @@ public class ExchangeOffer {
     public Integer getUserId() { return userId; }
 
     public void setUserId(Integer userId) { this.userId = userId; }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 
     @Override
     public String toString() {

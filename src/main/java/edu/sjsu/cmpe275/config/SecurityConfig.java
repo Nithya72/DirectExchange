@@ -1,30 +1,25 @@
 package edu.sjsu.cmpe275.config;
 
-import com.google.common.collect.ImmutableList;
-import edu.sjsu.cmpe275.security.JwtTokenProvider;
+import edu.sjsu.cmpe275.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
+import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -38,13 +33,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AppConfig appConfig;
 
+    @Autowired
+    private DirectExchangeOAuth2UserService directExchangeOAuth2UserService;
+
+    @Autowired
+    private OAuth2AuthenticationSuccessHandler successHandler;
+
+    @Autowired
+    private OAuth2AuthenticationFailureHandler failureHandler;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @Bean
+    public AuthorizationRequestRepository authorizationRequestRepository() {
+        return new HttpSessionOAuth2AuthorizationRequestRepository();
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public FilterRegistrationBean corsFilter() {
+    public FilterRegistrationBean corsRegistrationFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
@@ -58,34 +70,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity webSecurity) {
-        String pattern = "*/directexchange/*";
-        webSecurity.ignoring()
-                .mvcMatchers(HttpMethod.POST, pattern)
-                .mvcMatchers(HttpMethod.GET, pattern)
-                .mvcMatchers(HttpMethod.PUT, pattern)
-                .mvcMatchers(HttpMethod.DELETE, pattern)
-                .mvcMatchers(HttpMethod.PATCH, pattern);
-
-    }
-
-
-    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-//                .cors()
-//                .and()
+                .cors()
+                .and()
+                // If we don't set this, then spring creates JSESSIONID and authenticates using that.
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .csrf().disable()
                 .formLogin().disable()
                 .httpBasic().disable()
-//                .exceptionHandling()
-//                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
-//                .and()
+                // This will handle what we need to do when the JWT auth fails.
+                .exceptionHandling()
+                .authenticationEntryPoint(new AuthenticationFailureBehaviour())
+                .and()
+                // Bypasses the authentication requirement for these endpoints/resources
                 .authorizeRequests()
-                .antMatchers("/",
+                    .antMatchers("/",
                         "/error",
                         "/favicon.ico",
                         "/**/*.png",
@@ -94,28 +96,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.jpg",
                         "/**/*.html",
                         "/**/*.css",
-                        "/**/*.js")
-                .permitAll()
-                .antMatchers("/auth/**", "/oauth2/**", "/user/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated();
-//                .and()
-//                .oauth2Login()
-//                .authorizationEndpoint()
-//                .baseUri("/oauth2/authorize")
-//                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
-//                .and()
-//                .redirectionEndpoint()
-//                .baseUri("/oauth2/callback/*")
-//                .and()
-//                .userInfoEndpoint()
-//                .userService(customOAuth2UserService)
-//                .and()
-//                .successHandler(oAuth2AuthenticationSuccessHandler)
-//                .failureHandler(oAuth2AuthenticationFailureHandler);
-
-        // Add our custom Token based authentication filter
-//        http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                        "/**/*.js").permitAll()
+                    .and()
+                // We need to disable Authentication for these login paths.
+                .authorizeRequests()
+                    .antMatchers("/auth/**", "/oauth2/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .oauth2Login()
+                // Once the OAuth login is successful, spring security calls this handler,
+                // where we are redirecting the call to the "app.redirectBaseUrl" (property in
+                // application.properties) + "/oauth2/redirect?token=jwtToken"
+                .successHandler(successHandler)
+                // If the OAuth login is failure, spring security calls this handler,
+                // where we are redirecting the call to the "app.redirectBaseUrl" (property in
+                // application.properties) + "/oauth2/redirect?error=jwtToken"
+                .failureHandler(failureHandler)
+                .and()
+                // This filter is added to spring security to validate JWT token in "Bearer" token
+                .addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtTokenProvider));
     }
 }

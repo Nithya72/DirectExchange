@@ -12,6 +12,7 @@ import ViewOfferMatches from "./ExchangeOffers/ViewOfferMatches";
 import Transact from "./Transact/Transact";
 import PrevailingRates from "./Rates/PrevailingRates";
 import viewAllOffers from "./Screens/ViewAllOffers/viewAllOffers";
+import OAuth2RedirectHandler from './Login/OAuth2RedirectHandler';
 
 
 //Create a Main Component
@@ -25,6 +26,7 @@ class Main extends Component {
             <Route exact path="/login" component={Login} />
             <Route exact path="/offers" component={Offers} />
             <Route exact path="/getMyOffers" component={GetMyOffers} />
+            <Route path="/oauth2/redirect" component={OAuth2RedirectHandler}></Route>  
             <Route
               exact
               path="/viewOfferMatches"

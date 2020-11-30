@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../../App.css';
 import '../Signup/Signup.css';
 import axios from 'axios';
-import { GOOGLE_AUTH_URL, FACEBOOK_AUTH_URL, GITHUB_AUTH_URL } from '../constants/index';
+import { GOOGLE_AUTH_URL, FACEBOOK_AUTH_URL } from '../constants/index';
 import fbLogo from '../img/fb-logo.png';
 import googleLogo from '../img/google-logo.png';
 import Header from "../Navigation/Header";

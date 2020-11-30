@@ -19,6 +19,7 @@ class LandingPage extends Component {
   //handle logout to destroy the cookie
   handleLogout = () => {
     cookie.remove("cookie", { path: "/" });
+    localStorage.removeItem("token");
   };
 
   render() {

@@ -105,7 +105,7 @@ export class Header extends Component {
                     <div className="profile_log dropdown">
                       <div className="user" data-toggle="dropdown">
                         <span className="thumb"><i className="mdi mdi-account" /></span>
-                        <span className="name">Carla Pascle</span>
+                        <span className="name">Hi User!</span>
                         <span className="arrow"><i className="la la-angle-down" /></span>
                       </div>
                       <div className="dropdown-menu dropdown-menu-right">

@@ -6,7 +6,6 @@ import { history } from "../helpers/history";
 import LandingPage from "./Landing/LandingPage";
 import SignUp from "./Signup/SignUp";
 import Login from "./Login/Login";
-import Offers from "./ExchangeOffers/Offers";
 import GetMyOffers from "./ExchangeOffers/GetMyOffers";
 import ViewOfferMatches from "./ExchangeOffers/ViewOfferMatches";
 import Transact from "./Transact/Transact";
@@ -24,7 +23,6 @@ class Main extends Component {
             <Route exact path="/" component={viewAllOffers} />
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/login" component={Login} />
-            <Route exact path="/offers" component={Offers} />
             <Route exact path="/getMyOffers" component={GetMyOffers} />
             <Route path="/oauth2/redirect" component={OAuth2RedirectHandler}></Route>  
             <Route

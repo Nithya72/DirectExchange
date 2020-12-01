@@ -94,7 +94,7 @@ export class ViewOfferMatches extends Component {
     var data = {
       senderOffer: this.state.offer,
       receiverOffer: offer,
-      counter_offer_amount: this.state.single_count_offer_amount,
+      counter_offer_amount: this.state.single_count_offer_amount
     }
 
     axios.defaults.headers.common['authorization']= 'Bearer ' + localStorage.getItem('token');

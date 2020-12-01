@@ -8,7 +8,7 @@ import googleLogo from '../img/google-logo.png';
 import Header from "../Navigation/Header";
 import { Link, Redirect } from 'react-router-dom'
 
-export class SignUp extends Component {
+export class Verify extends Component {
     constructor(props) {
         //Call the constrictor of Super class i.e The Component
         super(props);
@@ -101,4 +101,4 @@ export class SignUp extends Component {
         )
     }
 }
-export default SignUp;
+export default Verify;

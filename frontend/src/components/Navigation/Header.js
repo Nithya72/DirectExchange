@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import "./Navigation.css";
+
 export class Header extends Component {
 
   componentDidMount() {
@@ -103,13 +104,13 @@ export class Header extends Component {
                 <div className="dashboard_log my-2">
                   <div className="d-flex align-items-center">
                     <div className="profile_log dropdown">
-                      <div className="user" data-toggle="dropdown">
+                      <div className="user" data-toggle="dropdown" >
                         <span className="thumb"><i className="mdi mdi-account" /></span>
                         <span className="name">Hi User!</span>
                         <span className="arrow"><i className="la la-angle-down" /></span>
                       </div>
                       <div className="dropdown-menu dropdown-menu-right">
-                        <a href="accounts.html" className="dropdown-item">
+                        <a href="/profile" className="dropdown-item">
                           <i className="mdi mdi-account" /> Account
                         </a>
                         <a href="history.html" className="dropdown-item">

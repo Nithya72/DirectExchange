@@ -7,76 +7,76 @@ import Automatch from "../../Automatch/automatch.js";
 import OfferComponent from "./offerComponent";
 
 var data = [
-  {
-      "offerId": 1,
-      "srcCountry": "United States",
-      "srcCurrency": "USD",
-      "remitAmount": 1000,
-      "destCountry": "India",
-      "destCurrency": "INR",
-      "exchangeRate": 74,
-      "finalAmount": 74000,
-      "expDate": "2020-12-31T00:00:00.000+00:00",
-      "counterOfferFlag": true,
-      "splitOfferFlag": true,
-      "userId": 8
-  },
-  {
-      "offerId": 3,
-      "srcCountry": "United States",
-      "srcCurrency": "USD",
-      "remitAmount": 500,
-      "destCountry": "India",
-      "destCurrency": "INR",
-      "exchangeRate": 74,
-      "finalAmount": 37000,
-      "expDate": "2020-12-31T00:00:00.000+00:00",
-      "counterOfferFlag": true,
-      "splitOfferFlag": true,
-      "userId": 8
-  },
-  {
-      "offerId": 16,
-      "srcCountry": "United States",
-      "srcCurrency": "USD",
-      "remitAmount": 1014,
-      "destCountry": "India",
-      "destCurrency": "INR",
-      "exchangeRate": 74,
-      "finalAmount": 75000,
-      "expDate": "2020-12-14T00:00:00.000+00:00",
-      "counterOfferFlag": true,
-      "splitOfferFlag": true,
-      "userId": 8
-  },
-  {
-      "offerId": 4,
-      "srcCountry": "United States",
-      "srcCurrency": "USD",
-      "remitAmount": 1000,
-      "destCountry": "India",
-      "destCurrency": "INR",
-      "exchangeRate": 74,
-      "finalAmount": 74000,
-      "expDate": "2020-11-30T00:00:00.000+00:00",
-      "counterOfferFlag": true,
-      "splitOfferFlag": false,
-      "userId": 8
-  },
-  {
-      "offerId": 2,
-      "srcCountry": "United States",
-      "srcCurrency": "USD",
-      "remitAmount": 1000,
-      "destCountry": "India",
-      "destCurrency": "INR",
-      "exchangeRate": 74,
-      "finalAmount": 74000,
-      "expDate": "2020-10-31T00:00:00.000+00:00",
-      "counterOfferFlag": true,
-      "splitOfferFlag": true,
-      "userId": 8
-  }
+    {
+        "offerId": 1,
+        "srcCountry": "United States",
+        "srcCurrency": "USD",
+        "remitAmount": 1000,
+        "destCountry": "India",
+        "destCurrency": "INR",
+        "exchangeRate": 74,
+        "finalAmount": 74000,
+        "expDate": "2020-12-31T00:00:00.000+00:00",
+        "counterOfferFlag": true,
+        "splitOfferFlag": true,
+        "userId": 8
+    },
+    {
+        "offerId": 3,
+        "srcCountry": "United States",
+        "srcCurrency": "USD",
+        "remitAmount": 500,
+        "destCountry": "India",
+        "destCurrency": "INR",
+        "exchangeRate": 74,
+        "finalAmount": 37000,
+        "expDate": "2020-12-31T00:00:00.000+00:00",
+        "counterOfferFlag": true,
+        "splitOfferFlag": true,
+        "userId": 8
+    },
+    {
+        "offerId": 16,
+        "srcCountry": "United States",
+        "srcCurrency": "USD",
+        "remitAmount": 1014,
+        "destCountry": "India",
+        "destCurrency": "INR",
+        "exchangeRate": 74,
+        "finalAmount": 75000,
+        "expDate": "2020-12-14T00:00:00.000+00:00",
+        "counterOfferFlag": true,
+        "splitOfferFlag": true,
+        "userId": 8
+    },
+    {
+        "offerId": 4,
+        "srcCountry": "United States",
+        "srcCurrency": "USD",
+        "remitAmount": 1000,
+        "destCountry": "India",
+        "destCurrency": "INR",
+        "exchangeRate": 74,
+        "finalAmount": 74000,
+        "expDate": "2020-11-30T00:00:00.000+00:00",
+        "counterOfferFlag": true,
+        "splitOfferFlag": false,
+        "userId": 8
+    },
+    {
+        "offerId": 2,
+        "srcCountry": "United States",
+        "srcCurrency": "USD",
+        "remitAmount": 1000,
+        "destCountry": "India",
+        "destCurrency": "INR",
+        "exchangeRate": 74,
+        "finalAmount": 74000,
+        "expDate": "2020-10-31T00:00:00.000+00:00",
+        "counterOfferFlag": true,
+        "splitOfferFlag": true,
+        "userId": 8
+    }
 ];
 export default class Home extends Component {
   
@@ -132,6 +132,7 @@ export default class Home extends Component {
     }).map(offerObj=>{
       return(
 				<OfferComponent
+          offerObj = {offerObj}
           postedBy={offerObj.postedBy}
           srcCountry={offerObj.srcCountry}
           srcCurrency={offerObj.srcCurrency}

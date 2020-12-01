@@ -12,7 +12,7 @@ import ViewOfferMatches from "./ExchangeOffers/ViewOfferMatches";
 import Transact from "./Transact/Transact";
 import PrevailingRates from "./Rates/PrevailingRates";
 import viewAllOffers from "./Screens/ViewAllOffers/viewAllOffers";
-
+import ViewOffer from './Screens/ViewOffer/ViewOffer.js';
 
 //Create a Main Component
 class Main extends Component {
@@ -21,6 +21,7 @@ class Main extends Component {
         <Router history={history}>
           <Switch>
             <Route exact path="/" component={viewAllOffers} />
+            <Route exact path="/ViewOffer" component={ViewOffer} />
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/offers" component={Offers} />

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import { Link } from "react-router-dom";
 export default class Home extends Component {
   render() {
     return (
@@ -37,7 +37,10 @@ export default class Home extends Component {
             </div>
           </div>
 
-          <button className="customBtn">View Offer</button>
+          <Link 
+            to={{ pathname: '/ViewOffer', state: { offerObj: this.props.offerObj } }}
+            className="customBtn"
+          >View Offer</Link>
         </div>
       </div>
     );

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Header from "../Navigation/Header";
 import SideBar from "../Navigation/SideBar";
+import { currencyList, countries } from "../../helpers/currencies";
 
 export class BankAccount extends Component {
 
@@ -17,8 +18,38 @@ export class BankAccount extends Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
+  getCurrencies = () => {
+    let currencies = currencyList.map((curr) => {
+      return (
+        <option key={curr.code} value={curr.code}>
+          {curr.name} - {curr.code}
+        </option>
+      );
+    });
+    return currencies;
+  };
+  getCountries = (currency) => {
+    let listofcountries = countries[currency].split("|");
+    let countriesList = listofcountries
+      .filter((name) => name !== "")
+      .map((name) => {
+        return <option value={name}>{name}</option>;
+      });
+    return countriesList;
+  };
+
   
   render() {
+
+    let countries = null;
+
+    if (
+      this.state.primaryCurrency !== "" &&
+      this.state.primaryCurrency !== undefined
+    ) {
+      countries = this.getCountries(this.state.primaryCurrency);
+    }
+
     return (
         <div>
             <Header/>
@@ -43,34 +74,8 @@ export class BankAccount extends Component {
                                 Bank name :
                               </td>
                               <td>
-                                <input
-                                name="amount"
-                                type="number"
-                                min="0"
-                                className="form-control"
-                                placeholder="Enter Amount"
-                                style = {{fontSize:'20px'}}
-                                required
-                                value={this.state.amount}
-                                onChange={this.onChange}
-                              />
-                              </td>
-                            </tr>
-                            <br/>
-                            <tr>
-                              <td style={{fontSize:'24px'}}>
-                                Country :
-                              </td>
-                              <td>
-                                <input
-                                name="amount"
-                                type="number"
-                                min="0"
-                                className="form-control"
-                                placeholder="Enter Amount"
-                                style = {{fontSize:'20px'}}
-                                required
-                                value={this.state.amount}
+                                <input name="bankName" type="text" className="form-control"
+                                style = {{fontSize:'20px'}} required value={this.state.bankName}
                                 onChange={this.onChange}
                               />
                               </td>
@@ -81,15 +86,8 @@ export class BankAccount extends Component {
                                 Account Number :
                               </td>
                               <td>
-                                <input
-                                name="amount"
-                                type="number"
-                                min="0"
-                                className="form-control"
-                                placeholder="Enter Amount"
-                                style = {{fontSize:'20px'}}
-                                required
-                                value={this.state.amount}
+                                <input name="accountNumber" type="text" className="form-control"
+                                style = {{fontSize:'20px'}} required value={this.state.accountNumber}
                                 onChange={this.onChange}
                               />
                               </td>
@@ -100,15 +98,8 @@ export class BankAccount extends Component {
                                 Owner Name :
                               </td>
                               <td>
-                                <input
-                                name="amount"
-                                type="number"
-                                min="0"
-                                className="form-control"
-                                placeholder="Enter Amount"
-                                style = {{fontSize:'20px'}}
-                                required
-                                value={this.state.amount}
+                                <input name="ownerName" type="text" className="form-control" 
+                                style = {{fontSize:'20px'}} required value={this.state.ownerName}
                                 onChange={this.onChange}
                               />
                               </td>
@@ -119,15 +110,8 @@ export class BankAccount extends Component {
                                 Owner Address :
                               </td>
                               <td>
-                                <input
-                                name="amount"
-                                type="number"
-                                min="0"
-                                className="form-control"
-                                placeholder="Enter Amount"
-                                style = {{fontSize:'20px'}}
-                                required
-                                value={this.state.amount}
+                                <input name="ownerAddress" type="text" className="form-control"
+                                style = {{fontSize:'20px'}} required value={this.state.ownerAddress}
                                 onChange={this.onChange}
                               />
                               </td>
@@ -138,17 +122,30 @@ export class BankAccount extends Component {
                                 Primary Currency :
                               </td>
                               <td>
-                                <input
-                                name="amount"
-                                type="number"
-                                min="0"
-                                className="form-control"
-                                placeholder="Enter Amount"
-                                style = {{fontSize:'20px'}}
-                                required
-                                value={this.state.amount}
-                                onChange={this.onChange}
-                              />
+                              <select class="form-control" name="primaryCurrency" style = {{fontSize:'20px'}}
+                                value={this.state.primaryCurrency} onChange={this.onChange} required
+                              >
+                                <option defaultValue value="">
+                                Select Currency
+                                </option>
+                                {this.getCurrencies()}
+                              </select>
+                              </td>
+                            </tr>
+                            <br/>
+                            <tr>
+                              <td style={{fontSize:'24px'}}>
+                                Country :
+                              </td>
+                              <td>
+                              <select class="form-control" name="country" style = {{fontSize:'20px'}}
+                                value={this.state.country} onChange={this.onChange} required
+                              >
+                                <option defaultValue value="">
+                                Select Country
+                                </option>
+                                {countries}
+                              </select>
                               </td>
                             </tr>
                             <br/>
@@ -157,8 +154,8 @@ export class BankAccount extends Component {
                                 Features :
                               </td>
                               <td>
-                              <select name="destination_currency" className="form-control" style = {{fontSize:'20px'}} 
-                              value={this.state.destination_currency} onChange={this.onChange} required>
+                              <select name="features" className="form-control" style = {{fontSize:'20px'}} 
+                              value={this.state.features} onChange={this.onChange} required>
                                 <option defaultValue value="">Select option</option>
                                 <option defaultValue value="">Only Send</option>
                                 <option defaultValue value="">Only Receive</option>
@@ -169,7 +166,7 @@ export class BankAccount extends Component {
                           </table>
                           <br/>
                           <br/>
-                          <button class='button-dark'>
+                          <button class="btn btn-success myButton">
                           Submit
                           </button>
                           <br/>

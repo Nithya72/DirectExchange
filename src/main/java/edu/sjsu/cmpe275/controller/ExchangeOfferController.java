@@ -56,7 +56,6 @@ public class ExchangeOfferController {
         return exchangeOfferService.getAllMatches(userId1, remitAmount1, srcCurrency);
     }
 
-
 }
 
 

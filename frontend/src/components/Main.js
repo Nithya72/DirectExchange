@@ -13,6 +13,7 @@ import PrevailingRates from "./Rates/PrevailingRates";
 import viewAllOffers from "./Screens/ViewAllOffers/viewAllOffers";
 import OAuth2RedirectHandler from './Login/OAuth2RedirectHandler';
 import Verify from './Verify/Verify';
+import ViewCounterOffers from './ExchangeOffers/ViewCounterOffers';
 
 //Create a Main Component
 class Main extends Component {
@@ -29,6 +30,7 @@ class Main extends Component {
             <Route path="/transact" component={Transact} />
             <Route path="/rates" component={PrevailingRates} />
             <Route path="/verify" component={Verify} />
+            <Route path="/viewCounterOffers" component={ViewCounterOffers} />
 
             {
               // Make sure this is always last, so we go back to / when we do not know the path.

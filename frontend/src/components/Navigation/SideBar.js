@@ -36,6 +36,12 @@ export class SideBar extends Component {
             {/*    </NavLink>*/}
             {/*</li>*/}
             <li>
+              <NavLink to="/viewCounterOffers">
+                <span><i className="mdi mdi-repeat" /></span>
+                <span className="nav-text">Counter Offers</span>
+              </NavLink>
+            </li>
+            <li>
               <NavLink to="/transact">
                 <span><i className="mdi mdi-repeat" /></span>
                 <span className="nav-text">Transact</span>

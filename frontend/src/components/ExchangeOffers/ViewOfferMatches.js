@@ -4,6 +4,7 @@ import axios from 'axios';
 import Header from "../Navigation/Header";
 import SideBar from "../Navigation/SideBar";
 import Collapsible from 'react-collapsible';
+import jwt_decode from "jwt-decode";
 
 export class ViewOfferMatches extends Component {
   constructor(props) {
@@ -15,9 +16,14 @@ export class ViewOfferMatches extends Component {
       submitted: false,
       allSingleMatches: null,
       allSplitMatches: null,
-      count_offer_amount: 0
+      single_count_offer_amount: 0,
+      split_count_offer_amount: 0,
+      counter_error: null,
+      postCounterOfferFlag: false,
+      postCounterMsg: ""
     }
-    // this.getSingleMatches = this.getSingleMatches.bind(this);
+     this.counterOfferAmountHandler = this.counterOfferAmountHandler.bind(this);
+    // this.postSingleCounterHandler = this.postSingleCounterHandler.bind(this);
 
   }
 
@@ -25,18 +31,40 @@ export class ViewOfferMatches extends Component {
     this.getSingleMatches(this.state.offer);
   }
 
-  getSingleMatches = (e) => {
-    console.log("Inside get single matches");
+  counterOfferAmountHandler = (e) =>{
+    // e.preventDefault();
+  console.log("remit value 0.9: ", this.state.offer.remitAmount*0.9, "---", this.state.offer.remitAmount*1.1);
+    console.log("offer amount: ", e.target.value);
 
-    let userId = e.userId;
+   if(e.target.value >= (this.state.offer.remitAmount*0.9) && e.target.value <= (this.state.offer.remitAmount*1.1)){
+        this.setState({
+          single_count_offer_amount: e.target.value,
+          counter_error: null
+        })
+   }else{
+     this.setState({
+       counter_error: "The amount "+e.target.value+" is not within valid range."
+     })
+   }
+
+  }
+
+  getSingleMatches = (e) => {
+    console.log("Inside get single matches: ", e);
+
+    let userId = e.user.userId;
     let remitAmount = e.finalAmount;
     let srcCurrency = e.destCurrency;
+
+    axios.defaults.headers.common['authorization']= 'Bearer ' + localStorage.getItem('token');
+    var decodedToken = jwt_decode(localStorage.getItem('token'));
+    console.log("decodedUserId: ", decodedToken.sub);
 
     axios.get('http://localhost:8080/directexchange/user/allmatches/' + userId + "/" + remitAmount + "/" + srcCurrency)
         .then(response => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
-            console.log("Fetched All Offers: ", response.data);
+            console.log("Posted Counter Offers: ", response.data);
             this.setState({
               successFlag: true,
               allSingleMatches: response.data.singleMatches,
@@ -55,20 +83,48 @@ export class ViewOfferMatches extends Component {
   }
 
 
+  postSingleCounterHandler = (e, offer) => {
+    e.preventDefault();
+
+    console.log("postSingleCounterHandler: offer", offer);
+    console.log("postSingleCounterHandler: receiver", e);
+    console.log("postSingleCounterHandler: sender", this.state.offer);
+    console.log("postSingleCounterHandler: offer amount", this.state.single_count_offer_amount);
+
+    var data = {
+      senderOffer: this.state.offer,
+      receiverOffer: offer,
+      counter_offer_amount: this.state.single_count_offer_amount,
+    }
+
+    axios.defaults.headers.common['authorization']= 'Bearer ' + localStorage.getItem('token');
+    var decodedToken = jwt_decode(localStorage.getItem('token'));
+    console.log("decodedUserId: ", decodedToken.sub);
+
+    axios.post('http://localhost:8080/directexchange/user/counteroffer', data)
+        .then(response => {
+          console.log("Status Code : ", response.status);
+          if (response.status === 200) {
+            console.log("Fetched All Offers: ", response.data);
+            this.setState({
+              postCounterOfferFlag: true,
+              postCounterMsg: response.data
+            })
+          }
+        })
+        .catch(error => {
+          console.log("Here we captured the error: ", error)
+          this.setState({
+            postCounterOfferFlag: false,
+            postCounterMsg: "Couldn't post offer, try after sometime."
+          })
+        });
+  }
+
+
   render() {
 
-    console.log("state data view all offers: ", this.state);
-
-    if (this.state.allSplitMatches) {
-      this.state.allSplitMatches.map(splioffer => {
-
-
-        console.log("render split offer: ", splioffer);
-        console.log("render split offer[0]: ", splioffer[0]);
-
-
-      });
-    }
+    // console.log("state data view all offers: ", this.state);
 
     return (
         <div>
@@ -78,17 +134,90 @@ export class ViewOfferMatches extends Component {
             <div className="myContainer">
               <div className="col-xl-12">
                 <div className="card" style={{width: "fit-content"}}>
+
+                  <div className="card-header">
+                    <h5 className="card-title" style={{fontSize: "28px"}}>My Original Offer</h5>
+                  </div>
+                  <div className="card-body pt-0">
+                    <div className="transaction-table">
+                      <div className="table-responsive">
+                  <table
+                      className="table mb-0 table-responsive-sm view-offer-table"
+                      style={{color: "#5a656d"}}>
+                    <thead>
+                      <tr>
+                        <th>
+                          <div>USER</div>
+                          <div>NAME</div>
+                        </th>
+                        <th>
+                          <div>SOURCE</div>
+                          <div>CURRENCY</div>
+                        </th>
+                        <th>
+                          <div>REMIT</div>
+                          <div>AMOUNT</div>
+                        </th>
+                        <th>
+                          <div>DEST</div>
+                          <div>CURRENCY</div>
+                        </th>
+                        <th>
+                          <div>FINAL</div>
+                          <div>AMOUNT</div>
+                        </th>
+                        <th>
+                          <div>EXPIRATION</div>
+                          <div>DATE</div>
+                        </th>
+                        <th>
+                          <div>OFFER</div>
+                          <div>STATUS</div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          {this.state.offer.user.nickName}
+                        </td>
+                        <td>
+                          {this.state.offer.srcCurrency}
+                        </td>
+                        <td>
+                          {this.state.offer.remitAmount}
+                        </td>
+                        <td>
+                          {this.state.offer.destCurrency}
+                        </td>
+                        <td>
+                          {this.state.offer.finalAmount}
+                        </td>
+                        <td>
+                          {this.state.offer.expDate.substring(0, 10)}
+                        </td>
+                        <td>
+                          { this.state.offer.status}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                      </div>
+                    </div>
+                  </div>
                   <div className="card-header">
                     <h4 className="card-title" style={{fontSize: "28px"}}>View All Matching Offers</h4>
                   </div>
+
                   <Collapsible trigger="View Single Matches"
                                triggerClassName="view-collapsible-tab view-single-match-collapsible-tab"
                                triggerOpenedClassName="view-collapsible-tab view-single-match-collapsible-tab">
-
+                    <div className="card-header">
+                      <h4 className="card-title" style={{fontSize: "28px"}}>View All Matching Offers</h4>
+                    </div>
                     <div className="card-body pt-0">
                       <div className="transaction-table">
                         <div className="table-responsive">
-
                           {(this.state.allSingleMatches && this.state.allSingleMatches.length !== 0) ?
 
                               this.state.allSingleMatches.map(offer => (
@@ -96,39 +225,50 @@ export class ViewOfferMatches extends Component {
                                     <table
                                         className="table mb-0 table-responsive-sm view-offer-table"
                                         style={{color: "#5a656d"}}>
-                                      <tr>
-                                        <th>
-                                          <div>AMOUNT</div>
-                                          <div>DIFFERENCE</div>
-                                        </th>
-                                        <th>
-                                          <div>SOURCE</div>
-                                          <div>CURRENCY</div>
-                                        </th>
-                                        <th>
-                                          <div>REMIT</div>
-                                          <div>AMOUNT</div>
-                                        </th>
-                                        <th>
-                                          <div>DEST</div>
-                                          <div>CURRENCY</div>
-                                        </th>
-                                        <th>
-                                          <div>FINAL</div>
-                                          <div>AMOUNT</div>
-                                        </th>
-                                        <th>
-                                          <div>EXPIRATION</div>
-                                          <div>DATE</div>
-                                        </th>
-                                      </tr>
+                                      <thead>
+                                        <tr>
+                                          <th>
+                                            <div>USER</div>
+                                            <div>NAME</div>
+                                          </th>
+                                          <th>
+                                            <div>AMOUNT</div>
+                                            <div>DIFFERENCE</div>
+                                          </th>
+                                          <th>
+                                            <div>SOURCE</div>
+                                            <div>CURRENCY</div>
+                                          </th>
+                                          <th>
+                                            <div>REMIT</div>
+                                            <div>AMOUNT</div>
+                                          </th>
+                                          <th>
+                                            <div>DEST</div>
+                                            <div>CURRENCY</div>
+                                          </th>
+                                          <th>
+                                            <div>FINAL</div>
+                                            <div>AMOUNT</div>
+                                          </th>
+                                          <th>
+                                            <div>EXPIRATION</div>
+                                            <div>DATE</div>
+                                          </th>
+                                          <th>
+                                            <div>OFFER</div>
+                                            <div>STATUS</div>
+                                          </th>
+                                        </tr>
+                                      </thead>
                                       <tbody>
                                       <tr>
-
+                                        <td>
+                                          {offer.user.nickName}
+                                        </td>
                                         {(parseInt(offer.remitAmount) - parseInt(this.state.offer.finalAmount)) >= 0 ?
                                             <td className="text-success">+{(offer.remitAmount - this.state.offer.finalAmount)} {offer.srcCurrency}</td> :
                                             <td className="text-danger">{(offer.remitAmount - this.state.offer.finalAmount)} {offer.srcCurrency}</td>}
-
                                         <td>
                                           {offer.srcCurrency}
                                         </td>
@@ -145,6 +285,9 @@ export class ViewOfferMatches extends Component {
 
                                         <td>
                                           {offer.expDate.substring(0, 10)}
+                                        </td>
+                                        <td>
+                                          { offer.status}
                                         </td>
                                       </tr>
                                       </tbody>
@@ -191,8 +334,7 @@ export class ViewOfferMatches extends Component {
                                                       >
                                                         <span aria-hidden="true">&times;</span>
                                                       </button>
-                                                      <form
-                                                          onSubmit={this.onSubmit}>
+                                                      {/*<form>*/}
                                                         <div
                                                             className="counter-offer-details">
                                                           <br/>
@@ -209,27 +351,33 @@ export class ViewOfferMatches extends Component {
                                                             <div>Note: The counter offer must be within the range of 90%
                                                               to 110% of source remit amount
                                                             </div>
+                                                            <br />
+                                                            <div> eg: {(parseInt(this.state.offer.remitAmount) * 0.9)} to {(parseInt(this.state.offer.remitAmount) * 1.1)}
+                                                            </div>
                                                             <br/>
                                                             <input
                                                                 type="number"
-                                                                min={(parseInt(this.state.offer.remitAmount) * 0.9)}
-                                                                max={(parseInt(this.state.offer.remitAmount) * 1.1)}
                                                                 className="form-control"
                                                                 placeholder="Counter Offer Amount"
                                                                 name="amount"
-                                                                value={this.state.amount}
-                                                                onChange={this.onChange}
+                                                                // value={this.state.amount}
+                                                                onChange={this.counterOfferAmountHandler}
                                                                 required
                                                             />
                                                             <button
                                                                 type="submit"
-                                                                className="post-counter-offer-custom-button">
+                                                                className="post-counter-offer-custom-button"
+                                                                onClick={ (e) => this.postSingleCounterHandler(e, offer)}
+                                                            >
                                                               POST COUNTER
                                                               OFFER
-                                                            </button>
+                                                            </button><br /><br/>
+                                                            <div style={{color:"red"}}>{this.state.counter_error}</div>
+                                                            { this.state.postCounterOfferFlag ? <div style={{color:"green"}}>{this.state.postCounterMsg}</div> : <div style={{color:"red"}}>{this.state.postCounterMsg}</div> }
                                                           </div>
+
                                                         </div>
-                                                      </form>
+                                                      {/*</form>*/}
                                                     </div>
                                                   </div>
                                                 </div>
@@ -261,35 +409,47 @@ export class ViewOfferMatches extends Component {
                                     <table
                                         className="table mb-0 table-responsive-sm view-offer-table"
                                         style={{color: "#5a656d"}}>
-                                      <tr>
-                                        <th>
-                                          <div>AMOUNT</div>
-                                          <div>DIFFERENCE</div>
-                                        </th>
-                                        <th>
-                                          <div>SOURCE</div>
-                                          <div>CURRENCY</div>
-                                        </th>
-                                        <th>
-                                          <div>REMIT</div>
-                                          <div>AMOUNT</div>
-                                        </th>
-                                        <th>
-                                          <div>DEST</div>
-                                          <div>CURRENCY</div>
-                                        </th>
-                                        <th>
-                                          <div>FINAL</div>
-                                          <div>AMOUNT</div>
-                                        </th>
-                                        <th>
-                                          <div>EXPIRATION</div>
-                                          <div>DATE</div>
-                                        </th>
-                                      </tr>
+                                      <thead>
+                                        <tr>
+                                          <th>
+                                            <div>USER</div>
+                                            <div>NAME</div>
+                                          </th>
+                                          <th>
+                                            <div>AMOUNT</div>
+                                            <div>DIFFERENCE</div>
+                                          </th>
+                                          <th>
+                                            <div>SOURCE</div>
+                                            <div>CURRENCY</div>
+                                          </th>
+                                          <th>
+                                            <div>REMIT</div>
+                                            <div>AMOUNT</div>
+                                          </th>
+                                          <th>
+                                            <div>DEST</div>
+                                            <div>CURRENCY</div>
+                                          </th>
+                                          <th>
+                                            <div>FINAL</div>
+                                            <div>AMOUNT</div>
+                                          </th>
+                                          <th>
+                                            <div>EXPIRATION</div>
+                                            <div>DATE</div>
+                                          </th>
+                                          <th>
+                                            <div>OFFER</div>
+                                            <div>STATUS</div>
+                                          </th>
+                                        </tr>
+                                      </thead>
                                       <tbody>
                                       <tr>
-
+                                        <td>
+                                          {offer[0].user.nickName}
+                                        </td>
                                         {(parseInt(offer[0].remitAmount) - parseInt(this.state.offer.finalAmount)) >= 0 ?
                                             <td className="text-success">+{(offer[0].remitAmount - this.state.offer.finalAmount)} {offer[0].srcCurrency}</td> :
                                             <td className="text-danger">{(offer[0].remitAmount - this.state.offer.finalAmount)} {offer[0].srcCurrency}</td>}
@@ -312,10 +472,15 @@ export class ViewOfferMatches extends Component {
                                         <td>
                                           {offer[0].expDate.substring(0, 10)}
                                         </td>
+                                        <td>
+                                          {offer[0].status}
+                                        </td>
                                       </tr>
 
                                       <tr>
-
+                                        <td>
+                                          {offer[1].user.nickName}
+                                        </td>
                                         {(parseInt(offer[1].remitAmount) - parseInt(this.state.offer.finalAmount)) >= 0 ?
                                             <td className="text-success">+{(offer[1].remitAmount - this.state.offer.finalAmount)} {offer[1].srcCurrency}</td> :
                                             <td className="text-danger">{(offer[1].remitAmount - this.state.offer.finalAmount)} {offer[1].srcCurrency}</td>}
@@ -337,6 +502,9 @@ export class ViewOfferMatches extends Component {
 
                                         <td>
                                           {offer[1].expDate.substring(0, 10)}
+                                        </td>
+                                        <td>
+                                          {offer[1].status}
                                         </td>
                                       </tr>
                                       </tbody>
@@ -411,8 +579,8 @@ export class ViewOfferMatches extends Component {
                                                                 className="form-control"
                                                                 placeholder="Counter Offer Amount"
                                                                 name="amount"
-                                                                value={this.state.amount}
-                                                                onChange={this.onChange}
+                                                                // value={this.state.single_count_offer_amount}
+                                                                onChange={this.counterOfferAmountHandler}
                                                                 required
                                                             />
                                                             <button

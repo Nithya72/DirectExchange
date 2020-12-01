@@ -9,12 +9,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional
 public class ExchangeOfferService {
 
   Logger log = LoggerFactory.getLogger(ExchangeOfferService.class);
@@ -24,11 +26,13 @@ public class ExchangeOfferService {
   /**
    * @param status
    * @param singleMatches
+   * @param splitMatches
    * @return ResponseEntity Object
    * This method generates the json output in desired format - message, status and timestamp
    */
-  public static ResponseEntity<Object> generateResponse(HttpStatus status, List<ExchangeOffer> singleMatches, List<List<ExchangeOffer>> splitMatches) {
+  public ResponseEntity<Object> generateResponse(HttpStatus status, List<ExchangeOffer> singleMatches, List<List<ExchangeOffer>> splitMatches) {
     Map<String, Object> response = new HashMap<>();
+    log.info("generate response:");
     try {
       response.put("status", status.value());
       response.put("singleMatches", singleMatches);
@@ -84,8 +88,8 @@ public class ExchangeOfferService {
 
 
   public ResponseEntity<?> getAllMatches(Long userId, Integer remitAmount, String srcCurrency) {
-    try {
 
+    try {
       List<ExchangeOffer> singleMatches = exchangeOfferRepository.findSingleMatches(userId, remitAmount, srcCurrency); //LocalDate.now()
       List<ExchangeOffer> exchangeOffersList = exchangeOfferRepository.getOffersBySrcCurrency(userId, srcCurrency);
 

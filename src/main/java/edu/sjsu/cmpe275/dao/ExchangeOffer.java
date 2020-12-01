@@ -160,4 +160,23 @@ public class ExchangeOffer {
     public void setUser(User user) {
         this.user = user;
     }
+
+    @Override
+    public String toString() {
+        return "ExchangeOffer{" +
+            "offerId=" + offerId +
+            ", srcCountry='" + srcCountry + '\'' +
+            ", srcCurrency='" + srcCurrency + '\'' +
+            ", remitAmount=" + remitAmount +
+            ", destCountry='" + destCountry + '\'' +
+            ", destCurrency='" + destCurrency + '\'' +
+            ", exchangeRate=" + exchangeRate +
+            ", finalAmount=" + finalAmount +
+            ", expDate=" + expDate +
+            ", counterOfferFlag=" + counterOfferFlag +
+            ", splitOfferFlag=" + splitOfferFlag +
+            ", status='" + status + '\'' +
+            ", user=" + user +
+            '}';
+    }
 }

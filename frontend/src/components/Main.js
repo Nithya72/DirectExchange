@@ -11,6 +11,7 @@ import ViewOfferMatches from "./ExchangeOffers/ViewOfferMatches";
 import Transact from "./Transact/Transact";
 import PrevailingRates from "./Rates/PrevailingRates";
 import viewAllOffers from "./Screens/ViewAllOffers/viewAllOffers";
+import ViewOffer from './Screens/ViewOffer/ViewOffer.js';
 import OAuth2RedirectHandler from './Login/OAuth2RedirectHandler';
 import Verify from './Verify/Verify';
 
@@ -21,6 +22,7 @@ class Main extends Component {
         <Router history={history}>
           <Switch>
             <Route exact path="/" component={viewAllOffers} />
+            <Route exact path="/ViewOffer" component={ViewOffer} />
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/getMyOffers" component={GetMyOffers} />

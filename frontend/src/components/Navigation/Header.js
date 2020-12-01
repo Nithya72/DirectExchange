@@ -111,7 +111,10 @@ export class Header extends Component {
                       </div>
                       <div className="dropdown-menu dropdown-menu-right">
                         <a href="/profile" className="dropdown-item">
-                          <i className="mdi mdi-account" /> Account
+                          <i className="mdi mdi-account" /> Profile
+                        </a>
+                        <a href="/account" className="dropdown-item">
+                          <i className="mdi mdi-bank" /> Account
                         </a>
                         <a href="history.html" className="dropdown-item">
                           <i className="la la-book" /> History

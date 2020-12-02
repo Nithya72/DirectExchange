@@ -3,6 +3,7 @@ import axios from "axios";
 import Header from "../Navigation/Header";
 import SideBar from "../Navigation/SideBar";
 import TransactItems from "./TransactItems";
+import jwt_decode from "jwt-decode";
 
 export class Transact extends Component {
   constructor(props) {
@@ -12,8 +13,14 @@ export class Transact extends Component {
     };
   }
   componentDidMount() {
+    axios.defaults.headers.common["authorization"] =
+      "Bearer " + localStorage.getItem("token");
+    var decodedToken = jwt_decode(localStorage.getItem("token"));
     axios
-      .get("http://localhost:8080/directexchange/api/transactions/9")
+      .get(
+        "http://localhost:8080/directexchange/api/transactions/" +
+          decodedToken.sub
+      )
       .then((response) => {
         if (response.status == 200) {
           console.log("Response ", response.data);
@@ -23,11 +30,11 @@ export class Transact extends Component {
         }
       })
       .catch((err) => {
-        console.log(err.response.data.message);
+        alert("Something went wrong! Please try again later.");
       });
   }
+
   render() {
-    console.log("state var", this.state.transactionDetails);
     return (
       <div>
         <Header />
@@ -44,8 +51,8 @@ export class Transact extends Component {
                   <div class="table-responsive">
                     <table class="table mb-0 table-responsive-sm">
                       <tbody>
-                        {this.state.transactionDetails.map((details) => {
-                          return <TransactItems details={details} />;
+                        {this.state.transactionDetails.map((details,index) => {
+                          return <TransactItems key ={index} details={details}/>;
                         })}
                       </tbody>
                     </table>

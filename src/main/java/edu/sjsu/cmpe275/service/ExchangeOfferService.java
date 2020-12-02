@@ -111,7 +111,7 @@ public class ExchangeOfferService {
 
     for (List<ExchangeOffer> subset : generateSubsets) {
       if (subset.size() == 2) {
-        int sum = subset.get(0).getRemitAmount() + subset.get(1).getRemitAmount();
+        float sum = subset.get(0).getRemitAmount() + subset.get(1).getRemitAmount();
 //                System.out.println("sum: " + sum);
         if (sum >= remitAmount * 0.9 && sum <= remitAmount * 1.1) {
           splitMatches.add(subset);

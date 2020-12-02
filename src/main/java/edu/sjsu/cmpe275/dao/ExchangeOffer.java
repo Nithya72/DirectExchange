@@ -27,7 +27,7 @@ public class ExchangeOffer {
     private String srcCurrency;
 
     @Column(name="remit_amount", nullable = false)
-    private Integer remitAmount;
+    private float remitAmount;
 
     @Column(name="dest_country", nullable = false)
     private String destCountry;
@@ -36,10 +36,10 @@ public class ExchangeOffer {
     private String destCurrency;
 
     @Column(name="exchange_rate", nullable = false)
-    private Integer exchangeRate;
+    private float exchangeRate;
 
     @Column(name="final_amount", nullable = false)
-    private Integer finalAmount;
+    private float finalAmount;
 
     @Column(name="exp_date", nullable = false)
     private Date expDate;
@@ -81,11 +81,11 @@ public class ExchangeOffer {
         this.srcCurrency = srcCurrency;
     }
 
-    public Integer getRemitAmount() {
+    public float getRemitAmount() {
         return remitAmount;
     }
 
-    public void setRemitAmount(Integer remitAmount) {
+    public void setRemitAmount(float remitAmount) {
         this.remitAmount = remitAmount;
     }
 
@@ -105,19 +105,19 @@ public class ExchangeOffer {
         this.destCurrency = destCurrency;
     }
 
-    public Integer getExchangeRate() {
+    public float getExchangeRate() {
         return exchangeRate;
     }
 
-    public void setExchangeRate(Integer exchangeRate) {
+    public void setExchangeRate(float exchangeRate) {
         this.exchangeRate = exchangeRate;
     }
 
-    public Integer getFinalAmount() {
+    public float getFinalAmount() {
         return finalAmount;
     }
 
-    public void setFinalAmount(Integer finalAmount) {
+    public void setFinalAmount(float finalAmount) {
         this.finalAmount = finalAmount;
     }
 

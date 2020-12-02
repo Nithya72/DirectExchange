@@ -31,7 +31,7 @@ export const exchangerates = {
     GBP: 0.75,
     USD: 1,
     EUR: 0.84,
-    INR: 74.02,
+    INR: 73.67,
     RMB: 6.58,
   },
 };

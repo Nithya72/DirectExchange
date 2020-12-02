@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { currencyList, countries } from "../../helpers/currencies";
 import { exchangerates } from "../../helpers/exchangerates";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 import "./PostOffer.css";
 
 export class PostOffer extends Component {
@@ -53,7 +54,37 @@ export class PostOffer extends Component {
     ) {
       alert("Please select different countries");
     } else {
-      alert("Success");
+      axios.defaults.headers.common["authorization"] =
+        "Bearer " + localStorage.getItem("token");
+      var decodedToken = jwt_decode(localStorage.getItem("token"));
+
+      let data = {
+        amount: parseFloat(this.state.amount),
+        exchange_rate:
+          exchangerates[this.state.source_currency][
+            this.state.destination_currency
+          ],
+        source_currency: this.state.source_currency,
+        source_country: this.state.source_country,
+        destination_currency: this.state.destination_currency,
+        destination_country: this.state.destination_country,
+        expirationdate: this.state.expirationdate,
+        allowCounterOffers: this.state.allowCounterOffers,
+        allowOfferSplit: this.state.allowCounterOffers,
+      };
+
+      axios
+        .post(
+          "http://localhost:8080/directexchange/api/postoffer/" +
+            decodedToken.sub,
+          data
+        )
+        .then((res) => {
+          if (res.status === 200) alert("Offer has been posted!");
+        })
+        .catch((err) => {
+          console.log(err.response);
+        });
     }
   };
   getCurrencies = () => {
@@ -147,6 +178,7 @@ export class PostOffer extends Component {
                         <input
                           type="number"
                           min="0"
+                          step="0.01"
                           class="form-control"
                           placeholder="Amount"
                           name="amount"

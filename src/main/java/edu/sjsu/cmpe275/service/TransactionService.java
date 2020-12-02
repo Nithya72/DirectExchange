@@ -8,12 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Date;
 import javax.transaction.Transactional;
-import java.time.OffsetDateTime;
 import java.util.*;
 
 @Service
@@ -27,19 +24,24 @@ public class TransactionService {
     private ExchangeOfferRepository exchangeOfferRepository;
 
     public ResponseEntity createNewTransaction(Long source_offer_id,
-                                               List<Long> offer_matches){
+                                               List<Long> offer_matched, float amount){
 
         try {
-            ExchangeOffer sourceOffer = exchangeOfferRepository.findByOfferIdAndStatus(source_offer_id, "active");
+            ExchangeOffer sourceOffer = exchangeOfferRepository.findByOfferIdAndStatus(source_offer_id,"Open");
 
             if (sourceOffer == null) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Your offer has already been completed!");
             }
 
-            List<ExchangeOffer> otheroffers = exchangeOfferRepository.getOtherOffers(offer_matches);
-            if (otheroffers.size() != offer_matches.size()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Other offers are not longer active!");
+            List<ExchangeOffer> otheroffers = exchangeOfferRepository.getOffersDetails(offer_matched);
+            if (otheroffers.size() != offer_matched.size()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Other offers are not longer open!");
             }
+
+            sourceOffer.setRemitAmount(amount);
+            sourceOffer.setFinalAmount(amount * sourceOffer.getExchangeRate());
+            sourceOffer.setStatus("InTransaction");
+
             String trans_id = UUID.randomUUID().toString();
 
             ZonedDateTime expirationDate = ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(10);
@@ -55,7 +57,6 @@ public class TransactionService {
 
             return ResponseEntity.status(HttpStatus.OK).body(newTransaction);
 
-//            return ResponseEntity.status(HttpStatus.OK).body(null);
         }catch (Exception e){
             System.out.println("Error "+e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong! Please try again later!");
@@ -71,12 +72,13 @@ public class TransactionService {
             String currentStatus = transactionsRepository.getTransactionStatus(transaction_id,currentDateTime);
             if(currentStatus==null){
                 transactionsRepository.updateAbortedTransactionStatus("aborted",transaction_id);
-                return ResponseEntity.status(HttpStatus.OK).body("Transaction has been aborted!!");
+                return ResponseEntity.status(HttpStatus.OK).body("message: Transaction has been aborted!!");
             }
             if(!currentStatus.equals("pending")){
                 return ResponseEntity.status(HttpStatus.OK).body("Transaction has been "+currentStatus);
             }
             ExchangeOffer offer = exchangeOfferRepository.findByofferId(offer_id);
+            offer.setStatus("InTransaction");
             List<Transactions> currentTransactions = transactionsRepository.findByTransactionId(transaction_id);
 
             boolean isTransactionComplete = true;
@@ -96,14 +98,12 @@ public class TransactionService {
                 List<Long> offersCompleted = new ArrayList<Long>();
                 for(Transactions transaction:currentTransactions){
                     transaction.setTransactionStatus("completed");
-                    transaction.getOfferDetails().setStatus("fulfilled");
+                    transaction.getOfferDetails().setStatus("Fulfilled");
                     offersCompleted.add(transaction.getOfferDetails().getOfferId());
                 }
                 List<String> otherTransactions = transactionsRepository.findOtherTransactions(offersCompleted,transaction_id);
                 transactionsRepository.updateTransactionStatus("aborted",otherTransactions);
             }
-
-
 
             return ResponseEntity.status(HttpStatus.OK).body("Success");
         }catch (Exception e){

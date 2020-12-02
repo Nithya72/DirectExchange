@@ -26,8 +26,9 @@ public interface ExchangeOfferRepository extends JpaRepository<ExchangeOffer, St
 
     ExchangeOffer findByofferId(long offer_id);
 
-    @Query(value="select * from exchange_offer where offer_id in(:offer_id) and status='active' ", nativeQuery = true)
-    List<ExchangeOffer> getOtherOffers(List<Long> offer_id);
+    @Query(value="select * from exchange_offer where offer_id in(:offer_id) and status='Open' and exp_date>now() ", nativeQuery = true)
+    List<ExchangeOffer> getOffersDetails(List<Long> offer_id);
 
+    @Query(value="select * from exchange_offer where offer_id in=:offer_id and status=:status and exp_date>now() ", nativeQuery = true)
     ExchangeOffer findByOfferIdAndStatus(Long offer_id, String status);
 }

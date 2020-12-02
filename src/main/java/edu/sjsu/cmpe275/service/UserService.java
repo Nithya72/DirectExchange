@@ -52,7 +52,7 @@ public class UserService {
 
         User userWithNickName = userRepository.findByNickName(nickName);
         if (userWithNickName != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("NickName already in use!");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Nick Name already in use!");
         }
         user.setNickName(nickName);
         userRepository.save(user);

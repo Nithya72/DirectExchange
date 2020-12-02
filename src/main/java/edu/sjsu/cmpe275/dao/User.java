@@ -43,8 +43,9 @@ public class User {
     @Column(name = "emailVerificationCode", nullable = false, unique = true)
     private String emailVerificationCode;
 
-
-
+    @JsonIgnore
+    @Column(name = "validUser", columnDefinition = "boolean default 0", nullable = false)
+    private Boolean validUser;
 }
 
 

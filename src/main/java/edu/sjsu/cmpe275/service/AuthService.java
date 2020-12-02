@@ -105,6 +105,7 @@ public class AuthService {
                 : passwordEncoder.encode(password));
         newUser.setRegistrationType(registrationType);
         newUser.setEmailVerified(false);
+        newUser.setValidUser(false);
         newUser.setEmailVerificationCode(emailVerificationCode);
         User savedUser = userRepository.save(newUser);
 

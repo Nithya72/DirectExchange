@@ -2,16 +2,43 @@ import React, { Component } from "react";
 import Header from "../Navigation/Header";
 import SideBar from "../Navigation/SideBar";
 import { currencyList, countries } from "../../helpers/currencies";
+import jwt_decode from "jwt-decode";
+import axios from "axios";
 
 export class BankAccount extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      source_currency: "",
-      destination_currency: "",
-      amount: ""
     };
+    this.getBankAccounts();
+  }
+
+  getBankAccounts = () => {
+    axios.defaults.headers.common["authorization"] =
+      "Bearer " + localStorage.getItem("token");
+    var decodedToken = jwt_decode(localStorage.getItem("token"));
+    console.log("decodedUserId: ", decodedToken.sub);
+
+    axios
+      .get(
+        "http://localhost:8080/directexchange/bank-accounts/" + decodedToken.sub
+      )
+      .then((response) => {
+        console.log("Status Code : ", response.status);
+        if (response.status === 200) {
+          console.log("Fetched All Bank Accounts: ", response.data);
+          this.setState({
+            myBankAccounts: response.data,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log("Here we captured the error: ", error);
+        this.setState({
+          myBankAccounts: null,
+        });
+      });
   }
 
   onChange = (event) => {
@@ -38,10 +65,91 @@ export class BankAccount extends Component {
     return countriesList;
   };
 
+  bankDetails = (myBankAccounts) => {
+    var bankDetailsDisplay = [];
+    myBankAccounts.map((account) => {
+      var bankDetailDisplay = (
+        <div
+          className="col-md-6"
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+        <div className="offerContainer" style={{width:'200%'}}>
+          <br/>
+          <span className="bankDetailsHeading">
+            Bank Name: &emsp; <span className="bankDetails">{account.bankName}</span>
+          </span>
+          <br/>
+          <span className="bankDetailsHeading">
+            Account Number: &emsp; <span className="bankDetails">{account.accountNumber}</span>
+          </span>
+          <br/>
+          <span className="bankDetailsHeading">
+            Owner Name: &emsp; <span className="bankDetails">{account.ownerName}</span>
+          </span>
+          <br/>
+          <span className="bankDetailsHeading">
+            Owner Address: &emsp; <span className="bankDetails">{account.ownerAddress}</span>
+          </span>
+          <br/>
+          <span className="bankDetailsHeading">
+            Primary Cussrncy: &emsp; <span className="bankDetails">{account.primaryCurrency}</span>
+          </span>
+          <br/>
+          <span className="bankDetailsHeading">
+          Country: &emsp; <span className="bankDetails">{account.country}</span>
+          </span>
+          <br/>
+          <span className="bankDetailsHeading">
+          Features: &emsp; <span className="bankDetails">{account.features}</span>
+          </span>
+          <br/>
+        </div>
+      </div>
+      );
+      bankDetailsDisplay.push(bankDetailDisplay);
+    });
+    return bankDetailsDisplay;
+  }
+
+  addBankAccount = (e) => {
+    e.preventDefault();
+    const data = {
+      bankName : this.state.bankName,
+      accountNumber : this.state.accountNumber,
+      ownerName : this.state.ownerName,
+      ownerAddress : this.state.ownerAddress,
+      primaryCurrency : this.state.primaryCurrency,
+      country : this.state.country,
+      features : this.state.features
+    }
+    console.log("Update Profile: ", data);
+
+    axios.defaults.headers.common["authorization"] =
+      "Bearer " + localStorage.getItem("token");
+    var decodedToken = jwt_decode(localStorage.getItem('token'));
+    axios.post('http://localhost:8080/directexchange/bank-accounts/' + decodedToken.sub, data)
+        .then(response => {
+            console.log("Status Code : ", response.status);
+            if (response.status === 200) {
+                console.log("Successfully Added Bank Details: ", response.data);
+                this.setState({
+                    successFlag: true,
+                })
+            }
+        })
+        .catch(error => {
+            console.log("Error ******** :", error);
+            this.setState({
+                successFlag: false,
+                errorFlag:true,
+                msg: error.response.data
+            })
+        });
+      }
   
   render() {
 
-    let countries = null;
+    let countries = null, banksToDisplay = null;
 
     if (
       this.state.primaryCurrency !== "" &&
@@ -50,13 +158,44 @@ export class BankAccount extends Component {
       countries = this.getCountries(this.state.primaryCurrency);
     }
 
+    if(this.state.myBankAccounts) {
+      banksToDisplay = this.bankDetails(this.state.myBankAccounts);
+      if (banksToDisplay.length === 0) {
+        banksToDisplay = (
+          <div
+            className="col-md-6"
+            style={{ display: "flex", justifyContent: "center" }}
+            >
+            <div className="offerContainer" style={{width:'200%'}}>
+              <span className="bankDetailsHeading">
+                No Bank Accounts To Display.
+              </span>
+            </div>
+          </div>
+        );
+      }
+    }
+
+    var message = null;
+        
+    if (this.state.successFlag === true) {
+        message = <div class="alert alert-success" role="alert">Bank Account Added Successfully!</div>
+    } else if (this.state.errorFlag === true) {
+        message = <div class="alert alert-danger" role="alert">{this.state.msg}</div>
+    }
+
+    console.log("msg from java controller: ", this.state.msg);
+
     return (
         <div>
             <Header/>
             <SideBar/>
-
             <div className="content-body">
                 <div className="myContainer">
+                <span className="PageTitle">Bank Account Details</span>
+                <br/>
+                    {banksToDisplay}
+                    <br/>
                     <span className="PageTitle">Bank Account Setup</span>
                     <br/>
                     <br/>
@@ -157,22 +296,27 @@ export class BankAccount extends Component {
                               <select name="features" className="form-control" style = {{fontSize:'20px'}} 
                               value={this.state.features} onChange={this.onChange} required>
                                 <option defaultValue value="">Select option</option>
-                                <option defaultValue value="">Only Send</option>
-                                <option defaultValue value="">Only Receive</option>
-                                <option defaultValue value="">Send and Receive</option>
+                                <option defaultValue value="Only Send">Only Send</option>
+                                <option defaultValue value="Only Receive">Only Receive</option>
+                                <option defaultValue value="Send and Receive">Send and Receive</option>
                               </select>
                               </td>
                             </tr>
                           </table>
                           <br/>
                           <br/>
-                          <button class="btn btn-success myButton">
+                          <button class="btn btn-success myButton"
+                          onClick={this.addBankAccount} type="submit">
                           Submit
                           </button>
                           <br/>
                           <br/>
                           <br/>
+                          {message}
+                          
+                          <br/>
                           </center>
+                          
                         </div>
                       </div>
                     </div>

@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "http-errors": "^1.8.0",
+    "jwt-decode": "^3.1.2",
     "react": "^16.5.0",
     "react-alert": "^7.0.2",
     "react-collapsible": "^2.8.1",
@@ -24,8 +25,7 @@
     "redux-thunk": "^2.3.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
-    "star-based-rating": "^1.5.7",
-    "jwt-decode": "^3.0.0"
+    "star-based-rating": "^1.5.7"
   },
   "eslintConfig": {
     "extends": [

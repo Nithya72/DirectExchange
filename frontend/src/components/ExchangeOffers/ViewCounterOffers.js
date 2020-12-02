@@ -92,6 +92,7 @@ export class ViewCounterOffers extends Component {
                                 counterOfferAmount={offerObj.counterOfferAmount}
                                 senderNickName={offerObj.sender.nickName}
                                 receiverNickName={offerObj.receiver.nickName}
+                                counterOfferId = {offerObj.offerId}
                             />
                         )
                       }) : <div> No Counter Offer Posted Yet! </div>}

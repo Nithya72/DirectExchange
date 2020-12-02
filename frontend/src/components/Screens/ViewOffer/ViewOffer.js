@@ -4,6 +4,8 @@ import axios from 'axios';
 
 import Header from "../../Navigation/Header";
 import SideBar from "../../Navigation/SideBar";
+import jwt_decode from "jwt-decode";
+import {Redirect} from "react-router";
 
 export default class Home extends Component {
   constructor() {
@@ -12,7 +14,11 @@ export default class Home extends Component {
     this.state = {
       message: null,
       showMessage: false,
+      rejectFlag:null,
     };
+
+    this.rejectCounterHandler = this.rejectCounterHandler.bind(this);
+    this.acceptSingleOfferHandler = this.acceptSingleOfferHandler.bind(this);
   }
 
   sendMessage=()=>{
@@ -27,14 +33,106 @@ export default class Home extends Component {
       })
   }
 
+
+  rejectCounterHandler = (e) => {
+    e.preventDefault();
+
+    axios.defaults.headers.common["authorization"] =
+        "Bearer " + localStorage.getItem("token");
+    var decodedToken = jwt_decode(localStorage.getItem("token"));
+
+    var data = {
+      counterOfferId: this.props.location.state.counterOfferId,
+      senderInitialOfferId: this.props.location.state.offerObj.offerId
+    }
+
+    axios.put('http://localhost:8080/directexchange/user/counteroffer', data)
+        .then(response => {
+          console.log("Status Code : ", response.status);
+          if (response.status === 200) {
+            console.log("Posted Counter Offers: ", response.data);
+            this.setState({
+              rejectFlag: true,
+            })
+          }else{
+            this.setState({
+              rejectFlag: false,
+            })
+          }
+        })
+        .catch(error => {
+          console.log("Here we captured the error: ", error)
+          this.setState({
+            rejectFlag: false,
+          })
+        });
+
+
+  }
+
+  acceptSingleOfferHandler(e){
+
+    e.preventDefault();
+
+    axios.defaults.headers.common["authorization"] =
+        "Bearer " + localStorage.getItem("token");
+    var decodedToken = jwt_decode(localStorage.getItem("token"));
+
+    var data = {
+      source_offer: this.props.location.state.receiverOfferObj,
+      offers_matched: this.props.location.state.offerObj,
+      source_offer_amount: this.props.location.state.counterOfferAmount,
+    }
+
+    console.log("counter offer data: ", data);
+
+    // axios.post('http://localhost:8080/directexchange/api/transactions/' + decodedToken.sub, data)
+    //     .then(response => {
+    //       console.log("Status Code : ", response.status);
+    //       if (response.status === 200) {
+    //         console.log("Posted Counter Offers: ", response.data);
+    //         this.setState({
+    //           transactionFlag: true,
+    //         })
+    //       }else{
+    //         this.setState({
+    //           transactionFlag: false,
+    //           transactionMsg: response.data
+    //         })
+    //       }
+    //     })
+    //     .catch(error => {
+    //       console.log("Here we captured the error: ", error)
+    //       this.setState({
+    //         transactionFlag: false,
+    //       })
+    //     });
+
+  }
+
+
   render() {
     let OfferObj = this.props.location.state.offerObj;
     let nickName = this.props.location.state.nickName;
     let counterOfferAmount = this.props.location.state.counterOfferAmount;
-    let senderOfferObj = this.props.location.state.senderOfferObj;
-    console.log(this.state);
+    let receiverOfferObj = this.props.location.state.receiverOfferObj;
+    let counterOfferId = this.props.location.state.counterOfferId;
+
+    console.log("counterOfferId: ", counterOfferId);
+
+    var errorMsg = "";
+    var redirectVar = "";
+
+    if(this.state.rejectFlag == false){
+      errorMsg = <div style={{color:"red"}}>Couldn't reject counter offer, Try after sometime.</div>
+    }else if(this.state.rejectFlag){
+      redirectVar = <Redirect to={{ pathname: "/viewCounterOffers"}} />
+    }
+
+
     return (
       <div>
+        {redirectVar}
         <Header />
         <SideBar />
 
@@ -146,18 +244,27 @@ export default class Home extends Component {
                     </div>
 
                     <div style={{ display: "flex", justifyContent: "center" }}>
-                      <Link
-                        to={{
-                          pathname: "/ViewOffer",
-                          state: { offerObj: this.props.offerObj },
-                        }}
-                        className="btn btn-success myButton"
-                        style={{ marginRight: "50px" }}
+                      <button
+                          type="submit"
+                          className="post-counter-offer-custom-button"
+                          style={{ marginRight:"50px", marginTop:"0px", height:"45px" }}
+                          onClick={this.acceptSingleOfferHandler}
                       >
                         Accept Offer{" "}
-                      </Link>
+                      </button>
 
-                      {OfferObj.counterOfferFlag ? (
+                      { counterOfferId && counterOfferId.length !== 0 ?
+                      <button
+                          type="submit"
+                          className="post-counter-offer-custom-button"
+                          style={{ marginRight:"50px", marginTop:"0px", height:"45px" }}
+                          onClick={this.rejectCounterHandler}
+                      >
+                        Reject Offer
+                      </button>
+                      : "" }
+
+                      {(OfferObj.counterOfferFlag && !counterOfferId) ? (
                         <Link
                           to={{
                             pathname: "/ViewOffer",
@@ -171,6 +278,8 @@ export default class Home extends Component {
                         ""
                       )}
                     </div>
+                    <br />
+                    <div style={{textAlign:"center"}}>{errorMsg}</div>
                   </div>
                 </div>
               </div>

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,4 +77,19 @@ import java.util.Map;
     return counterOfferService.getCounterOffers(userId);
   }
 
+
+  @PutMapping(produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE})
+  public ResponseEntity<?> rejectCounterOffers(@RequestBody JSONObject object) {
+
+    try {
+      Long counterOfferId = Long.parseLong(String.valueOf(object.get("counterOfferId")));
+      Long senderInitialOfferId = Long.parseLong(String.valueOf(object.get("senderInitialOfferId")));
+
+      return counterOfferService.rejectCounterOffer(counterOfferId, senderInitialOfferId);
+    }catch(Exception e){
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Couldnt reject offer, try after soemtime");
+    }
+
+
+  }
 }

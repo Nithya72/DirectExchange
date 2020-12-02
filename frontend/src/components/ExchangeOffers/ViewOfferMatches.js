@@ -5,6 +5,7 @@ import Header from "../Navigation/Header";
 import SideBar from "../Navigation/SideBar";
 import Collapsible from 'react-collapsible';
 import jwt_decode from "jwt-decode";
+import {Redirect} from "react-router";
 
 export class ViewOfferMatches extends Component {
   constructor(props) {
@@ -20,7 +21,9 @@ export class ViewOfferMatches extends Component {
       split_count_offer_amount: 0,
       counter_error: null,
       postCounterOfferFlag: false,
-      postCounterMsg: ""
+      postCounterMsg: "",
+      transactionFlag: null,
+      transactionMsg: ""
     }
      this.counterOfferAmountHandler = this.counterOfferAmountHandler.bind(this);
     // this.postSingleCounterHandler = this.postSingleCounterHandler.bind(this);
@@ -46,8 +49,87 @@ export class ViewOfferMatches extends Component {
        counter_error: "The amount "+e.target.value+" is not within valid range."
      })
    }
+  }
+
+  acceptSplitOfferHandler(e, offer1, offer2){
+    e.preventDefault();
+
+    axios.defaults.headers.common["authorization"] =
+        "Bearer " + localStorage.getItem("token");
+    var decodedToken = jwt_decode(localStorage.getItem("token"));
+
+    var data = {
+      source_offer: this.state.offer.offerId,
+      offers_matched1: offer1,
+      offers_matched2: offer2,
+      source_offer_amount: this.state.offer.remitAmount
+    }
+
+    axios.post('http://localhost:8080/directexchange/api/transactions/' + decodedToken.sub, data)
+        .then(response => {
+          console.log("Status Code : ", response.status);
+          if (response.status === 200) {
+            console.log("Posted Counter Offers: ", response.data);
+            this.setState({
+              transactionFlag: true,
+            })
+          }else{
+            this.setState({
+              transactionFlag: false,
+              transactionMsg: response.data
+            })
+          }
+        })
+        .catch(error => {
+          console.log("Here we captured the error: ", error)
+          this.setState({
+            transactionFlag: false,
+          })
+        });
 
   }
+
+
+
+  acceptSingleOfferHandler(e, offer){
+
+    e.preventDefault();
+    console.log("offer: accept offer: ", offer);
+
+    axios.defaults.headers.common["authorization"] =
+        "Bearer " + localStorage.getItem("token");
+    var decodedToken = jwt_decode(localStorage.getItem("token"));
+
+    var data = {
+      source_offer: this.state.offer.offerId,
+      offers_matched1: offer,
+      source_offer_amount: this.state.offer.remitAmount
+    }
+
+   axios.post('http://localhost:8080/directexchange/api/transactions/' + decodedToken.sub, data)
+        .then(response => {
+          console.log("Status Code : ", response.status);
+          if (response.status === 200) {
+            console.log("Posted Counter Offers: ", response.data);
+            this.setState({
+              transactionFlag: true,
+            })
+          }else{
+            this.setState({
+              transactionFlag: false,
+              transactionMsg: response.data
+            })
+          }
+        })
+        .catch(error => {
+          console.log("Here we captured the error: ", error)
+          this.setState({
+            transactionFlag: false,
+          })
+        });
+
+  }
+
 
   getSingleMatches = (e) => {
     console.log("Inside get single matches: ", e);
@@ -55,12 +137,13 @@ export class ViewOfferMatches extends Component {
     let userId = e.user.userId;
     let remitAmount = e.finalAmount;
     let srcCurrency = e.destCurrency;
+    let destCurrency = e.srcCurrency;
 
-    axios.defaults.headers.common['authorization']= 'Bearer ' + localStorage.getItem('token');
+    axios.defaults.headers.common['authorization'] = 'Bearer ' + localStorage.getItem('token');
     var decodedToken = jwt_decode(localStorage.getItem('token'));
     console.log("decodedUserId: ", decodedToken.sub);
 
-    axios.get('http://localhost:8080/directexchange/user/allmatches/' + userId + "/" + remitAmount + "/" + srcCurrency)
+    axios.get('http://localhost:8080/directexchange/user/allmatches/' + userId + "/" + remitAmount + "/" + srcCurrency + "/" +destCurrency)
         .then(response => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -71,18 +154,16 @@ export class ViewOfferMatches extends Component {
               allSplitMatches: response.data.splitMatches
             })
           }
-        })
-        .catch(error => {
-          console.log("Here we captured the error: ", error)
-          this.setState({
-            successFlag: false,
-            allSingleMatches: null,
-            allSplitMatches: null
-          })
-        });
+        }) .catch(error => {
+              console.log("Here we captured the error: ", error)
+              this.setState({
+                successFlag: false,
+                allSingleMatches: null,
+                allSplitMatches: null
+              })
+            });
+
   }
-
-
   postSingleCounterHandler = (e, offer) => {
     e.preventDefault();
 
@@ -125,9 +206,21 @@ export class ViewOfferMatches extends Component {
   render() {
 
     // console.log("state data view all offers: ", this.state);
+    var redirectVar = "";
+    var errorMsg = "";
+    if(this.state.transactionFlag){
+      redirectVar = <Redirect to={{ pathname: "/transact"}} />
+    }
+
+    if(this.state.transactionFlag == false){
+      errorMsg = <div style={{color:"red"}}>Transaction could not be completed. Please Try after sometime</div>
+    }
+
+
 
     return (
         <div>
+          {redirectVar}
           <Header/>
           <SideBar/>
           <div className="content-body">
@@ -152,19 +245,11 @@ export class ViewOfferMatches extends Component {
                         </th>
                         <th>
                           <div>SOURCE</div>
-                          <div>CURRENCY</div>
+                          <div>OFFER</div>
                         </th>
                         <th>
-                          <div>REMIT</div>
                           <div>AMOUNT</div>
-                        </th>
-                        <th>
-                          <div>DEST</div>
-                          <div>CURRENCY</div>
-                        </th>
-                        <th>
-                          <div>FINAL</div>
-                          <div>AMOUNT</div>
+                          <div>TO SEND</div>
                         </th>
                         <th>
                           <div>EXPIRATION</div>
@@ -182,16 +267,10 @@ export class ViewOfferMatches extends Component {
                           {this.state.offer.user.nickName}
                         </td>
                         <td>
-                          {this.state.offer.srcCurrency}
+                          {this.state.offer.srcCurrency} {this.state.offer.remitAmount}
                         </td>
                         <td>
-                          {this.state.offer.remitAmount}
-                        </td>
-                        <td>
-                          {this.state.offer.destCurrency}
-                        </td>
-                        <td>
-                          {this.state.offer.finalAmount}
+                          {this.state.offer.destCurrency} {this.state.offer.finalAmount}
                         </td>
                         <td>
                           {this.state.offer.expDate.substring(0, 10)}
@@ -202,6 +281,8 @@ export class ViewOfferMatches extends Component {
                       </tr>
                     </tbody>
                   </table>
+                    <br/>
+                        {errorMsg}
                       </div>
                     </div>
                   </div>
@@ -212,9 +293,7 @@ export class ViewOfferMatches extends Component {
                   <Collapsible trigger="View Single Matches"
                                triggerClassName="view-collapsible-tab view-single-match-collapsible-tab"
                                triggerOpenedClassName="view-collapsible-tab view-single-match-collapsible-tab">
-                    <div className="card-header">
-                      <h4 className="card-title" style={{fontSize: "28px"}}>View All Matching Offers</h4>
-                    </div>
+
                     <div className="card-body pt-0">
                       <div className="transaction-table">
                         <div className="table-responsive">
@@ -228,8 +307,7 @@ export class ViewOfferMatches extends Component {
                                       <thead>
                                         <tr>
                                           <th>
-                                            <div>USER</div>
-                                            <div>NAME</div>
+                                            <div>USER NAME</div>
                                           </th>
                                           <th>
                                             <div>AMOUNT</div>
@@ -237,19 +315,11 @@ export class ViewOfferMatches extends Component {
                                           </th>
                                           <th>
                                             <div>SOURCE</div>
-                                            <div>CURRENCY</div>
+                                            <div>OFFER</div>
                                           </th>
                                           <th>
-                                            <div>REMIT</div>
                                             <div>AMOUNT</div>
-                                          </th>
-                                          <th>
-                                            <div>DEST</div>
-                                            <div>CURRENCY</div>
-                                          </th>
-                                          <th>
-                                            <div>FINAL</div>
-                                            <div>AMOUNT</div>
+                                            <div>TO SEND</div>
                                           </th>
                                           <th>
                                             <div>EXPIRATION</div>
@@ -270,19 +340,11 @@ export class ViewOfferMatches extends Component {
                                             <td className="text-success">+{(offer.remitAmount - this.state.offer.finalAmount)} {offer.srcCurrency}</td> :
                                             <td className="text-danger">{(offer.remitAmount - this.state.offer.finalAmount)} {offer.srcCurrency}</td>}
                                         <td>
-                                          {offer.srcCurrency}
+                                          {offer.srcCurrency} {offer.remitAmount}
                                         </td>
                                         <td>
-                                          {offer.remitAmount}
+                                          {offer.destCurrency} {offer.finalAmount}
                                         </td>
-                                        <td>
-                                          {offer.destCurrency}
-                                        </td>
-
-                                        <td>
-                                          {offer.finalAmount}
-                                        </td>
-
                                         <td>
                                           {offer.expDate.substring(0, 10)}
                                         </td>
@@ -295,15 +357,19 @@ export class ViewOfferMatches extends Component {
                                     <div className="buy-sell-widget">
                                       <ul className="nav nav-tabs">
                                         <button className="counter-offer-button"
-                                                data-toggle="modal"
-                                                data-target="#newOfferModalPopup">
+                                                // data-toggle="modal"
+                                                // data-target="#newOfferModalPopup"
+                                                onClick={(e) => this.acceptSingleOfferHandler(e, offer)}
+
+                                        >
                                           Accept
                                         </button>
                                         {(offer.counterOfferFlag.toString() === "true" ?
                                             <div>
                                               <button className="counter-offer-button"
                                                       data-toggle="modal"
-                                                      data-target="#newOfferModalPopup">
+                                                      data-target="#newOfferModalPopup"
+                                              >
                                                 Counter
                                               </button>
                                               <div
@@ -341,7 +407,7 @@ export class ViewOfferMatches extends Component {
                                                           <h4 className="main-title">Counter
                                                             Offer
                                                             Details</h4>
-
+                                              
                                                           <div
                                                               className="form-group">
                                                             <br/>
@@ -375,7 +441,7 @@ export class ViewOfferMatches extends Component {
                                                             <div style={{color:"red"}}>{this.state.counter_error}</div>
                                                             { this.state.postCounterOfferFlag ? <div style={{color:"green"}}>{this.state.postCounterMsg}</div> : <div style={{color:"red"}}>{this.state.postCounterMsg}</div> }
                                                           </div>
-
+                                              
                                                         </div>
                                                       {/*</form>*/}
                                                     </div>
@@ -393,6 +459,9 @@ export class ViewOfferMatches extends Component {
                     </div>
 
                   </Collapsible>
+
+                  { this.state.offer.splitOfferFlag ?
+
                   <Collapsible trigger="View Split Matches"
                                triggerClassName="view-collapsible-tab view-split-match-collapsible-tab"
                                triggerOpenedClassName="view-collapsible-tab view-split-match-collapsible-tab">
@@ -412,28 +481,19 @@ export class ViewOfferMatches extends Component {
                                       <thead>
                                         <tr>
                                           <th>
-                                            <div>USER</div>
-                                            <div>NAME</div>
+                                            <div>USER NAME</div>
                                           </th>
                                           <th>
-                                            <div>AMOUNT</div>
+                                            <div>TOTAL</div>
                                             <div>DIFFERENCE</div>
                                           </th>
                                           <th>
                                             <div>SOURCE</div>
-                                            <div>CURRENCY</div>
+                                            <div>OFFER</div>
                                           </th>
                                           <th>
-                                            <div>REMIT</div>
                                             <div>AMOUNT</div>
-                                          </th>
-                                          <th>
-                                            <div>DEST</div>
-                                            <div>CURRENCY</div>
-                                          </th>
-                                          <th>
-                                            <div>FINAL</div>
-                                            <div>AMOUNT</div>
+                                            <div>TO SEND</div>
                                           </th>
                                           <th>
                                             <div>EXPIRATION</div>
@@ -450,23 +510,21 @@ export class ViewOfferMatches extends Component {
                                         <td>
                                           {offer[0].user.nickName}
                                         </td>
-                                        {(parseInt(offer[0].remitAmount) - parseInt(this.state.offer.finalAmount)) >= 0 ?
-                                            <td className="text-success">+{(offer[0].remitAmount - this.state.offer.finalAmount)} {offer[0].srcCurrency}</td> :
-                                            <td className="text-danger">{(offer[0].remitAmount - this.state.offer.finalAmount)} {offer[0].srcCurrency}</td>}
+
+                                        { (offer[0].remitAmount >= offer[1].remitAmount) ?
+
+                                        (parseInt(offer[0].remitAmount + offer[1].remitAmount) - parseInt(this.state.offer.finalAmount)) >= 0 ?
+                                            <td className="text-success">+{((offer[0].remitAmount + offer[1].remitAmount) - this.state.offer.finalAmount)} {offer[0].srcCurrency}</td> :
+                                            <td className="text-danger">{((offer[0].remitAmount + offer[1].remitAmount) - this.state.offer.finalAmount)} {offer[0].srcCurrency}</td>
+                                            : <td><div style={{color:"#f6f8fe"}}>  None </div></td>
+                                        }
 
                                         <td>
-                                          {offer[0].srcCurrency}
-                                        </td>
-                                        <td>
-                                          {offer[0].remitAmount}
-                                        </td>
-
-                                        <td>
-                                          {offer[0].destCurrency}
+                                          {offer[0].srcCurrency}  {offer[0].remitAmount}
                                         </td>
 
                                         <td>
-                                          {offer[0].finalAmount}
+                                          {offer[0].destCurrency} {offer[0].finalAmount}
                                         </td>
 
                                         <td>
@@ -481,23 +539,20 @@ export class ViewOfferMatches extends Component {
                                         <td>
                                           {offer[1].user.nickName}
                                         </td>
-                                        {(parseInt(offer[1].remitAmount) - parseInt(this.state.offer.finalAmount)) >= 0 ?
-                                            <td className="text-success">+{(offer[1].remitAmount - this.state.offer.finalAmount)} {offer[1].srcCurrency}</td> :
-                                            <td className="text-danger">{(offer[1].remitAmount - this.state.offer.finalAmount)} {offer[1].srcCurrency}</td>}
+
+                                        { (offer[1].remitAmount > offer[0].remitAmount) ?
+
+                                            (parseInt(offer[0].remitAmount + offer[1].remitAmount) - parseInt(this.state.offer.finalAmount)) >= 0 ?
+                                                <td className="text-success">+{((offer[0].remitAmount + offer[1].remitAmount) - this.state.offer.finalAmount)} {offer[0].srcCurrency}</td> :
+                                                <td className="text-danger">{((offer[0].remitAmount + offer[1].remitAmount) - this.state.offer.finalAmount)} {offer[0].srcCurrency}</td>
+                                            : <td><div style={{color:"#f6f8fe"}}>  None </div></td>
+                                        }
 
                                         <td>
-                                          {offer[1].srcCurrency}
+                                          {offer[1].srcCurrency}  {offer[1].remitAmount}
                                         </td>
                                         <td>
-                                          {offer[1].remitAmount}
-                                        </td>
-
-                                        <td>
-                                          {offer[1].destCurrency}
-                                        </td>
-
-                                        <td>
-                                          {offer[1].finalAmount}
+                                          {offer[1].destCurrency}   {offer[1].finalAmount}
                                         </td>
 
                                         <td>
@@ -512,11 +567,9 @@ export class ViewOfferMatches extends Component {
                                     <div className="buy-sell-widget">
                                       <ul className="nav nav-tabs">
                                         <button className="counter-offer-button"
-                                                data-toggle="modal"
-                                                data-target="#newOfferModalPopup">
+                                                onClick={(e) => this.acceptSplitOfferHandler(e, offer[0], offer[1])}>
                                           Accept
                                         </button>
-
 
                                         {(offer[0].counterOfferFlag.toString() === "true" ?
                                             <div>
@@ -605,11 +658,8 @@ export class ViewOfferMatches extends Component {
                         </div>
                       </div>
                     </div>
-
-
                   </Collapsible>
-
-
+                    : "" }
                 </div>
               </div>
             </div>

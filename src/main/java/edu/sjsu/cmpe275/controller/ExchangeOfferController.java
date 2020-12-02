@@ -38,22 +38,25 @@ public class ExchangeOfferController {
     }
     @PreAuthorize("#userId == authentication.principal")
     @GetMapping(value = "/singlematch/{userId}/{remitAmount}/{srcCurrency}", produces = {"application/json"})
-    public ResponseEntity<?> singleMatches(@PathVariable(value = "userId") String userId, @PathVariable(value = "remitAmount") String remitAmount,@PathVariable(value = "srcCurrency") String srcCurrency) {
+    public ResponseEntity<?> singleMatches(@PathVariable(value = "userId") String userId, @PathVariable(value = "remitAmount") String remitAmount,@PathVariable(value = "srcCurrency") String srcCurrency, @PathVariable(value = "destCurrency") String destCurrency) {
 
         Long userId1 = Long.parseLong(userId);
         Integer remitAmount1 = Integer.parseInt(remitAmount);
 
-        return exchangeOfferService.getSingleMatches(userId1, remitAmount1, srcCurrency);
+        return exchangeOfferService.getSingleMatches(userId1, remitAmount1, srcCurrency, destCurrency);
     }
 
     @PreAuthorize("#userId == authentication.principal")
-    @GetMapping(value = "/allmatches/{userId}/{remitAmount}/{srcCurrency}", produces = {"application/json"})
-    public ResponseEntity<?> allmatches(@PathVariable(value = "userId") String userId, @PathVariable(value = "remitAmount") String remitAmount,@PathVariable(value = "srcCurrency") String srcCurrency) {
+    @GetMapping(value = "/allmatches/{userId}/{remitAmount}/{srcCurrency}/{destCurrency}", produces = {"application/json"})
+    public ResponseEntity<?> allmatches(@PathVariable(value = "userId") String userId, @PathVariable(value = "remitAmount") String remitAmount, @PathVariable(value = "srcCurrency") String srcCurrency, @PathVariable(value = "destCurrency") String destCurrency) {
 
         Long userId1 = Long.parseLong(userId);
         Integer remitAmount1 = Integer.parseInt(remitAmount);
 
-        return exchangeOfferService.getAllMatches(userId1, remitAmount1, srcCurrency);
+
+        log.info("all matches controller: ", userId, "-----", remitAmount ,"-----",  srcCurrency);
+
+        return exchangeOfferService.getAllMatches(userId1, remitAmount1, srcCurrency, destCurrency);
     }
 
 }

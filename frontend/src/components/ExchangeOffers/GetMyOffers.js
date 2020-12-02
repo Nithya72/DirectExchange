@@ -103,7 +103,10 @@ export class GetMyOffers extends Component {
                       destCurrency={offer.destCurrency}
                       destCountry={offer.destCountry}
                       finalAmount={offer.finalAmount}
+                      status = {offer.status}
                       getAllOffers={this.getAllOffers}
+                      splitOfferFlag={offer.splitOfferFlag}
+                      counterOfferFlag={offer.counterOfferFlag}
                     />
                   ))
                 ) : (

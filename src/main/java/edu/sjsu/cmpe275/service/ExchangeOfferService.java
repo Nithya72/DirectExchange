@@ -73,9 +73,9 @@ public class ExchangeOfferService {
 
 //Expiration date check - time zone??
 
-  public ResponseEntity<?> getSingleMatches(Long userId, Integer remitAmount, String srcCurrency) {
+  public ResponseEntity<?> getSingleMatches(Long userId, Integer remitAmount, String srcCurrency, String destCurrency) {
     try {
-      List<ExchangeOffer> exchangeOffersList = exchangeOfferRepository.findSingleMatches(userId, remitAmount, srcCurrency); //LocalDate.now()
+      List<ExchangeOffer> exchangeOffersList = exchangeOfferRepository.findSingleMatches(userId, remitAmount, srcCurrency, destCurrency); //LocalDate.now()
 
       if (exchangeOffersList == null) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("You haven't posted any offers yet!");
@@ -87,11 +87,15 @@ public class ExchangeOfferService {
   }
 
 
-  public ResponseEntity<?> getAllMatches(Long userId, Integer remitAmount, String srcCurrency) {
+  public ResponseEntity<?> getAllMatches(Long userId, Integer remitAmount, String srcCurrency, String destCurrency) {
 
     try {
-      List<ExchangeOffer> singleMatches = exchangeOfferRepository.findSingleMatches(userId, remitAmount, srcCurrency); //LocalDate.now()
-      List<ExchangeOffer> exchangeOffersList = exchangeOfferRepository.getOffersBySrcCurrency(userId, srcCurrency);
+      List<ExchangeOffer> singleMatches = exchangeOfferRepository.findSingleMatches(userId, remitAmount, srcCurrency, destCurrency); //LocalDate.now()
+      log.info("srcCurrency: ", srcCurrency);
+
+      List<ExchangeOffer> exchangeOffersList = exchangeOfferRepository.getOffersBySrcCurrency(userId, srcCurrency, destCurrency);
+
+      log.info("exchangeOffersList: ", exchangeOffersList);
 
       List<List<ExchangeOffer>> splitMatches = fetchSplitMatches(exchangeOffersList, remitAmount);
 

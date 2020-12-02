@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe275.service;
 
+import edu.sjsu.cmpe275.config.AppConfig;
 import edu.sjsu.cmpe275.dao.CounterOffer;
 import edu.sjsu.cmpe275.dao.ExchangeOffer;
 import edu.sjsu.cmpe275.dao.User;
@@ -32,6 +33,8 @@ public class CounterOfferService {
   @Autowired
   private ExchangeOfferRepository exchangeOfferRepository;
 
+  @Autowired
+  private EmailService emailService;
 
   /**
    * @param status
@@ -78,6 +81,7 @@ public class CounterOfferService {
       eo.setStatus("CounterMade");
 
       exchangeOfferRepository.save(eo);
+      emailService.sendCounterOfferEmail(senderOffer.getUser().getNickName(), receiverOffer.getUser().getEmailId(), receiverOffer.getUser().getNickName(), receiverOffer.getSrcCurrency(), receiverOffer.getRemitAmount());
 
       return ResponseEntity.status(HttpStatus.OK).body("Counter offer sent successfully");
 
@@ -99,5 +103,20 @@ public class CounterOfferService {
     } catch (Exception exception) {
       return generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, null);
     }
+  }
+
+
+
+  public ResponseEntity<?> rejectCounterOffer(Long counterOfferId, Long senderInitialOfferId){
+    try {
+        counterOfferRepository.updateCounterOfferStatus(counterOfferId, "rejected");
+        exchangeOfferRepository.updateExchangeOfferStatus(senderInitialOfferId, "Open");
+
+        return ResponseEntity.status(HttpStatus.OK).body("Counter offer rejected successfully");
+    }
+    catch(Exception exception){
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Couldn't reject counter offer. Try after sometime.");
+    }
+
   }
 }

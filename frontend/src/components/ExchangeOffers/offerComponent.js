@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 export default class Home extends Component {
   render() {
+
+    console.log("offerComponent: ", this.props);
     return (
       <div
         className="col-md-6"
@@ -45,10 +47,13 @@ export default class Home extends Component {
               </div>
             </div>
           </div>
-          <button
-            className="customBtn"
-            onClick={() => this.props.getAllOffers(this.props.offer)}
-          >Find Matching Offers</button>
+
+          {(this.props.status === "Open") ?
+              <button
+              className="customBtn"
+              onClick={() => this.props.getAllOffers(this.props.offer)}
+          >Find Matching Offers</button> : ""}
+
         </div>
       </div>
     );

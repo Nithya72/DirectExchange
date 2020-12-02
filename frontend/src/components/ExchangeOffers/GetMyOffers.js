@@ -6,6 +6,7 @@ import Header from "../Navigation/Header";
 import SideBar from "../Navigation/SideBar";
 import PostOffer from "./PostOffer";
 import jwt_decode from "jwt-decode";
+import OfferComponent from "./offerComponent.js";
 
 export class GetMyOffers extends Component {
   constructor(props) {
@@ -25,12 +26,15 @@ export class GetMyOffers extends Component {
   componentDidMount() {
     // axios.defaults.withCredentials = true;
 
-    axios.defaults.headers.common['authorization']= 'Bearer ' + localStorage.getItem('token');
-    var decodedToken = jwt_decode(localStorage.getItem('token'));
+    axios.defaults.headers.common["authorization"] =
+      "Bearer " + localStorage.getItem("token");
+    var decodedToken = jwt_decode(localStorage.getItem("token"));
     console.log("decodedUserId: ", decodedToken.sub);
 
     axios
-      .get("http://localhost:8080/directexchange/user/myoffer/"+decodedToken.sub)
+      .get(
+        "http://localhost:8080/directexchange/user/myoffer/" + decodedToken.sub
+      )
       .then((response) => {
         console.log("Status Code : ", response.status);
         if (response.status === 200) {
@@ -84,48 +88,37 @@ export class GetMyOffers extends Component {
           <div className="myContainer">
             <span className="PageTitle">Get My Offers</span>
             <PostOffer />
-            {this.state.myOffers && this.state.myOffers.length !== 0 ? (
-              this.state.myOffers.map((offer) => (
-                <table>
-                  <tr>
-                    <td>SOURCE COUNTRY:</td>
-                    <td> {offer.srcCurrency}</td>
-                  </tr>
-                  <tr>
-                    <td>REMIT AMOUNT:</td>
-                    <td> {offer.remitAmount}</td>
-                  </tr>
-                  <tr>
-                    <td>DESTINATION CURRENCY:</td>
-                    <td> {offer.destCurrency}</td>
-                  </tr>
-                  <tr>
-                    <td>COUNTER OFFER FLAG:</td>
-                    <td> {offer.counterOfferFlag.toString()}</td>
-                  </tr>
-                  <tr>
-                    <td>SPLIT OFFER FLAG:</td>
-                    <td> {offer.splitOfferFlag.toString()}</td>
-                  </tr>
-                  <tr>
-                    <td>EXPIRATION DATE:</td>
-                    <td> {offer.expDate.toString().substring(0, 10)}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <input
-                        type="button"
-                        value="Find Matching Offers"
-                        onClick={() => this.getAllOffers(offer)}
-                      />
-                    </td>
-                  </tr>
-                  <br />
-                </table>
-              ))
-            ) : (
-              <div> No offers yet!</div>
-            )}
+
+            <div className="col-xl-9" style={{ maxWidth: "900px" }}>
+              <div className="row">
+                {this.state.myOffers && this.state.myOffers.length !== 0 ? (
+                  this.state.myOffers.map((offer) => (
+                    <OfferComponent
+                      offer={offer}
+                      key={offer.offerId}
+                      expDate={offer.expDate}
+                      srcCountry={offer.srcCountry}
+                      srcCurrency={offer.srcCurrency}
+                      remitAmount={offer.remitAmount}
+                      destCurrency={offer.destCurrency}
+                      destCountry={offer.destCountry}
+                      finalAmount={offer.finalAmount}
+                      getAllOffers={this.getAllOffers}
+                    />
+                  ))
+                ) : (
+                  <div className="preloading">
+                    <div id="preloader">
+                      <div className="sk-three-bounce">
+                        <div className="sk-child sk-bounce1" />
+                        <div className="sk-child sk-bounce2" />
+                        <div className="sk-child sk-bounce3" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@
     Email: quixlab.com@gmail.com
 
 
-    Table of Content: 
+    Table of Content:
 
     1. Abstract
     2. Bootstrap CSS
@@ -13,7 +13,7 @@
     4. Layout
     5. Component
     6. Pages
-    
+
 */
 /*!
  * Bootstrap v4.3.1 (https://getbootstrap.com/)
@@ -7812,21 +7812,20 @@ strong {
   [class*="hero-ani-"] {
     display: none !important; } }
 
-#preloader {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  background-color: #fff;
-  z-index: 999999999; }
-
 .sk-three-bounce {
   margin: 0;
   width: 100%;
   height: 100%;
   text-align: center;
   background-color: white; }
+
+.preloading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 60vh;
+}
 
 .sk-three-bounce .sk-child {
   position: relative;

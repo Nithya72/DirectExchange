@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import axios from "axios";
+import jwt_decode from "jwt-decode";
 
 import Header from "../../Navigation/Header";
 import SideBar from "../../Navigation/SideBar";
@@ -6,143 +8,114 @@ import SideBar from "../../Navigation/SideBar";
 import Automatch from "../../Automatch/automatch.js";
 import OfferComponent from "./offerComponent";
 
-var data = [
-    {
-        "offerId": 1,
-        "srcCountry": "United States",
-        "srcCurrency": "USD",
-        "remitAmount": 1000,
-        "destCountry": "India",
-        "destCurrency": "INR",
-        "exchangeRate": 74,
-        "finalAmount": 74000,
-        "expDate": "2020-12-31T00:00:00.000+00:00",
-        "counterOfferFlag": true,
-        "splitOfferFlag": true,
-        "userId": 8
-    },
-    {
-        "offerId": 3,
-        "srcCountry": "United States",
-        "srcCurrency": "USD",
-        "remitAmount": 500,
-        "destCountry": "India",
-        "destCurrency": "INR",
-        "exchangeRate": 74,
-        "finalAmount": 37000,
-        "expDate": "2020-12-31T00:00:00.000+00:00",
-        "counterOfferFlag": true,
-        "splitOfferFlag": true,
-        "userId": 8
-    },
-    {
-        "offerId": 16,
-        "srcCountry": "United States",
-        "srcCurrency": "USD",
-        "remitAmount": 1014,
-        "destCountry": "India",
-        "destCurrency": "INR",
-        "exchangeRate": 74,
-        "finalAmount": 75000,
-        "expDate": "2020-12-14T00:00:00.000+00:00",
-        "counterOfferFlag": true,
-        "splitOfferFlag": true,
-        "userId": 8
-    },
-    {
-        "offerId": 4,
-        "srcCountry": "United States",
-        "srcCurrency": "USD",
-        "remitAmount": 1000,
-        "destCountry": "India",
-        "destCurrency": "INR",
-        "exchangeRate": 74,
-        "finalAmount": 74000,
-        "expDate": "2020-11-30T00:00:00.000+00:00",
-        "counterOfferFlag": true,
-        "splitOfferFlag": false,
-        "userId": 8
-    },
-    {
-        "offerId": 2,
-        "srcCountry": "United States",
-        "srcCurrency": "USD",
-        "remitAmount": 1000,
-        "destCountry": "India",
-        "destCurrency": "INR",
-        "exchangeRate": 74,
-        "finalAmount": 74000,
-        "expDate": "2020-10-31T00:00:00.000+00:00",
-        "counterOfferFlag": true,
-        "splitOfferFlag": true,
-        "userId": 8
-    }
-];
 export default class Home extends Component {
-  
-  constructor(){
-		super();
+  constructor() {
+    super();
 
-		this.state={
-      srcCountry:null,
+    this.state = {
+      srcCountry: null,
       srcCurrency: null,
-      srcPriceStart:null,
-      srcPriceEnd:null,
-      destCountry:null,
-      destCurrency:null,
-      destPriceStart:null,
-      destPriceEnd:null,
-		};
+      srcPriceStart: null,
+      srcPriceEnd: null,
+      destCountry: null,
+      destCurrency: null,
+      destPriceStart: null,
+      destPriceEnd: null,
+      dataFetched: {},
+      isLoading: true,
+    };
   }
 
-  filterUpdate=(event,type)=>{
-    let keyword = event.target.value;
-    if(keyword === "" || keyword === "true") keyword = null;
-		this.setState({[type]: keyword})
-	}
-  
-  render() {
-		const items = data.filter((offerObj)=>{
-      if(this.state.srcCountry == null) return offerObj
-      else if(offerObj.srcCountry.includes(this.state.srcCountry)) return offerObj
-    }).filter((offerObj)=>{
-      if(this.state.srcCurrency == null) return offerObj
-      else if(offerObj.srcCurrency.includes(this.state.srcCurrency)) return offerObj
-    }).filter((offerObj)=>{
-      if(this.state.srcPriceStart == null) return offerObj
-      else if(offerObj.remitAmount>=(this.state.srcPriceStart)) return offerObj
-    }).filter((offerObj)=>{
-      if(this.state.srcPriceEnd == null) return offerObj
-      else if(offerObj.remitAmount<=(this.state.srcPriceEnd)) return offerObj
-    }).filter((offerObj)=>{
-      if(this.state.destCountry == null) return offerObj
-      else if(offerObj.destCountry.includes(this.state.destCountry)) return offerObj
-    }).filter((offerObj)=>{
-      if(this.state.destCurrency == null) return offerObj
-      else if(offerObj.destCurrency.includes(this.state.destCurrency)) return offerObj
-    }).filter((offerObj)=>{
-      if(this.state.destCurrency == null) return offerObj
-      else if(offerObj.destCurrency.includes(this.state.destCurrency)) return offerObj
-    }).filter((offerObj)=>{
-      if(this.state.destPriceStart == null) return offerObj
-      else if(offerObj.finalAmount>=(this.state.destPriceStart)) return offerObj
-    }).filter((offerObj)=>{
-      if(this.state.destPriceEnd == null) return offerObj
-      else if(offerObj.finalAmount<=(this.state.destPriceEnd)) return offerObj
-    }).map(offerObj=>{
-      return(
-				<OfferComponent
-          offerObj = {offerObj}
-          postedBy={offerObj.postedBy}
-          srcCountry={offerObj.srcCountry}
-          srcCurrency={offerObj.srcCurrency}
-          remitAmount={offerObj.remitAmount}
-          destCurrency={offerObj.destCurrency}
-          destCountry={offerObj.destCountry}
-          finalAmount={offerObj.finalAmount}
-        />
+  componentDidMount() {
+    axios.defaults.headers.common["authorization"] =
+      "Bearer " + localStorage.getItem("token");
+    var decodedToken = jwt_decode(localStorage.getItem("token"));
+    axios
+      .get(
+        "http://localhost:8080/directexchange/user/allOffers/" +
+          decodedToken.sub
       )
-    })
+      .then((response) => {
+        if (response.status === 200) {
+          this.setState({ dataFetched: response.data, isLoading: false });
+        }
+      })
+      .catch((error) => {
+        console.log("Here we captured the error: ", error);
+        this.setState({ dataFetched: null, isLoading: true });
+      });
+  }
+
+  filterUpdate = (event, type) => {
+    let keyword = event.target.value;
+    if (keyword === "" || keyword === "true") keyword = null;
+    this.setState({ [type]: keyword });
+  };
+
+  render() {
+    const offers = Object.assign([], this.state.dataFetched);
+    console.log(offers);
+    const items = offers
+      .filter((offerObj) => {
+        if (this.state.srcCountry == null) return offerObj;
+        else if (offerObj.srcCountry.includes(this.state.srcCountry))
+          return offerObj;
+      })
+      .filter((offerObj) => {
+        if (this.state.srcCurrency == null) return offerObj;
+        else if (offerObj.srcCurrency.includes(this.state.srcCurrency))
+          return offerObj;
+      })
+      .filter((offerObj) => {
+        if (this.state.srcPriceStart == null) return offerObj;
+        else if (offerObj.remitAmount >= this.state.srcPriceStart)
+          return offerObj;
+      })
+      .filter((offerObj) => {
+        if (this.state.srcPriceEnd == null) return offerObj;
+        else if (offerObj.remitAmount <= this.state.srcPriceEnd)
+          return offerObj;
+      })
+      .filter((offerObj) => {
+        if (this.state.destCountry == null) return offerObj;
+        else if (offerObj.destCountry.includes(this.state.destCountry))
+          return offerObj;
+      })
+      .filter((offerObj) => {
+        if (this.state.destCurrency == null) return offerObj;
+        else if (offerObj.destCurrency.includes(this.state.destCurrency))
+          return offerObj;
+      })
+      .filter((offerObj) => {
+        if (this.state.destCurrency == null) return offerObj;
+        else if (offerObj.destCurrency.includes(this.state.destCurrency))
+          return offerObj;
+      })
+      .filter((offerObj) => {
+        if (this.state.destPriceStart == null) return offerObj;
+        else if (offerObj.finalAmount >= this.state.destPriceStart)
+          return offerObj;
+      })
+      .filter((offerObj) => {
+        if (this.state.destPriceEnd == null) return offerObj;
+        else if (offerObj.finalAmount <= this.state.destPriceEnd)
+          return offerObj;
+      })
+      .map((offerObj) => {
+        return (
+          <OfferComponent
+            offerObj={offerObj}
+            key={offerObj.offerId}
+            postedBy={offerObj.user.nickName}
+            srcCountry={offerObj.srcCountry}
+            srcCurrency={offerObj.srcCurrency}
+            remitAmount={offerObj.remitAmount}
+            destCurrency={offerObj.destCurrency}
+            destCountry={offerObj.destCountry}
+            finalAmount={offerObj.finalAmount}
+          />
+        );
+      });
     return (
       <div>
         <Header />
@@ -162,7 +135,10 @@ export default class Home extends Component {
                       <div className="myFormGroup form-group">
                         <label className="myInputLabel">Source Country</label>
 
-                        <select className="form-control" onChange={(e)=>this.filterUpdate(e,"srcCountry")}>
+                        <select
+                          className="form-control"
+                          onChange={(e) => this.filterUpdate(e, "srcCountry")}
+                        >
                           <option value>Select</option>
                           <option value="India">India</option>
                           <option value="United Kingdom">United Kingdom</option>
@@ -172,7 +148,10 @@ export default class Home extends Component {
 
                       <div className="myFormGroup form-group">
                         <label className="myInputLabel">Source Currency</label>
-                        <select className="form-control" onChange={(e)=>this.filterUpdate(e,"srcCurrency")}>
+                        <select
+                          className="form-control"
+                          onChange={(e) => this.filterUpdate(e, "srcCurrency")}
+                        >
                           <option value>Select</option>
                           <option value="INR">INR</option>
                           <option value="GBP">GBP</option>
@@ -187,7 +166,9 @@ export default class Home extends Component {
                             type="text"
                             className="form-control"
                             placeholder="Start"
-                            onChange={(e)=>this.filterUpdate(e,"srcPriceStart")}
+                            onChange={(e) =>
+                              this.filterUpdate(e, "srcPriceStart")
+                            }
                           />
                         </div>
 
@@ -197,7 +178,9 @@ export default class Home extends Component {
                             type="text"
                             className="form-control"
                             placeholder="End"
-                            onChange={(e)=>this.filterUpdate(e,"srcPriceEnd")}
+                            onChange={(e) =>
+                              this.filterUpdate(e, "srcPriceEnd")
+                            }
                           />
                         </div>
                       </div>
@@ -206,7 +189,10 @@ export default class Home extends Component {
                     <div style={{ marginTop: "20px" }}>
                       <div className="myFormGroup form-group">
                         <label className="myInputLabel">Target Country</label>
-                        <select className="form-control" onChange={(e)=>this.filterUpdate(e,"destCountry")}>
+                        <select
+                          className="form-control"
+                          onChange={(e) => this.filterUpdate(e, "destCountry")}
+                        >
                           <option value>Select</option>
                           <option value="India">India</option>
                           <option value="United Kingdom">United Kingdom</option>
@@ -216,7 +202,10 @@ export default class Home extends Component {
 
                       <div className="myFormGroup form-group">
                         <label className="myInputLabel">Target Currency</label>
-                        <select className="form-control" onChange={(e)=>this.filterUpdate(e,"destCurrency")}>
+                        <select
+                          className="form-control"
+                          onChange={(e) => this.filterUpdate(e, "destCurrency")}
+                        >
                           <option value>Select</option>
                           <option value="INR">INR</option>
                           <option value="GBP">GBP</option>
@@ -231,7 +220,9 @@ export default class Home extends Component {
                             type="text"
                             className="form-control"
                             placeholder="Start"
-                            onChange={(e)=>this.filterUpdate(e,"destPriceStart")}
+                            onChange={(e) =>
+                              this.filterUpdate(e, "destPriceStart")
+                            }
                           />
                         </div>
 
@@ -241,7 +232,9 @@ export default class Home extends Component {
                             type="text"
                             className="form-control"
                             placeholder="End"
-                            onChange={(e)=>this.filterUpdate(e,"destPriceEnd")}
+                            onChange={(e) =>
+                              this.filterUpdate(e, "destPriceEnd")
+                            }
                           />
                         </div>
                       </div>
@@ -250,7 +243,7 @@ export default class Home extends Component {
                 </div>
               </div>
 
-              <div className="col-xl-9" style={{maxWidth: '900px'}}>
+              <div className="col-xl-9" style={{ maxWidth: "900px" }}>
                 <div className="row">
                   {/* <OfferComponent
                     postedBy="Vatsa Patel"
@@ -261,9 +254,17 @@ export default class Home extends Component {
                     destCountry="United States"
                     finalAmount="1000"
                   /> */}
-
-                  {items}
-
+                {this.state.isLoading ?
+                  <div className="preloading">
+                    <div id="preloader">
+                      <div className="sk-three-bounce">
+                        <div className="sk-child sk-bounce1" />
+                        <div className="sk-child sk-bounce2" />
+                        <div className="sk-child sk-bounce3" />
+                      </div>
+                    </div>
+                  </div>
+                  : items}
                 </div>
               </div>
             </div>

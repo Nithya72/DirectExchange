@@ -43,9 +43,10 @@ public class TransactionController {
 
     }
 
-    @GetMapping("/{userid}")
-    public ResponseEntity getTransactions(@PathVariable(name="userid") Long userid ){
+    @PreAuthorize("#userId == authentication.principal")
+    @GetMapping(value = "/{id}", produces = {"application/json"})
+    public ResponseEntity getTransactions(@PathVariable(name="id") String userId ){
 
-        return transactionService.getTransactions(userid);
+        return transactionService.getTransactions(Long.parseLong(userId));
     }
 }

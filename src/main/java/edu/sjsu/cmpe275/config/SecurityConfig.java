@@ -102,7 +102,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
                 // We need to disable Authentication for these login paths.
                 .authorizeRequests()
-                    .antMatchers("/auth/**", "/oauth2/**","/api/transactions/**").permitAll()
+                    .antMatchers("/auth/**", "/oauth2/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .oauth2Login()

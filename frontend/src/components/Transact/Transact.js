@@ -51,8 +51,10 @@ export class Transact extends Component {
                   <div class="table-responsive">
                     <table class="table mb-0 table-responsive-sm">
                       <tbody>
-                        {this.state.transactionDetails.map((details,index) => {
-                          return <TransactItems key ={index} details={details}/>;
+                        {this.state.transactionDetails.map((details, index) => {
+                          return (
+                            <TransactItems key={index} details={details} />
+                          );
                         })}
                       </tbody>
                     </table>

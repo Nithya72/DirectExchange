@@ -16,6 +16,8 @@ import Profile from "./Profile/Profile";
 import BankAccount from './BankAccount/BankAccount';
 import AddBankAccount from './BankAccount/AddBankAccount';
 import ViewCounterOffers from './ExchangeOffers/ViewCounterOffers';
+import ViewCounterOffer from './Screens/ViewCounterOffer/ViewCounterOffer';
+
 
 //Create a Main Component
 class Main extends Component {
@@ -25,6 +27,7 @@ class Main extends Component {
           <Switch>
             <Route exact path="/" component={viewAllOffers} />
             <Route exact path="/ViewOffer" component={ViewOffer} />
+            <Route exact path="/ViewCounterOffer" component={ViewCounterOffer} />
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/getMyOffers" component={GetMyOffers} />

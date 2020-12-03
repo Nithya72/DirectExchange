@@ -39,7 +39,7 @@ export default class Home extends Component {
             </div>
 
             <Link
-                to={{ pathname: '/ViewOffer', state: { offerObj: this.props.senderOffer, counterOfferId: this.props.counterOfferId, nickName: this.props.senderNickName, counterOfferAmount: this.props.counterOfferAmount, receiverOfferObj:this.props.receiverOffer } }}
+                to={{ pathname: '/ViewCounterOffer', state: { offerObj: this.props.senderOffer, counterOfferId: this.props.counterOfferId, nickName: this.props.senderNickName, counterOfferAmount: this.props.counterOfferAmount, receiverOfferObj:this.props.receiverOffer } }}
                 className="customBtn"
             >View Offer</Link>
           </div>

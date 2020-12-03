@@ -111,6 +111,7 @@ public class CounterOfferService {
     try {
         counterOfferRepository.updateCounterOfferStatus(counterOfferId, "rejected");
         exchangeOfferRepository.updateExchangeOfferStatus(senderInitialOfferId, "Open");
+//        emailService.sendRejectCounterOfferEmail(senderOffer.getUser().getNickName(), receiverOffer.getUser().getEmailId(), receiverOffer.getUser().getNickName(), receiverOffer.getSrcCurrency(), receiverOffer.getRemitAmount());
 
         return ResponseEntity.status(HttpStatus.OK).body("Counter offer rejected successfully");
     }

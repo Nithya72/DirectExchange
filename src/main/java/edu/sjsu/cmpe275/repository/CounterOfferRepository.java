@@ -12,10 +12,10 @@ import java.util.List;
 @Repository
 public interface CounterOfferRepository extends JpaRepository<CounterOffer, String> {
 
-  @Query(value="select * from counter_offer where sender_id=:userId", nativeQuery = true)
+  @Query(value="select * from counter_offer where sender_id=:userId and expiration_date>now()", nativeQuery = true)
   List<CounterOffer> getMyCounterOffers(Long userId);
 
-  @Query(value="select * from counter_offer where receiver_id=:userId and status!='rejected'", nativeQuery = true)
+  @Query(value="select * from counter_offer where receiver_id=:userId and status!='rejected' and expiration_date>now()", nativeQuery = true)
   List<CounterOffer> getCounterOffersForMe(Long userId);
 
   @Modifying

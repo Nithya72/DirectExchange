@@ -91,7 +91,7 @@ export class ViewOfferMatches extends Component {
 
 
 
-  acceptSingleOfferHandler(e, offer){
+  acceptSingleOfferHandler(e, offer, offerType){
 
     e.preventDefault();
     console.log("offer: accept offer: ", offer);
@@ -100,10 +100,23 @@ export class ViewOfferMatches extends Component {
         "Bearer " + localStorage.getItem("token");
     var decodedToken = jwt_decode(localStorage.getItem("token"));
 
-    var data = {
-      source_offer: this.state.offer.offerId,
-      offers_matched1: offer,
-      source_offer_amount: this.state.offer.remitAmount
+    var data = "";
+
+    if(offerType === "accept") {
+
+      data = {
+        source_offer: this.state.offer.offerId,
+        offers_matched1: offer,
+        source_offer_amount: this.state.offer.remitAmount
+      }
+    }
+    else if(offerType === "accept-match"){
+
+      data = {
+        source_offer: this.state.offer.offerId,
+        offers_matched1: offer,
+        source_offer_amount: offer.finalAmount
+      }
     }
 
    axios.post('http://localhost:8080/directexchange/api/transactions/' + decodedToken.sub, data)
@@ -356,14 +369,30 @@ export class ViewOfferMatches extends Component {
                                     </table>
                                     <div className="buy-sell-widget">
                                       <ul className="nav nav-tabs">
+
+
+                                        { (parseInt(offer.remitAmount) - parseInt(this.state.offer.finalAmount) == 0) ?
                                         <button className="counter-offer-button"
-                                                // data-toggle="modal"
-                                                // data-target="#newOfferModalPopup"
-                                                onClick={(e) => this.acceptSingleOfferHandler(e, offer)}
+                                                data-toggle="modal"
+                                                // data-target="#acceptOfferModalPopup"
+                                                onClick={(e) => this.acceptSingleOfferHandler(e, offer, "accept")}
 
                                         >
                                           Accept
                                         </button>
+
+                                        :
+                                            <button className="counter-offer-button"
+                                                    data-toggle="modal"
+                                                    data-target="#acceptOfferModalPopup"
+                                                    // onClick={(e) => this.acceptSingleOfferHandler(e, offer, "accept")}
+
+                                            >
+                                              Accept
+                                            </button> }
+
+
+
                                         {(offer.counterOfferFlag.toString() === "true" ?
                                             <div>
                                               <button className="counter-offer-button"
@@ -372,6 +401,90 @@ export class ViewOfferMatches extends Component {
                                               >
                                                 Counter
                                               </button>
+
+
+
+
+                                              <div
+                                                  className="modal fade"
+                                                  id="acceptOfferModalPopup"
+                                                  role="dialog"
+                                                  aria-labelledby="exampleModalCenterTitle"
+                                                  aria-hidden="true"
+                                              >
+                                                <div
+                                                    className="modal-dialog modal-dialog-centered"
+                                                    role="document">
+                                                  <div
+                                                      className="modal-content"
+                                                      style={{
+                                                        width: "1000px",
+                                                        background: "#eff2f7"
+                                                      }}
+                                                  >
+                                                    <div className="modal-body"
+                                                         style={{padding: "0px"}}>
+                                                      <button
+                                                          type="button"
+                                                          className="close"
+                                                          data-dismiss="modal"
+                                                          aria-label="Close"
+                                                          style={{padding: "10px"}}
+                                                      >
+                                                        <span aria-hidden="true">&times;</span>
+                                                      </button>
+                                                      {/*<form>*/}
+                                                      <div
+                                                          className="counter-offer-details">
+                                                        <br/>
+                                                        <h4 className="main-title">Counter
+                                                          Offer
+                                                          Details</h4>
+
+                                                        <div
+                                                            className="form-group">
+                                                          <br/>
+                                                          <div>Please note: There is a difference between your initial offer and the amount to be sent.
+                                                          <br/>
+                                                            <br/>
+                                                            <div>  Accept below to match the offer or Post a counter offer </div>
+
+                                                          </div>
+                                                          <br />
+
+                                                          <br/>
+
+                                                          <button
+                                                              type="submit"
+                                                              className="post-counter-offer-custom-button"
+                                                              onClick={(e) => this.acceptSingleOfferHandler(e, offer, "accept-match")}
+                                                          >
+                                                            ACCEPT OFFER
+                                                          </button><br /><br/>
+
+                                                          <div style={{color:"red"}}>{this.state.counter_error}</div>
+                                                          { this.state.postCounterOfferFlag ? <div style={{color:"green"}}>{this.state.postCounterMsg}</div> : <div style={{color:"red"}}>{this.state.postCounterMsg}</div> }
+                                                        </div>
+
+                                                      </div>
+                                                      {/*</form>*/}
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
                                               <div
                                                   className="modal fade"
                                                   id="newOfferModalPopup"

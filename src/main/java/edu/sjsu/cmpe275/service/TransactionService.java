@@ -29,11 +29,16 @@ public class TransactionService {
     @Autowired
     private BankAccountRepository bankAccountRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     public ResponseEntity createNewTransaction(Long source_offer_id,
                                                List<Long> offer_matched, float amount){
 
         try {
             ExchangeOffer sourceOffer = exchangeOfferRepository.findByOfferIdAndStatus(source_offer_id,"Open");
+
+
 
             if (sourceOffer == null) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Your offer has already been completed!");
@@ -45,8 +50,8 @@ public class TransactionService {
             }
 
             sourceOffer.setRemitAmount(amount);
-            float finalRemitAmount = Math.round(sourceOffer.getFinalAmount() * (float)sourceOffer.getExchangeRate()*100)/100;
-            sourceOffer.setFinalAmount(finalRemitAmount);
+            float finalAmount = Math.round(amount * (float)sourceOffer.getExchangeRate()*100)/100;
+            sourceOffer.setFinalAmount(finalAmount);
             sourceOffer.setStatus("InTransaction");
 
             String trans_id = UUID.randomUUID().toString();
@@ -59,9 +64,12 @@ public class TransactionService {
 
             for (ExchangeOffer offer : otheroffers) {
                 Transactions otherofferTransaction = new Transactions(trans_id, offer, offer.getUser().getUserId(),expirationDate);
+                emailService.sendTransactionEmail(sourceOffer.getUser().getNickName(),offer.getUser().getEmailId(),
+                        offer.getUser().getNickName(),offer.getSrcCurrency(),offer.getRemitAmount());
                 transactionsRepository.save(otherofferTransaction);
             }
-
+            String emailMessage="Please complete your transaction in the next 10 minutes otherwise it will get aborted!";
+            emailService.sendCustomNotification(sourceOffer.getUser().getNickName(), sourceOffer.getUser().getEmailId(),emailMessage);
             return ResponseEntity.status(HttpStatus.OK).body(newTransaction);
 
         }catch (Exception e){

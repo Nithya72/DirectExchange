@@ -59,7 +59,7 @@ public class CounterOfferService {
     }
   }
 
-  public ResponseEntity<?> postCounterOffer(ExchangeOffer senderOffer, ExchangeOffer receiverOffer, Integer counterOfferAmount) {
+  public ResponseEntity<?> postCounterOffer(ExchangeOffer senderOffer, ExchangeOffer receiverOffer, ExchangeOffer thirdPartyOffer, Integer counterOfferAmount, String type) {
 
     try {
 
@@ -75,6 +75,12 @@ public class CounterOfferService {
       counterOffer.setExpirationDate(timeNow);
       counterOffer.setSender(senderOffer.getUser());
       counterOffer.setReceiver(receiverOffer.getUser());
+      counterOffer.setType(type);
+
+      if( type.equals("split")){
+        counterOffer.setThirdPartyOffer(thirdPartyOffer);
+      }
+
       counterOfferRepository.save(counterOffer);
 
       ExchangeOffer eo = exchangeOfferRepository.findByofferId(senderOffer.getOfferId());
@@ -95,6 +101,9 @@ public class CounterOfferService {
 
     try {
 
+//      counterOfferRepository.updateStatusOfExpiredCounterMade();
+//      counterOfferRepository.updateStatusOfExpCounterOffers();
+
       List<CounterOffer> mycounterOffers = counterOfferRepository.getMyCounterOffers(userId);
       List<CounterOffer> counterOffersForMe = counterOfferRepository.getCounterOffersForMe(userId);
 
@@ -104,7 +113,6 @@ public class CounterOfferService {
       return generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, null);
     }
   }
-
 
 
   public ResponseEntity<?> rejectCounterOffer(Long counterOfferId, Long senderInitialOfferId){

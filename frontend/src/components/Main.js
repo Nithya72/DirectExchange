@@ -18,7 +18,6 @@ import AddBankAccount from './BankAccount/AddBankAccount';
 import ViewCounterOffers from './ExchangeOffers/ViewCounterOffers';
 import ViewCounterOffer from './Screens/ViewCounterOffer/ViewCounterOffer';
 
-
 //Create a Main Component
 class Main extends Component {
   render() {

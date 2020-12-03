@@ -21,4 +21,12 @@ public interface CounterOfferRepository extends JpaRepository<CounterOffer, Stri
   @Modifying
   @Query(value="update counter_offer set status=:status where counter_offer_id=:id", nativeQuery = true)
   int updateCounterOfferStatus(Long id, String status);
+
+//  @Modifying
+//  @Query(value="update exchange_offer set status = 'Open' where exp_date>now()  and offer_id in (select sender_offer_id from counter_offer where expiration_date < now());", nativeQuery = true)
+//  int updateStatusOfExpiredCounterMade();
+//
+//  @Modifying
+//  @Query(value="update counter_offer set status = 'expired' where expiration_date < now();", nativeQuery = true)
+//  int updateStatusOfExpCounterOffers();
 }

@@ -19,6 +19,7 @@ export default class Home extends Component {
 
     this.rejectCounterHandler = this.rejectCounterHandler.bind(this);
     this.acceptSingleOfferHandler = this.acceptSingleOfferHandler.bind(this);
+    this.acceptSplitOfferHandler = this.acceptSplitOfferHandler.bind(this);
   }
 
   sendMessage=()=>{
@@ -79,34 +80,80 @@ export default class Home extends Component {
     var decodedToken = jwt_decode(localStorage.getItem("token"));
 
     var data = {
-      source_offer: this.props.location.state.receiverOfferObj,
-      offers_matched: this.props.location.state.offerObj,
-      source_offer_amount: this.props.location.state.counterOfferAmount,
+      source_offer: this.props.location.state.receiverOfferObj.offerId,
+      offers_matched1: this.props.location.state.offerObj,
+      source_offer_amount: this.props.location.state.counterOfferAmount * this.props.location.state.offerObj.exchangeRate
     }
 
-    console.log("counter offer data: ", data);
+    console.log("counter offer accept data: ", data);
 
-    // axios.post('http://localhost:8080/directexchange/api/transactions/' + decodedToken.sub, data)
-    //     .then(response => {
-    //       console.log("Status Code : ", response.status);
-    //       if (response.status === 200) {
-    //         console.log("Posted Counter Offers: ", response.data);
-    //         this.setState({
-    //           transactionFlag: true,
-    //         })
-    //       }else{
-    //         this.setState({
-    //           transactionFlag: false,
-    //           transactionMsg: response.data
-    //         })
-    //       }
-    //     })
-    //     .catch(error => {
-    //       console.log("Here we captured the error: ", error)
-    //       this.setState({
-    //         transactionFlag: false,
-    //       })
-    //     });
+    axios.post('http://localhost:8080/directexchange/api/transactions/' + decodedToken.sub, data)
+        .then(response => {
+          console.log("Status Code : ", response.status);
+          if (response.status === 200) {
+            console.log("Posted Counter Offers: ", response.data);
+            this.setState({
+              transactionFlag: true,
+            })
+          }else{
+            this.setState({
+              transactionFlag: false,
+              transactionMsg: response.data
+            })
+          }
+        })
+        .catch(error => {
+          console.log("Here we captured the error: ", error)
+          this.setState({
+            transactionFlag: false,
+          })
+        });
+  }
+
+
+  acceptSplitOfferHandler(e){
+
+
+    e.preventDefault();
+    axios.defaults.headers.common["authorization"] =
+        "Bearer " + localStorage.getItem("token");
+    var decodedToken = jwt_decode(localStorage.getItem("token"));
+
+    var data = {
+      source_offer: this.props.location.state.receiverOfferObj.offerId,
+      offers_matched1: this.props.location.state.offerObj,
+      offers_matched2: this.props.location.state.thirdParty,
+      source_offer_amount: this.props.location.state.counterOfferAmount * this.props.location.state.offerObj.exchangeRate
+    }
+
+    axios.post('http://localhost:8080/directexchange/api/transactions/' + decodedToken.sub, data)
+        .then(response => {
+          console.log("Status Code : ", response.status);
+          if (response.status === 200) {
+            console.log("Posted Counter Offers: ", response.data);
+            this.setState({
+              transactionFlag: true,
+            })
+          }else{
+            this.setState({
+              transactionFlag: false,
+              transactionMsg: response.data
+            })
+          }
+        })
+        .catch(error => {
+          console.log("Here we captured the error: ", error)
+          this.setState({
+            transactionFlag: false,
+          })
+        });
+
+
+
+
+
+
+
 
   }
 
@@ -117,6 +164,7 @@ export default class Home extends Component {
     let counterOfferAmount = this.props.location.state.counterOfferAmount;
     let receiverOfferObj = this.props.location.state.receiverOfferObj;
     let counterOfferId = this.props.location.state.counterOfferId;
+    let type = this.props.location.state.type;
 
     console.log("counterOfferId: ", counterOfferId);
 
@@ -127,6 +175,10 @@ export default class Home extends Component {
       errorMsg = <div style={{color:"red"}}>Couldn't reject counter offer, Try after sometime.</div>
     }else if(this.state.rejectFlag){
       redirectVar = <Redirect to={{ pathname: "/viewCounterOffers"}} />
+    }
+
+    if(this.state.transactionFlag){
+      redirectVar = <Redirect to={{ pathname: "/transact"}} />
     }
 
 
@@ -228,7 +280,7 @@ export default class Home extends Component {
                               <span>Now you have to pay</span>
                             </td>
                             <td>
-                              <span>{OfferObj.destCurrency} {OfferObj.finalAmount}</span>
+                              <span>{OfferObj.destCurrency} {(counterOfferAmount * OfferObj.exchangeRate).toFixed(2)}</span>
                             </td>
                           </tr>
 
@@ -237,10 +289,13 @@ export default class Home extends Component {
                             <td>{receiverOfferObj.exchangeRate}</td>
                           </tr>
 
-                          {/*<tr>*/}
-                          {/*  <td>Destination Country</td>*/}
-                          {/*  <td>{OfferObj.destCountry}</td>*/}
-                          {/*</tr>*/}
+                          {type=="split" ?
+                          <tr>
+                            <td>Another User Involved</td>
+                            <td>Yes</td>
+                          </tr>
+
+                              : ""}
                           {/*<tr>*/}
                           {/*  <td>Final Exchanges Amount</td>*/}
                           {/*  <td>*/}
@@ -259,7 +314,10 @@ export default class Home extends Component {
                         </table>
                       </div>
 
+
                       <div style={{ display: "flex", justifyContent: "center" }}>
+
+                        {type=="single" ?
                         <button
                             type="submit"
                             className="post-counter-offer-custom-button"
@@ -268,6 +326,18 @@ export default class Home extends Component {
                         >
                           Accept Offer{" "}
                         </button>
+                            :
+
+                            <button
+                                type="submit"
+                                className="post-counter-offer-custom-button"
+                                style={{ marginRight:"50px", marginTop:"0px", height:"45px" }}
+                                onClick={this.acceptSplitOfferHandler}
+                            >
+                              Accept Offer{" "}
+                            </button>
+
+                        }
 
                         { counterOfferId && counterOfferId.length !== 0 ?
                             <button

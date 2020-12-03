@@ -26,7 +26,7 @@ export class ViewOfferMatches extends Component {
       transactionMsg: ""
     }
      this.counterOfferAmountHandler = this.counterOfferAmountHandler.bind(this);
-    // this.postSingleCounterHandler = this.postSingleCounterHandler.bind(this);
+    this.splitCounterOfferAmountHandler = this.splitCounterOfferAmountHandler.bind(this);
 
   }
 
@@ -51,18 +51,70 @@ export class ViewOfferMatches extends Component {
    }
   }
 
-  acceptSplitOfferHandler(e, offer1, offer2){
+
+  splitCounterOfferAmountHandler = (e) => {
+    console.log("remit value 0.9: ", this.state.offer.remitAmount*0.9, "---", this.state.offer.remitAmount*1.1);
+    console.log("offer amount: ", e.target.value);
+
+    this.setState({
+      split_count_offer_amount: e.target.value,
+      counter_error: null
+    })
+
+    // if(e.target.value >= (this.state.offer.remitAmount*0.9) && e.target.value <= (this.state.offer.remitAmount*1.1)){
+    //   this.setState({
+    //     split_count_offer_amount: e.target.value,
+    //     counter_error: null
+    //   })
+    // }else{
+    //   this.setState({
+    //     counter_error: "The amount "+e.target.value+" is not within valid range."
+    //   })
+    // }
+  }
+
+
+  acceptSplitOfferHandler(e, offer1, offer2, offerType){
     e.preventDefault();
+
+    console.log("offer type: ",offerType);
 
     axios.defaults.headers.common["authorization"] =
         "Bearer " + localStorage.getItem("token");
     var decodedToken = jwt_decode(localStorage.getItem("token"));
+    var data = "";
 
-    var data = {
-      source_offer: this.state.offer.offerId,
-      offers_matched1: offer1,
-      offers_matched2: offer2,
-      source_offer_amount: this.state.offer.remitAmount
+    if(offerType === "accept") {
+      data = {
+        source_offer: this.state.offer.offerId,
+        offers_matched1: offer1,
+        offers_matched2: offer2,
+        source_offer_amount: this.state.offer.remitAmount
+      }
+    }
+
+    else if(offerType === "accept-match") {
+
+
+      var final_source_offer_ammount = 0;
+
+      if(this.state.offer.remitAmount - (offer1.finalAmount + offer2.finalAmount) > 0){
+        console.log("inside if");
+        final_source_offer_ammount = this.state.offer.remitAmount - ( this.state.offer.remitAmount - (offer1.finalAmount + offer2.finalAmount))
+      }else{
+        console.log("inside else");
+        final_source_offer_ammount = this.state.offer.remitAmount + ( (offer1.finalAmount + offer2.finalAmount) - this.state.offer.remitAmount)
+      }
+
+      console.log("after calculations; ", final_source_offer_ammount);
+
+      data = {
+        source_offer: this.state.offer.offerId,
+        offers_matched1: offer1,
+        offers_matched2: offer2,
+        // source_offer_amount: offer.finalAmount
+        source_offer_amount : final_source_offer_ammount
+      }
     }
 
     axios.post('http://localhost:8080/directexchange/api/transactions/' + decodedToken.sub, data)
@@ -86,7 +138,6 @@ export class ViewOfferMatches extends Component {
             transactionFlag: false,
           })
         });
-
   }
 
 
@@ -192,7 +243,8 @@ export class ViewOfferMatches extends Component {
     var data = {
       senderOffer: this.state.offer,
       receiverOffer: offer,
-      counter_offer_amount: this.state.single_count_offer_amount
+      counter_offer_amount: this.state.single_count_offer_amount,
+      type: 'single'
     }
 
     axios.defaults.headers.common['authorization']= 'Bearer ' + localStorage.getItem('token');
@@ -200,6 +252,44 @@ export class ViewOfferMatches extends Component {
     console.log("decodedUserId: ", decodedToken.sub);
 
     axios.post('http://localhost:8080/directexchange/user/counteroffer', data)
+        .then(response => {
+          console.log("Status Code : ", response.status);
+          if (response.status === 200) {
+            console.log("Fetched All Offers: ", response.data);
+            this.setState({
+              postCounterOfferFlag: true,
+              postCounterMsg: response.data
+            })
+          }
+        })
+        .catch(error => {
+          console.log("Here we captured the error: ", error)
+          this.setState({
+            postCounterOfferFlag: false,
+            postCounterMsg: "Couldn't post offer, try after sometime."
+          })
+        });
+  }
+
+
+
+  postSplitCounterHandler = (e, offer1, offer2) => {
+    e.preventDefault();
+  console.log("postSplitCounterHandler ",this.state.split_count_offer_amount );
+
+    var data = {
+      senderOffer: this.state.offer,
+      receiverOffer: offer2,
+      thirdParty: offer1,
+      counter_offer_amount: this.state.split_count_offer_amount,
+      type: 'split'
+    }
+
+    axios.defaults.headers.common['authorization']= 'Bearer ' + localStorage.getItem('token');
+    var decodedToken = jwt_decode(localStorage.getItem('token'));
+    console.log("decodedUserId: ", decodedToken.sub);
+
+    axios.post('http://localhost:8080/directexchange/user/counteroffer/split', data)
         .then(response => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -464,7 +554,9 @@ export class ViewOfferMatches extends Component {
                                                               onClick={(e) => this.acceptSingleOfferHandler(e, offer, "accept-match")}
                                                           >
                                                             ACCEPT OFFER
-                                                          </button><br /><br/>
+                                                          </button>
+
+                                                          <br /><br/>
 
                                                           <div style={{color:"red"}}>{this.state.counter_error}</div>
                                                           { this.state.postCounterOfferFlag ? <div style={{color:"green"}}>{this.state.postCounterMsg}</div> : <div style={{color:"red"}}>{this.state.postCounterMsg}</div> }
@@ -476,17 +568,6 @@ export class ViewOfferMatches extends Component {
                                                   </div>
                                                 </div>
                                               </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
                                               <div
@@ -683,12 +764,111 @@ export class ViewOfferMatches extends Component {
                                     </table>
                                     <div className="buy-sell-widget">
                                       <ul className="nav nav-tabs">
-                                        <button className="counter-offer-button"
-                                                onClick={(e) => this.acceptSplitOfferHandler(e, offer[0], offer[1])}>
-                                          Accept
-                                        </button>
+                                        {/*<button className="counter-offer-button"*/}
+                                        {/*        onClick={(e) => this.acceptSplitOfferHandler(e, offer[0], offer[1])}>*/}
+                                        {/*  Accept*/}
+                                        {/*</button>*/}
 
-                                        {(offer[0].counterOfferFlag.toString() === "true" ?
+
+
+                                        { ((parseInt(offer[0].remitAmount + offer[1].remitAmount) - parseInt(this.state.offer.finalAmount)) == 0) ?
+                                            <button className="counter-offer-button"
+                                                    data-toggle="modal"
+                                                // data-target="#acceptOfferModalPopup"
+                                                    onClick={(e) => this.acceptSplitOfferHandler(e, offer[0], offer[1], "accept")}
+
+                                            >
+                                              Accept
+                                            </button>
+
+                                            :
+                                            <button className="counter-offer-button"
+                                                    data-toggle="modal"
+                                                    data-target="#acceptSplitOfferModalPopup"
+                                                // onClick={(e) => this.acceptSingleOfferHandler(e, offer, "accept")}
+
+                                            >
+                                              Accept
+                                            </button> }
+
+
+
+
+
+                                        <div
+                                            className="modal fade"
+                                            id="acceptSplitOfferModalPopup"
+                                            role="dialog"
+                                            aria-labelledby="exampleModalCenterTitle"
+                                            aria-hidden="true"
+                                        >
+                                          <div
+                                              className="modal-dialog modal-dialog-centered"
+                                              role="document">
+                                            <div
+                                                className="modal-content"
+                                                style={{
+                                                  width: "1000px",
+                                                  background: "#eff2f7"
+                                                }}
+                                            >
+                                              <div className="modal-body"
+                                                   style={{padding: "0px"}}>
+                                                <button
+                                                    type="button"
+                                                    className="close"
+                                                    data-dismiss="modal"
+                                                    aria-label="Close"
+                                                    style={{padding: "10px"}}
+                                                >
+                                                  <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                {/*<form>*/}
+                                                <div
+                                                    className="counter-offer-details">
+                                                  <br/>
+                                                  <h4 className="main-title">Counter
+                                                    Offer
+                                                    Details</h4>
+
+                                                  <div
+                                                      className="form-group">
+                                                    <br/>
+                                                    <div>Please note: There is a difference between your initial offer and the amount to be sent.
+                                                      <br/>
+                                                      <br/>
+                                                      <div>  Accept below to match the offer or Post a counter offer </div>
+
+                                                    </div>
+                                                    <br />
+
+                                                    <br/>
+
+                                                    <button
+                                                        type="submit"
+                                                        className="post-counter-offer-custom-button"
+                                                        onClick={(e) => this.acceptSplitOfferHandler(e, offer[0], offer[1], "accept-match")}
+                                                    >
+                                                      ACCEPT OFFER
+                                                    </button>
+
+                                                    <br /><br/>
+
+                                                    <div style={{color:"red"}}>{this.state.counter_error}</div>
+                                                    { this.state.postCounterOfferFlag ? <div style={{color:"green"}}>{this.state.postCounterMsg}</div> : <div style={{color:"red"}}>{this.state.postCounterMsg}</div> }
+                                                  </div>
+
+                                                </div>
+                                                {/*</form>*/}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+
+
+
+
+                                        {(offer[0].counterOfferFlag.toString() === "true" || offer[1].counterOfferFlag.toString() === "true") ?
                                             <div>
                                               <button className="counter-offer-button"
                                                       data-toggle="modal"
@@ -723,8 +903,8 @@ export class ViewOfferMatches extends Component {
                                                       >
                                                         <span aria-hidden="true">&times;</span>
                                                       </button>
-                                                      <form
-                                                          onSubmit={this.onSubmit}>
+                                                      {/*<form*/}
+                                                      {/*    onSubmit={ () => this.onSubmit}>*/}
                                                         <div
                                                             className="counter-offer-details">
                                                           <br/>
@@ -750,24 +930,28 @@ export class ViewOfferMatches extends Component {
                                                                 placeholder="Counter Offer Amount"
                                                                 name="amount"
                                                                 // value={this.state.single_count_offer_amount}
-                                                                onChange={this.counterOfferAmountHandler}
+                                                                onChange={this.splitCounterOfferAmountHandler}
                                                                 required
                                                             />
                                                             <button
                                                                 type="submit"
-                                                                className="post-counter-offer-custom-button">
+                                                                className="post-counter-offer-custom-button"
+                                                                onClick={ (e) => this.postSplitCounterHandler(e, offer[0], offer[1])} >
                                                               POST COUNTER
                                                               OFFER
                                                             </button>
+                                                            <br/> <br/> <br/>
+                                                            { this.state.postCounterOfferFlag ? <div style={{color:"green"}}>{this.state.postCounterMsg}</div> : <div style={{color:"red"}}>{this.state.postCounterMsg}</div> }
                                                           </div>
                                                         </div>
-                                                      </form>
+
+                                                      {/*</form>*/}
                                                     </div>
                                                   </div>
                                                 </div>
                                               </div>
                                             </div>
-                                            : "")}
+                                            : ""}
                                       </ul>
                                     </div>
                                   </div>

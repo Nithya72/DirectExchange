@@ -33,6 +33,13 @@ public class Transactions {
     @Column(name="expiration_date")
     ZonedDateTime expirationDate;
 
+
+    @Column(name = "remit_account_id")
+    private Long remit_account_id;
+
+    @Column(name = "dest_account_id")
+    private Long dest_account_id;
+
     public Transactions() {
     }
     public Transactions(String transactionId, ExchangeOffer offerid, long userid, ZonedDateTime expirationDate){
@@ -101,5 +108,21 @@ public class Transactions {
 
     public void setTransactionStatus(String transactionStatus) {
         this.transactionStatus = transactionStatus;
+    }
+
+    public Long getRemit_account_id() {
+        return remit_account_id;
+    }
+
+    public void setRemit_account_id(Long remit_account_id) {
+        this.remit_account_id = remit_account_id;
+    }
+
+    public Long getDest_account_id() {
+        return dest_account_id;
+    }
+
+    public void setDest_account_id(Long dest_account_id) {
+        this.dest_account_id = dest_account_id;
     }
 }

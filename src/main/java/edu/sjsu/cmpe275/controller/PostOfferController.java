@@ -37,10 +37,15 @@ public class PostOfferController {
             if(user==null){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please login to post an offer");
             }
+            if(!user.getValidUser()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter two bank accounts to send and receive money!");
+            }
+
             ExchangeOffer exchangeOffer = new ExchangeOffer();
             exchangeOffer.setRemitAmount(postOffer.getAmount());
             exchangeOffer.setExchangeRate(postOffer.getExchange_rate());
-            exchangeOffer.setFinalAmount(postOffer.getAmount() * postOffer.getExchange_rate());
+            float finalRemitAmount = Math.round(postOffer.getAmount() * (float)postOffer.getExchange_rate()*100)/100;
+            exchangeOffer.setFinalAmount(finalRemitAmount);
             exchangeOffer.setExpDate(postOffer.getExpirationdate());
             exchangeOffer.setSrcCountry(postOffer.getSource_country());
             exchangeOffer.setSrcCurrency(postOffer.getSource_currency());

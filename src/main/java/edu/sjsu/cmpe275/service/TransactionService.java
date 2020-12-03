@@ -1,9 +1,12 @@
 package edu.sjsu.cmpe275.service;
 
+import edu.sjsu.cmpe275.dao.BankAccount;
 import edu.sjsu.cmpe275.dao.ExchangeOffer;
 import edu.sjsu.cmpe275.dao.Transactions;
+import edu.sjsu.cmpe275.repository.BankAccountRepository;
 import edu.sjsu.cmpe275.repository.ExchangeOfferRepository;
 import edu.sjsu.cmpe275.repository.TransactionsRepository;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,9 @@ public class TransactionService {
     @Autowired
     private ExchangeOfferRepository exchangeOfferRepository;
 
+    @Autowired
+    private BankAccountRepository bankAccountRepository;
+
     public ResponseEntity createNewTransaction(Long source_offer_id,
                                                List<Long> offer_matched, float amount){
 
@@ -39,7 +45,8 @@ public class TransactionService {
             }
 
             sourceOffer.setRemitAmount(amount);
-            sourceOffer.setFinalAmount(amount * sourceOffer.getExchangeRate());
+            float finalRemitAmount = Math.round(sourceOffer.getFinalAmount() * (float)sourceOffer.getExchangeRate()*100)/100;
+            sourceOffer.setFinalAmount(finalRemitAmount);
             sourceOffer.setStatus("InTransaction");
 
             String trans_id = UUID.randomUUID().toString();
@@ -65,17 +72,17 @@ public class TransactionService {
     }
 
     public ResponseEntity updateTransaction(Long offer_id,
-                                            String transaction_id){
+                                            String transaction_id,Long remit_accountid,Long destination_accountid){
 
         try {
             ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneOffset.UTC);
             String currentStatus = transactionsRepository.getTransactionStatus(transaction_id,currentDateTime);
             if(currentStatus==null){
                 transactionsRepository.updateAbortedTransactionStatus("aborted",transaction_id);
-                return ResponseEntity.status(HttpStatus.OK).body("message: Transaction has been aborted!!");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Transaction has been aborted!!");
             }
             if(!currentStatus.equals("pending")){
-                return ResponseEntity.status(HttpStatus.OK).body("Transaction has been "+currentStatus);
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Transaction has been "+currentStatus);
             }
             ExchangeOffer offer = exchangeOfferRepository.findByofferId(offer_id);
             offer.setStatus("InTransaction");
@@ -86,6 +93,8 @@ public class TransactionService {
 
                 if(transaction.getOfferDetails().getOfferId()==offer_id){
                     transaction.setIs_complete(1);
+                    transaction.setRemit_account_id(remit_accountid);
+                    transaction.setDest_account_id(destination_accountid);
                     transactionsRepository.save(transaction);
                 }
                 else if(transaction.getIs_complete()!=1){
@@ -116,13 +125,12 @@ public class TransactionService {
     public ResponseEntity getTransactions(Long userid){
 
         try {
-
-            ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneOffset.UTC);
-
-            System.out.println("current time: "+currentDateTime);
-            List<Transactions> currentTransactions = transactionsRepository.fetchTransactionsByUserID(userid, currentDateTime);
-
-            return ResponseEntity.status(HttpStatus.OK).body(currentTransactions);
+            JSONObject data = new JSONObject();
+            List<BankAccount> bankAccounts = bankAccountRepository.findByUserUserId(userid);
+            List<Transactions> transactionDetails = transactionsRepository.fetchTransactionsByUserID(userid);
+            data.put("transactionDetails",transactionDetails);
+            data.put("bankAccounts",bankAccounts);
+            return new ResponseEntity<>(data, HttpStatus.OK);
         }catch (Exception e){
             System.out.println("Error "+e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong! Please try again later!");

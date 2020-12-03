@@ -63,6 +63,10 @@ export class GetMyOffers extends Component {
     });
   };
 
+  handleRefresh = ()=>{
+    window.location.reload();
+  }
+
   render() {
     console.log("msg from java controller: ", this.state.myOffers);
     var redirectVar = "";
@@ -78,6 +82,7 @@ export class GetMyOffers extends Component {
       );
     }
 
+
     return (
       <div>
         {redirectVar}
@@ -87,7 +92,7 @@ export class GetMyOffers extends Component {
         <div className="content-body">
           <div className="myContainer">
             <span className="PageTitle">Get My Offers</span>
-            <PostOffer />
+            <PostOffer handleRefresh={this.handleRefresh}/>
 
             <div className="col-xl-9" style={{ maxWidth: "900px" }}>
               <div className="row">

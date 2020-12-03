@@ -27,8 +27,8 @@ public class BankAccountService {
     @Autowired
     private UserRepository userRepository;
 
-    private static String regex = "^[a-zA-Z0-9/-]+$";
-    private static Pattern alphaNumericPattern = Pattern.compile(regex);
+    private static String regex = "^[0-9]+$";
+    private static Pattern numericPattern = Pattern.compile(regex);
 
     public ResponseEntity<?> getUserAccounts(@NonNull long userId) {
 
@@ -40,49 +40,47 @@ public class BankAccountService {
     }
 
     // at time of add, do a call to even change valid type
-    public ResponseEntity<?> addAccount(@NonNull long userId, BankAccountCreateRepresentation userAccount) {
-
-//        if (!StringUtils.hasText(nickName)) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("NickName cannot be null");
-//        }
-//        if (!alphaNumericPattern.matcher(nickName).matches()) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("NickName should be alpha-numeric");
-//        }
+    public ResponseEntity<?> addAccount(@NonNull long userId, BankAccountCreateRepresentation newUserBankAccount) {
 
         User user = userRepository.findByUserId(userId);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
-        if(userAccount.getAccountNumber() == null || userAccount.getBankName() == null ||
-                userAccount.getCountry() == null || userAccount.getFeatures() == null ||
-                userAccount.getOwnerAddress()== null || userAccount.getOwnerName()== null ||
-                userAccount.getPrimaryCurrency()== null ||
-        userAccount.getAccountNumber().trim().isEmpty() || userAccount.getBankName().trim().isEmpty() ||
-        userAccount.getCountry().trim().isEmpty() || userAccount.getFeatures().trim().isEmpty() ||
-        userAccount.getOwnerAddress().trim().isEmpty() || userAccount.getOwnerName().trim().isEmpty() ||
-        userAccount.getPrimaryCurrency().trim().isEmpty() ) {
+        if(newUserBankAccount.getAccountNumber() == null || newUserBankAccount.getBankName() == null ||
+                newUserBankAccount.getCountry() == null || newUserBankAccount.getFeatures() == null ||
+                newUserBankAccount.getOwnerAddress()== null || newUserBankAccount.getOwnerName()== null ||
+                newUserBankAccount.getPrimaryCurrency()== null ||
+        newUserBankAccount.getAccountNumber().trim().isEmpty() || newUserBankAccount.getBankName().trim().isEmpty() ||
+        newUserBankAccount.getCountry().trim().isEmpty() || newUserBankAccount.getFeatures().trim().isEmpty() ||
+        newUserBankAccount.getOwnerAddress().trim().isEmpty() || newUserBankAccount.getOwnerName().trim().isEmpty() ||
+        newUserBankAccount.getPrimaryCurrency().trim().isEmpty() ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please provide all fields");
         }
 
+        if (!numericPattern.matcher(newUserBankAccount.getAccountNumber()).matches()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Account Number should be Numeric");
+        }
+
         BankAccount newBankAccount = new BankAccount();
-        newBankAccount.setAccountNumber(userAccount.getAccountNumber());
-        newBankAccount.setBankName(userAccount.getBankName());
-        newBankAccount.setCountry(userAccount.getCountry());
-        newBankAccount.setFeatures(userAccount.getFeatures());
-        newBankAccount.setOwnerAddress(userAccount.getOwnerAddress());
-        newBankAccount.setOwnerName(userAccount.getOwnerName());
-        newBankAccount.setPrimaryCurrency(userAccount.getPrimaryCurrency());
+        newBankAccount.setAccountNumber(newUserBankAccount.getAccountNumber());
+        newBankAccount.setBankName(newUserBankAccount.getBankName());
+        newBankAccount.setCountry(newUserBankAccount.getCountry());
+        newBankAccount.setFeatures(newUserBankAccount.getFeatures());
+        newBankAccount.setOwnerAddress(newUserBankAccount.getOwnerAddress());
+        newBankAccount.setOwnerName(newUserBankAccount.getOwnerName());
+        newBankAccount.setPrimaryCurrency(newUserBankAccount.getPrimaryCurrency());
         newBankAccount.setUser(user);
 
         bankAccountRepository.save(newBankAccount);
 
-//        List<String> banks = bankAccountRepository.fetchCountriesByUserID(userId);
-//        if(!banks.contains(userAccount.getCountry())) {
-//            user.setValidUser(true);
-//            userRepository.save(user);
-//        }
-
+        List<BankAccount> accounts = bankAccountRepository.findByUserUserId(userId);
+        for ( BankAccount account : accounts ) {
+            if(!account.getCountry().equalsIgnoreCase(newUserBankAccount.getCountry())) {
+                user.setValidUser(true);
+                userRepository.save(user);
+            }
+        }
         return ResponseEntity.status(HttpStatus.OK).body(newBankAccount);
     }
 }

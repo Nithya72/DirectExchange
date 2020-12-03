@@ -1,11 +1,19 @@
 import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
 import "./Navigation.css";
+import { Redirect } from "react-router-dom";
 
 export class SideBar extends Component {
   render() {
+    
+    var redirectUrl = null;
+    if (!localStorage.getItem("token")) {
+      redirectUrl = <Redirect to="/login"/>;
+    }
+
     return (
       <div className="sidebar">
+      {redirectUrl}
         <a className="brand-logo">
           {/*<img src="images/logo.png" alt="" />*/}
           <span>Direct Exchange </span></a>

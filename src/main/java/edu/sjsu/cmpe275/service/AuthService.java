@@ -15,10 +15,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @Service
 @Slf4j
 public class AuthService {
+
+    private static String regex = "^[0-9]+$";
+    private static Pattern emailPattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
 
     @Autowired
     private EmailService emailService;
@@ -45,6 +50,12 @@ public class AuthService {
                                        @NonNull String password,
                                        @NonNull RegistrationType registrationType) {
         try{
+
+            if(registrationType == RegistrationType.LOCAL) {
+                if(!emailPattern.matcher(emailId).matches() ) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please provide a valid email id");
+                }
+            }
 
             User user = userRepository.findByEmailId(emailId);
             if (user != null) {
@@ -114,6 +125,7 @@ public class AuthService {
     }
 
     public ResponseEntity<?> loginUser(String emailId, String password) {
+
         User user = userRepository.findByEmailId(emailId);
         if (user == null) {
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Not Present");
@@ -121,6 +133,7 @@ public class AuthService {
         if (user.getRegistrationType() != RegistrationType.LOCAL) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please login using " + user.getRegistrationType());
         }
+
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username/Password does not match");
         }

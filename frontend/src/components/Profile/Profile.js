@@ -24,6 +24,8 @@ export class Profile extends Component {
     }
 
     componentDidMount() {
+        var redirecturl = null;
+        if(localStorage.getItem('token')) {
         axios.defaults.headers.common['authorization']= 'Bearer ' + localStorage.getItem('token');
         var decodedToken = jwt_decode(localStorage.getItem('token'));
         console.log("decodedUserId: ", decodedToken.sub);
@@ -46,6 +48,10 @@ export class Profile extends Component {
                 user: null,
             });
         });
+    }
+    else {
+        redirecturl = <Redirect to="/login"/>;
+    }
     }
 
     changeHandler(e) {
@@ -85,12 +91,15 @@ export class Profile extends Component {
 
     render() {
 
-        var message = null;
-        
+        var message = null, redirectUrl = null;
+
         if (this.state.successFlag === true) {
             message = <div class="alert alert-success" role="alert">Profile Successfully Updated!</div>
         } else if (this.state.errorFlag === true) {
             message = <div class="alert alert-danger" role="alert">{this.state.msg}</div>
+        }
+        if(!localStorage.getItem('token')) {
+            redirectUrl = <Redirect to="/login"/>;
         }
 
         console.log("msg from java controller: ", this.state.msg);
@@ -98,6 +107,7 @@ export class Profile extends Component {
         return (
 
             <div>
+            {redirectUrl}
             <Header/>
             <SideBar/>
             <div className="content-body col-md-20">
@@ -106,8 +116,7 @@ export class Profile extends Component {
 
                     <h1 className="title">User Profile</h1>
 
-                    <form>
-                        
+                    <form onSubmit={this.submitProfileUpdate}>                        
                         <div className="form-row">
                             <label className="label">Email:</label> 
                             <input disabled type="username" className="form-control" name="username"
@@ -117,12 +126,12 @@ export class Profile extends Component {
                         <div className="form-row">
                         <label className="label">Nickname:</label> 
                             <input onChange={this.changeHandler} type="nickName" className="form-control" name="nickName"
-                                value={this.state.nickName} required placeholder={this.state.nickName}/>
+                                value={this.state.nickName} required pattern="[A-Za-z0-9]+" title="Please enter only aplha numeric values" placeholder={this.state.nickName}/>
                         </div>
 
                         <br/>
                         <div className="form-item">
-                            <button onClick={this.submitProfileUpdate} className="btn btn-block btn-primary" type="submit">
+                            <button className="btn btn-block btn-primary" type="submit">
                                 Submit 
                             </button>
                         </div>

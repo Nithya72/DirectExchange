@@ -74,6 +74,7 @@ export class PrevailingRates extends Component {
                                 name="amount"
                                 type="number"
                                 min="0"
+                                step="0.01"
                                 className="form-control"
                                 placeholder="Enter Amount"
                                 style = {{fontSize:'20px'}}

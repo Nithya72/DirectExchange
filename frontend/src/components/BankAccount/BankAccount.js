@@ -71,7 +71,7 @@ export class BankAccount extends Component {
       var bankDetailDisplay = (
         <div
           className="col-md-6"
-          style={{ display: "flex", justifyContent: "center" }}
+          style={{ display: "flex", justifyContent: "center", marginLeft:'25%' }}
         >
         <div className="offerContainer" style={{width:'200%'}}>
           <br/>
@@ -134,7 +134,8 @@ export class BankAccount extends Component {
                 console.log("Successfully Added Bank Details: ", response.data);
                 this.setState({
                     successFlag: true,
-                })
+                });
+                window.location.reload(false);
             }
         })
         .catch(error => {
@@ -145,6 +146,7 @@ export class BankAccount extends Component {
                 msg: error.response.data
             })
         });
+
       }
   
   render() {
@@ -164,7 +166,7 @@ export class BankAccount extends Component {
         banksToDisplay = (
           <div
             className="col-md-6"
-            style={{ display: "flex", justifyContent: "center" }}
+            style={{ display: "flex", justifyContent: "center", marginLeft:'25%' }}
             >
             <div className="offerContainer" style={{width:'200%'}}>
               <span className="bankDetailsHeading">
@@ -207,6 +209,7 @@ export class BankAccount extends Component {
                         <center>
                           <h3>Please Provide Bank Details</h3>
                           <br/>
+                          <form onSubmit={this.addBankAccount} >
                           <table>
                             <tr>
                               <td style={{fontSize:'24px'}}>
@@ -225,7 +228,7 @@ export class BankAccount extends Component {
                                 Account Number :
                               </td>
                               <td>
-                                <input name="accountNumber" type="text" className="form-control"
+                                <input name="accountNumber" type="number" min="0" className="form-control"
                                 style = {{fontSize:'20px'}} required value={this.state.accountNumber}
                                 onChange={this.onChange}
                               />
@@ -296,9 +299,9 @@ export class BankAccount extends Component {
                               <select name="features" className="form-control" style = {{fontSize:'20px'}} 
                               value={this.state.features} onChange={this.onChange} required>
                                 <option defaultValue value="">Select option</option>
-                                <option defaultValue value="Only Send">Only Send</option>
-                                <option defaultValue value="Only Receive">Only Receive</option>
-                                <option defaultValue value="Send and Receive">Send and Receive</option>
+                                <option defaultValue value="Send">Only Send</option>
+                                <option defaultValue value="Receive">Only Receive</option>
+                                <option defaultValue value="Both">Send and Receive</option>
                               </select>
                               </td>
                             </tr>
@@ -306,9 +309,10 @@ export class BankAccount extends Component {
                           <br/>
                           <br/>
                           <button class="btn btn-success myButton"
-                          onClick={this.addBankAccount} type="submit">
+                          type="submit">
                           Submit
                           </button>
+                          </form>
                           <br/>
                           <br/>
                           <br/>

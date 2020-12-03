@@ -17,8 +17,8 @@ public interface BankAccountRepository extends JpaRepository<BankAccount, String
      */
     List<BankAccount> findByUserUserId(long userId);
 
-    @Query(value = "select country from bank_account where user_id=:user_id;", nativeQuery = true)
-    List<String> fetchCountriesByUserID(Long user_id);
+//    @Query(value = "select country from bank_account where user_id=:user_id;", nativeQuery = true)
+//    List<String> fetchCountriesByUserUserID(Long user_id);
 
 }
 

@@ -67,11 +67,14 @@ public class TransactionController {
     @PutMapping(value = "/{id}", produces = {"application/json"})
     public ResponseEntity updateTransaction(@PathVariable(value = "id") String userId,
                                             @RequestParam(name = "offer_id")  Long offer_id,
-                                            @RequestParam(name = "transaction_id") String transaction_id){
+                                            @RequestParam(name = "transaction_id") String transaction_id,
+                                            @RequestParam(name = "remit_accountid") Long remit_accountid,
+                                            @RequestParam(name = "destination_accountid") Long destination_accountid
+                                            ){
 
 
 
-        return transactionService.updateTransaction(offer_id,transaction_id);
+        return transactionService.updateTransaction(offer_id,transaction_id,remit_accountid,destination_accountid);
 
     }
 
@@ -79,6 +82,7 @@ public class TransactionController {
     @GetMapping(value = "/{id}", produces = {"application/json"})
     public ResponseEntity getTransactions(@PathVariable(name="id") String userId ){
 
+        System.out.println("Transaction "+userId);
         return transactionService.getTransactions(Long.parseLong(userId));
     }
 }

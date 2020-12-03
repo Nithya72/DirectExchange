@@ -36,7 +36,7 @@ public class ExchangeOffer {
     private String destCurrency;
 
     @Column(name="exchange_rate", nullable = false)
-    private float exchangeRate;
+    private double exchangeRate;
 
     @Column(name="final_amount", nullable = false)
     private float finalAmount;
@@ -105,11 +105,11 @@ public class ExchangeOffer {
         this.destCurrency = destCurrency;
     }
 
-    public float getExchangeRate() {
+    public double getExchangeRate() {
         return exchangeRate;
     }
 
-    public void setExchangeRate(float exchangeRate) {
+    public void setExchangeRate(double exchangeRate) {
         this.exchangeRate = exchangeRate;
     }
 

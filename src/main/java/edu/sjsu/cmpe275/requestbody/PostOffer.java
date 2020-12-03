@@ -5,7 +5,7 @@ import java.util.Date;
 public class PostOffer {
 
     private float amount;
-    private float exchange_rate;
+    private double exchange_rate;
     private String source_currency;
     private String source_country;
     private String destination_currency;
@@ -22,11 +22,11 @@ public class PostOffer {
         this.amount = amount;
     }
 
-    public float getExchange_rate() {
+    public double getExchange_rate() {
         return exchange_rate;
     }
 
-    public void setExchange_rate(float exchange_rate) {
+    public void setExchange_rate(double exchange_rate) {
         this.exchange_rate = exchange_rate;
     }
 

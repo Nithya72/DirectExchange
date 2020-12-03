@@ -4,12 +4,14 @@ import Header from "../Navigation/Header";
 import SideBar from "../Navigation/SideBar";
 import TransactItems from "./TransactItems";
 import jwt_decode from "jwt-decode";
+import "./Transact.css";
 
 export class Transact extends Component {
   constructor(props) {
     super(props);
     this.state = {
       transactionDetails: [],
+      bankAccounts: [],
     };
   }
   componentDidMount() {
@@ -23,9 +25,9 @@ export class Transact extends Component {
       )
       .then((response) => {
         if (response.status == 200) {
-          console.log("Response ", response.data);
           this.setState({
-            transactionDetails: response.data,
+            transactionDetails: response.data.transactionDetails,
+            bankAccounts: response.data.bankAccounts,
           });
         }
       })
@@ -53,7 +55,11 @@ export class Transact extends Component {
                       <tbody>
                         {this.state.transactionDetails.map((details, index) => {
                           return (
-                            <TransactItems key={index} details={details} />
+                            <TransactItems
+                              key={index}
+                              details={details}
+                              bankAccounts={this.state.bankAccounts}
+                            />
                           );
                         })}
                       </tbody>

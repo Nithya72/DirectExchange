@@ -70,7 +70,7 @@ export class PostOffer extends Component {
         destination_country: this.state.destination_country,
         expirationdate: this.state.expirationdate,
         allowCounterOffers: this.state.allowCounterOffers,
-        allowOfferSplit: this.state.allowCounterOffers,
+        allowOfferSplit: this.state.allowOfferSplit,
       };
 
       axios
@@ -80,10 +80,24 @@ export class PostOffer extends Component {
           data
         )
         .then((res) => {
-          if (res.status === 200) alert("Offer has been posted!");
+          if (res.status === 200) {
+            alert("Offer has been posted!");
+            this.setState({
+              source_currency: "",
+              destination_currency: "",
+              source_country: "",
+              destination_country: "",
+              amount: "",
+              expirationdate: "",
+              minDate: "",
+              allowCounterOffers: true,
+              allowOfferSplit: true,
+            });
+          }
         })
         .catch((err) => {
           console.log(err.response);
+          alert(err.response.data);
         });
     }
   };
@@ -148,7 +162,6 @@ export class PostOffer extends Component {
             class="modal fade"
             id="newOfferModalPopup"
             role="dialog"
-            aria-labelledby="exampleModalCenterTitle"
             aria-hidden="true"
           >
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -167,6 +180,7 @@ export class PostOffer extends Component {
                       position: "relative",
                       left: "40px",
                     }}
+                    onClick={this.props.handleRefresh.bind(this)}
                   >
                     <span aria-hidden="true">&times;</span>
                   </button>

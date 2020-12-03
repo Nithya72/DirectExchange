@@ -3,6 +3,7 @@ import Header from "../Navigation/Header";
 import SideBar from "../Navigation/SideBar";
 import { exchangerates } from "../../helpers/exchangerates";
 import { currencyList } from "../../helpers/currencies";
+import { Link } from 'react-router-dom';
 
 export class PrevailingRates extends Component {
 
@@ -57,6 +58,8 @@ export class PrevailingRates extends Component {
             <div className="content-body">
                 <div className="myContainer">
                     <span className="PageTitle">Prevailing rates</span>
+                    <br/>
+                    <a href="#A" style={{fontSize:'20px'}}>Calculate for custom amount?</a>
                     <br/>
                     <div className="col-md-8" style={{marginTop:'20px', alignSelf: 'center', marginLeft:'-60px'}}>
                       <div className="card">
@@ -129,6 +132,7 @@ export class PrevailingRates extends Component {
                     <br/>
                     <span className="PageTitle">Calculate for custom amount</span>
                     <br/>
+                    <a name="A"></a>
                     <div className="col-md-8" style={{marginTop:'20px', alignSelf: 'center', marginLeft:'-60px'}}>
                       <div className="card">
                         <div className="buy-sell-widget">

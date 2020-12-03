@@ -60,15 +60,9 @@ export class Header extends Component {
                         <a href="/account" className="dropdown-item">
                           <i className="mdi mdi-bank" /> Account
                         </a>
-                        <a href="history.html" className="dropdown-item">
+                        {/*<a href="history.html" className="dropdown-item">
                           <i className="la la-book" /> History
-                        </a>
-                        <a href="settings.html" className="dropdown-item">
-                          <i className="la la-cog" /> Setting
-                        </a>
-                        <a href="lock.html" className="dropdown-item">
-                          <i className="la la-lock" /> Lock
-                        </a>
+                          </a>*/}
                         <Link onClick={this.onLogoutClick} to="/login" className="dropdown-item logout">
                           <i className="la la-sign-out" /> Logout
                         </Link>

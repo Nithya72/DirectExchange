@@ -16,6 +16,7 @@ import Profile from "./Profile/Profile";
 import BankAccount from "./BankAccount/BankAccount";
 import AddBankAccount from "./BankAccount/AddBankAccount";
 import ViewCounterOffers from "./ExchangeOffers/ViewCounterOffers";
+import ViewCounterOffer from "./Screens/ViewCounterOffer/ViewCounterOffer";
 
 //Create a Main Component
 class Main extends Component {
@@ -25,6 +26,11 @@ class Main extends Component {
         <Switch>
           <ProtectedRoute exact path="/" component={viewAllOffers} />
           <ProtectedRoute exact path="/ViewOffer" component={ViewOffer} />
+          <ProtectedRoute
+            exact
+            path="/ViewCounterOffer"
+            component={ViewCounterOffer}
+          />
           <Route exact path="/signup" component={SignUp} />
           <Route exact path="/login" component={Login} />
           <ProtectedRoute exact path="/getMyOffers" component={GetMyOffers} />
@@ -49,9 +55,6 @@ class Main extends Component {
             component={ViewCounterOffers}
           />
 
-          {
-            // Make sure this is always last, so we go back to / when we do not know the path.
-          }
           <Redirect to="/" />
         </Switch>
       </Router>

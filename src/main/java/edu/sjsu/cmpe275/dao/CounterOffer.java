@@ -39,11 +39,18 @@ public class CounterOffer {
   @Column(name = "counter_offer_amount", nullable = false)
   private Integer counterOfferAmount;
 
+  @ManyToOne
+  @JoinColumn(name = "third_party_id")
+  private ExchangeOffer thirdPartyOffer;
+
   @Column
   private String status;
 
   @Column(name = "expiration_date", nullable = false)
   private Date expirationDate;
+
+  @Column
+  private String type;
 
   public long getOfferId() {
     return offerId;
@@ -109,6 +116,22 @@ public class CounterOffer {
     this.expirationDate = expirationDate;
   }
 
+  public ExchangeOffer getThirdPartyOffer() {
+    return thirdPartyOffer;
+  }
+
+  public void setThirdPartyOffer(ExchangeOffer thirdPartyOffer) {
+    this.thirdPartyOffer = thirdPartyOffer;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
   @Override
   public String toString() {
     return "CounterOffer{" +
@@ -118,8 +141,10 @@ public class CounterOffer {
         ", sender=" + sender +
         ", receiver=" + receiver +
         ", counterOfferAmount=" + counterOfferAmount +
+        ", thirdPartyOffer=" + thirdPartyOffer +
         ", status='" + status + '\'' +
         ", expirationDate=" + expirationDate +
+        ", type='" + type + '\'' +
         '}';
   }
 }

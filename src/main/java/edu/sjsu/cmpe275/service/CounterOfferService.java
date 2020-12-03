@@ -59,7 +59,7 @@ public class CounterOfferService {
     }
   }
 
-  public ResponseEntity<?> postCounterOffer(ExchangeOffer senderOffer, ExchangeOffer receiverOffer, Integer counterOfferAmount) {
+  public ResponseEntity<?> postCounterOffer(ExchangeOffer senderOffer, ExchangeOffer receiverOffer, ExchangeOffer thirdPartyOffer, Integer counterOfferAmount, String type) {
 
     try {
 
@@ -75,6 +75,12 @@ public class CounterOfferService {
       counterOffer.setExpirationDate(timeNow);
       counterOffer.setSender(senderOffer.getUser());
       counterOffer.setReceiver(receiverOffer.getUser());
+      counterOffer.setType(type);
+
+      if( type.equals("split")){
+        counterOffer.setThirdPartyOffer(thirdPartyOffer);
+      }
+
       counterOfferRepository.save(counterOffer);
 
       ExchangeOffer eo = exchangeOfferRepository.findByofferId(senderOffer.getOfferId());
@@ -95,6 +101,9 @@ public class CounterOfferService {
 
     try {
 
+//      counterOfferRepository.updateStatusOfExpiredCounterMade();
+//      counterOfferRepository.updateStatusOfExpCounterOffers();
+
       List<CounterOffer> mycounterOffers = counterOfferRepository.getMyCounterOffers(userId);
       List<CounterOffer> counterOffersForMe = counterOfferRepository.getCounterOffersForMe(userId);
 
@@ -106,11 +115,11 @@ public class CounterOfferService {
   }
 
 
-
   public ResponseEntity<?> rejectCounterOffer(Long counterOfferId, Long senderInitialOfferId){
     try {
         counterOfferRepository.updateCounterOfferStatus(counterOfferId, "rejected");
         exchangeOfferRepository.updateExchangeOfferStatus(senderInitialOfferId, "Open");
+//        emailService.sendRejectCounterOfferEmail(senderOffer.getUser().getNickName(), receiverOffer.getUser().getEmailId(), receiverOffer.getUser().getNickName(), receiverOffer.getSrcCurrency(), receiverOffer.getRemitAmount());
 
         return ResponseEntity.status(HttpStatus.OK).body("Counter offer rejected successfully");
     }

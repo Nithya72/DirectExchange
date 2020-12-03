@@ -109,6 +109,8 @@ export class ViewOfferMatches extends Component {
         offers_matched1: offer,
         source_offer_amount: this.state.offer.remitAmount
       }
+
+      console.log("accept - final data: ", data);
     }
     else if(offerType === "accept-match"){
 
@@ -117,29 +119,31 @@ export class ViewOfferMatches extends Component {
         offers_matched1: offer,
         source_offer_amount: offer.finalAmount
       }
+
+      console.log("accept-match - final data: ", data);
     }
 
-   axios.post('http://localhost:8080/directexchange/api/transactions/' + decodedToken.sub, data)
-        .then(response => {
-          console.log("Status Code : ", response.status);
-          if (response.status === 200) {
-            console.log("Posted Counter Offers: ", response.data);
-            this.setState({
-              transactionFlag: true,
-            })
-          }else{
-            this.setState({
-              transactionFlag: false,
-              transactionMsg: response.data
-            })
-          }
-        })
-        .catch(error => {
-          console.log("Here we captured the error: ", error)
-          this.setState({
-            transactionFlag: false,
-          })
-        });
+   // axios.post('http://localhost:8080/directexchange/api/transactions/' + decodedToken.sub, data)
+   //      .then(response => {
+   //        console.log("Status Code : ", response.status);
+   //        if (response.status === 200) {
+   //          console.log("Posted Counter Offers: ", response.data);
+   //          this.setState({
+   //            transactionFlag: true,
+   //          })
+   //        }else{
+   //          this.setState({
+   //            transactionFlag: false,
+   //            transactionMsg: response.data
+   //          })
+   //        }
+   //      })
+   //      .catch(error => {
+   //        console.log("Here we captured the error: ", error)
+   //        this.setState({
+   //          transactionFlag: false,
+   //        })
+   //      });
 
   }
 

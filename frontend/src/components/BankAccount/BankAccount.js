@@ -4,6 +4,7 @@ import SideBar from "../Navigation/SideBar";
 import { currencyList, countries } from "../../helpers/currencies";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
+import { Redirect } from 'react-router-dom'
 
 export class BankAccount extends Component {
 
@@ -15,6 +16,8 @@ export class BankAccount extends Component {
   }
 
   getBankAccounts = () => {
+    var redirecturl = null;
+    if(localStorage.getItem('token')) {
     axios.defaults.headers.common["authorization"] =
       "Bearer " + localStorage.getItem("token");
     var decodedToken = jwt_decode(localStorage.getItem("token"));
@@ -39,6 +42,9 @@ export class BankAccount extends Component {
           myBankAccounts: null,
         });
       });
+    } else {
+      redirecturl = <Redirect to="/login"/>;
+  }
   }
 
   onChange = (event) => {
@@ -178,7 +184,7 @@ export class BankAccount extends Component {
       }
     }
 
-    var message = null;
+    var message = null, redirectUrl = null;
         
     if (this.state.successFlag === true) {
         message = <div class="alert alert-success" role="alert">Bank Account Added Successfully!</div>
@@ -186,10 +192,15 @@ export class BankAccount extends Component {
         message = <div class="alert alert-danger" role="alert">{this.state.msg}</div>
     }
 
+    if(!localStorage.getItem('token')) {
+      redirectUrl = <Redirect to="/login"/>;
+    }
+
     console.log("msg from java controller: ", this.state.msg);
 
     return (
         <div>
+        {redirectUrl}
             <Header/>
             <SideBar/>
             <div className="content-body">

@@ -101,7 +101,8 @@ export class SignUp extends Component {
 
                     <div className="or-separator"><div className="or-text">OR</div></div>
 
-                    <form>
+                    <form onSubmit={this.submitSignUp}>
+                    
                         <div className="form-item">
                             <input onChange={this.changeHandler} type="email" className="form-control" name="emailID"
                                 value={this.state.emailID} required placeholder="Username"/>
@@ -118,7 +119,7 @@ export class SignUp extends Component {
                         </div>
                         
                         <div className="form-item">
-                            <button onClick={this.submitSignUp} className="btn btn-block btn-primary" type="submit">
+                            <button className="btn btn-block btn-primary" type="submit">
                                 Sign Up 
                             </button>
                         </div>

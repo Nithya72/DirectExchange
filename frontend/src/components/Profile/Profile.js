@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import '../../App.css';
 import '../Signup/Signup.css';
 import axios from 'axios';
-import LandingPage from "../Landing/LandingPage";
-import fbLogo from '../img/fb-logo.png';
-import googleLogo from '../img/google-logo.png';
 import Header from "../Navigation/Header";
-import { Link, Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import jwt_decode from "jwt-decode";
 import SideBar from '../Navigation/SideBar';
 

@@ -56,13 +56,82 @@ export class PrevailingRates extends Component {
 
             <div className="content-body">
                 <div className="myContainer">
-                    <span className="PageTitle">Prevailing rates component</span>
+                    <span className="PageTitle">Prevailing rates</span>
                     <br/>
-                    <br/>
-                    <div className="col-md-8" style={{marginTop:'20px', alignSelf: 'center'}}>
+                    <div className="col-md-8" style={{marginTop:'20px', alignSelf: 'center', marginLeft:'-60px'}}>
                       <div className="card">
                         <div className="buy-sell-widget">
-                        <br/>
+                          <table class="table table-hover">
+                          <thead class="thead-dark">
+                          <tr>
+                          <th scope="col"> #</th>
+                          <th scope="col">USD</th> 
+                          <th scope="col">EUR</th>
+                          <th scope="col">GBP</th> 
+                          <th scope="col">INR</th>
+                          <th scope="col">RMB</th> 
+                        </tr>
+                        </thead>
+                        <tr>
+                        <thead class="thead-dark">
+                          <th scope="row">USD</th> 
+                          </thead>
+                          <td>{exchangerates['USD']['USD']}</td>
+                          <td>{exchangerates['USD']['EUR']}</td>
+                          <td>{exchangerates['USD']['GBP']}</td>
+                          <td>{exchangerates['USD']['INR']}</td>
+                          <td>{exchangerates['USD']['RMB']}</td>
+                        </tr>
+                        <tr>
+                        <thead class="thead-dark">
+                        <th scope="row">EUR</th> 
+                        </thead>
+                        <td>{exchangerates['EUR']['USD']}</td>
+                        <td>{exchangerates['EUR']['EUR']}</td>
+                        <td>{exchangerates['EUR']['GBP']}</td>
+                        <td>{exchangerates['EUR']['INR']}</td>
+                        <td>{exchangerates['EUR']['RMB']}</td>
+                        </tr>
+                        <tr>
+                        <thead class="thead-dark">
+                        <th scope="row">GBP</th> 
+                        </thead> 
+                        <td>{exchangerates['GBP']['USD']}</td>
+                        <td>{exchangerates['GBP']['EUR']}</td>
+                        <td>{exchangerates['GBP']['GBP']}</td>
+                        <td>{exchangerates['GBP']['INR']}</td>
+                        <td>{exchangerates['GBP']['RMB']}</td>
+                        </tr>
+                        <tr>
+                        <thead class="thead-dark">
+                        <th scope="row">INR</th> 
+                        </thead> 
+                        <td>{exchangerates['INR']['USD']}</td>
+                        <td>{exchangerates['INR']['EUR']}</td>
+                        <td>{exchangerates['INR']['GBP']}</td>
+                        <td>{exchangerates['INR']['INR']}</td>
+                        <td>{exchangerates['INR']['RMB']}</td>
+                        </tr>
+                        <tr>
+                        <thead class="thead-dark">
+                        <th scope="row">RMB</th> 
+                        </thead>
+                        <td>{exchangerates['RMB']['USD']}</td>
+                        <td>{exchangerates['RMB']['EUR']}</td>
+                        <td>{exchangerates['RMB']['GBP']}</td>
+                        <td>{exchangerates['RMB']['INR']}</td>
+                        <td>{exchangerates['RMB']['RMB']}</td>
+                        </tr>    
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <br/>
+                    <span className="PageTitle">Calculate for custom amount</span>
+                    <br/>
+                    <div className="col-md-8" style={{marginTop:'20px', alignSelf: 'center', marginLeft:'-60px'}}>
+                      <div className="card">
+                        <div className="buy-sell-widget">
                         <br/>
                         <center>
                           <h3>Exchange Rates</h3>
@@ -105,7 +174,6 @@ export class PrevailingRates extends Component {
                               </td>
                             </tr>
                           </table>
-                          <br/>
                           <br/>
                           <h3>
                           {this.calculateAmountRecieved()}

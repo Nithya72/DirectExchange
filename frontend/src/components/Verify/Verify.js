@@ -82,14 +82,14 @@ export class Verify extends Component {
 
                     <h1 className="title">Enter code for verification with DirectExchange</h1>
 
-                    <form>
+                    <form onSubmit={this.submitSignUp} >
                         <div className="form-item">
                             <input onChange={this.changeHandler} type="code" className="form-control" name="code"
                                 value={this.state.code} required placeholder="Verification Code"/>
                         </div>
 
                         <div className="form-item">
-                            <button onClick={this.submitSignUp} className="btn btn-block btn-primary" type="submit">
+                            <button className="btn btn-block btn-primary" type="submit">
                                 Submit 
                             </button>
                         </div>

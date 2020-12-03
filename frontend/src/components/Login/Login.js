@@ -135,7 +135,7 @@ export class Login extends Component {
 
                     <div className="or-separator"><div className="or-text">OR</div></div>
                                         
-                    <form>
+                    <form onSubmit={this.submitLogin} > 
                         <div className="form-item">
                             <input onChange={this.changeHandler} type="email" className="form-control" name="emailID"
                                 value={this.state.emailID} required placeholder="Username"/>
@@ -147,7 +147,7 @@ export class Login extends Component {
                         </div>
                         
                         <div className="form-item">
-                            <button onClick={this.submitLogin} className="btn btn-block btn-primary" type="submit">
+                            <button className="btn btn-block btn-primary" type="submit">
                                 Login
                             </button>
                         </div>

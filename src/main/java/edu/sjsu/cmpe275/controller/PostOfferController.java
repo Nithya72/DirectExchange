@@ -45,6 +45,7 @@ public class PostOfferController {
             exchangeOffer.setRemitAmount(postOffer.getAmount());
             exchangeOffer.setExchangeRate(postOffer.getExchange_rate());
             float finalRemitAmount = Math.round(postOffer.getAmount() * (float)postOffer.getExchange_rate()*100)/100;
+            System.out.println("Final Remint amount "+finalRemitAmount+"\n\n\n");
             exchangeOffer.setFinalAmount(finalRemitAmount);
             exchangeOffer.setExpDate(postOffer.getExpirationdate());
             exchangeOffer.setSrcCountry(postOffer.getSource_country());

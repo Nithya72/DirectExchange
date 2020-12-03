@@ -121,4 +121,71 @@ public class EmailService {
             return false;
         }
     }
+
+    public boolean sendTransactionEmail(@NonNull String senderName, @NonNull String emailId, @NonNull String receiverName, @NonNull String srcCurrency, @NonNull Float remitAmount) {
+
+        try {
+
+            // If a test email is set up in the application properties, send email to that instead all the time.
+            if (appConfig.getEmail() != null && StringUtils.hasText(appConfig.getEmail().getTestEmail())) {
+                emailId = appConfig.getEmail().getTestEmail();
+            }
+
+            System.out.println("In here!\n\n\n" + emailId);
+
+            Message message = new MimeMessage(getSession());
+            message.setFrom(new InternetAddress(appConfig.getEmail().getUsername()));
+            message.setRecipients(
+                    Message.RecipientType.TO,
+                    InternetAddress.parse(emailId)
+            );
+            message.setSubject("DirectExchange - Complete Offer Transaction!");
+            message.setText(
+                    String.format("Dear %s,"
+                                    + "\n\n %s has accepted your initial offer - %s %.2f"
+                                    + "\n\n Please complete the transaction in 10 minutes otherwise it will expire!",
+                            receiverName, senderName, srcCurrency, remitAmount)
+            );
+
+            Transport.send(message);
+            log.info("Successfully send email to {}", emailId);
+            return true;
+
+        } catch (MessagingException e) {
+            log.error("Unable to send email for email {}", emailId, e);
+            return false;
+        }
+    }
+
+    public boolean sendCustomNotification(@NonNull String userName, @NonNull String emailId, @NonNull String emailMessage) {
+
+        try {
+
+            // If a test email is set up in the application properties, send email to that instead all the time.
+            if (appConfig.getEmail() != null && StringUtils.hasText(appConfig.getEmail().getTestEmail())) {
+                emailId = appConfig.getEmail().getTestEmail();
+            }
+
+            System.out.println("In here!\n\n\n" + emailId);
+
+            Message message = new MimeMessage(getSession());
+            message.setFrom(new InternetAddress(appConfig.getEmail().getUsername()));
+            message.setRecipients(
+                    Message.RecipientType.TO,
+                    InternetAddress.parse(emailId)
+            );
+            message.setSubject("DirectExchange - Complete Offer Transaction!");
+            message.setText(
+                    String.format("Dear %s,\n\n" + emailMessage, userName)
+            );
+
+            Transport.send(message);
+            log.info("Successfully send email to {}", emailId);
+            return true;
+
+        } catch (MessagingException e) {
+            log.error("Unable to send email for email {}", emailId, e);
+            return false;
+        }
+    }
 }

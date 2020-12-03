@@ -291,7 +291,7 @@ export class PostOffer extends Component {
                           class="form-text text-muted"
                           style={{ marginBottom: "20px" }}
                         >
-                          Transaction fee of 0.05%
+                          Includes transaction fee of 0.05%
                         </small>
                         <div
                           class="form-group form-check"

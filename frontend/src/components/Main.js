@@ -23,10 +23,10 @@ class Main extends Component {
     return (
         <Router history={history}>
           <Switch>
-            <Route exact path="/viewAllOffers" component={viewAllOffers} />
+            <Route exact path="/" component={viewAllOffers} />
             <Route exact path="/ViewOffer" component={ViewOffer} />
             <Route exact path="/signup" component={SignUp} />
-            <Route exact path="/" component={Login} />
+            <Route exact path="/login" component={Login} />
             <Route exact path="/getMyOffers" component={GetMyOffers} />
             <Route exact path="/oauth2/redirect" component={OAuth2RedirectHandler}></Route> 
             <Route exact path="/viewOfferMatches" component={ViewOfferMatches}/>

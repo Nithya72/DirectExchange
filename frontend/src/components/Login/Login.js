@@ -104,7 +104,7 @@ export class Login extends Component {
 
         var redirectUrl, message;
         if (localStorage.getItem("token") !== null) {
-            redirectUrl = <Redirect to="/viewAllOffers"></Redirect>
+            redirectUrl = <Redirect to="/"></Redirect>
         }
         if (this.state.successFlag === true) {
             message = <div class="alert alert-success" role="alert">{this.state.msg}</div>

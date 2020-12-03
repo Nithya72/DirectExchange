@@ -55,7 +55,7 @@ export class BankAccount extends Component {
     var bankDetailsDisplay = [];
     myBankAccounts.map((account) => {
       var bankDetailDisplay = (
-        <div
+        <div key={account.bankAccountId}
           className="col-md-6"
           style={{ display: "flex", justifyContent: "center", marginLeft:'25%' }}
         >
@@ -143,7 +143,7 @@ export class BankAccount extends Component {
                 <div className="myContainer">
                 <span className="PageTitle">Bank Account Details</span>
                 <br/>
-                <a href='/addAccount' class="btn btn-success myButton" style={{width:'20%'}}>Add an Account</a>
+                <a href='/addAccount' className="btn btn-success myButton" style={{width:'20%'}}>Add an Account</a>
                 <br/>
                     {banksToDisplay}
                 </div>

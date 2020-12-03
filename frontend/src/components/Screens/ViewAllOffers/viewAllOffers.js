@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-
+import {Redirect} from 'react-router-dom';
 import Header from "../../Navigation/Header";
 import SideBar from "../../Navigation/SideBar";
 
@@ -27,6 +27,7 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
+    if(localStorage.getItem('token')) {
     axios.defaults.headers.common["authorization"] =
       "Bearer " + localStorage.getItem("token");
     var decodedToken = jwt_decode(localStorage.getItem("token"));
@@ -44,6 +45,7 @@ export default class Home extends Component {
         console.log("Here we captured the error: ", error);
         this.setState({ dataFetched: null, isLoading: true });
       });
+    } 
   }
 
   filterUpdate = (event, type) => {
@@ -116,8 +118,16 @@ export default class Home extends Component {
           />
         );
       });
+
+      var redirectUrl = null;
+
+    if(!localStorage.getItem('token')) {
+      redirectUrl = <Redirect to="/login"/>;
+    }
+
     return (
       <div>
+      {redirectUrl}
         <Header />
         <SideBar />
 

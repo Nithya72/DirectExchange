@@ -96,7 +96,7 @@ export class TransactDetails extends Component {
         alert(err.response.data);
       });
 
-    setTimeout(() => window.location.reload(), 3000);
+    setTimeout(() => window.location.reload(), 1000);
   };
 
   render() {
@@ -131,13 +131,13 @@ export class TransactDetails extends Component {
         <button
           className="post-offer-button"
           data-toggle="modal"
-          data-target="#transactionDetailsModalPopup"
+          data-target={`#transactionDetailsModalPopup` + this.props.details.id}
         >
           Fill Details
         </button>
         <div
           class="modal fade"
-          id="transactionDetailsModalPopup"
+          id={`transactionDetailsModalPopup` + this.props.details.id}
           role="dialog"
           aria-hidden="true"
         >

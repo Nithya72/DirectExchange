@@ -108,7 +108,7 @@ public class EmailService {
             message.setText(
                 String.format("Dear %s,"
                         + "\n\n %s has sent you a new counter offer for your initial offer - %s %3.14f"
-                        + "\n\n Please login to view more details.",
+                        + "\n\n The offer expires in 5 minutes. Please login to view more details.",
                     receiverName, senderName, srcCurrency, remitAmount)
             );
 
@@ -185,6 +185,39 @@ public class EmailService {
 
         } catch (MessagingException e) {
             log.error("Unable to send email for email {}", emailId, e);
+            return false;
+        }
+    }
+
+    public boolean sendRejectCounterOfferEmail(@NonNull String rejectMsgFromUser,@NonNull String rejectMsgToEmail) {
+
+        try {
+
+            // If a test email is set up in the application properties, send email to that instead all the time.
+            if (appConfig.getEmail() != null && StringUtils.hasText(appConfig.getEmail().getTestEmail())) {
+                rejectMsgToEmail = appConfig.getEmail().getTestEmail();
+            }
+
+            Message message = new MimeMessage(getSession());
+            message.setFrom(new InternetAddress(appConfig.getEmail().getUsername()));
+            message.setRecipients(
+                Message.RecipientType.TO,
+                InternetAddress.parse(rejectMsgToEmail)
+            );
+            message.setSubject("DirectExchange - Counter Offer Rejected!");
+            message.setText(
+                String.format("Dear User,"
+                        + "\n\n %s has rejected your recent counter offer."
+                        + "\n\n Please login to view more details.",
+                    rejectMsgFromUser)
+            );
+
+            Transport.send(message);
+            log.info("Successfully send email to {}", rejectMsgToEmail);
+            return true;
+
+        } catch (MessagingException e) {
+            log.error("Unable to send email for email {}", rejectMsgToEmail, e);
             return false;
         }
     }

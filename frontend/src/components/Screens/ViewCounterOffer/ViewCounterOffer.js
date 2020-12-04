@@ -44,8 +44,12 @@ export default class Home extends Component {
 
     var data = {
       counterOfferId: this.props.location.state.counterOfferId,
-      senderInitialOfferId: this.props.location.state.offerObj.offerId
+      senderInitialOfferId: this.props.location.state.offerObj.offerId,
+      rejectMsgFromUser: this.props.location.state.receiverOfferObj.user.nickName,
+      rejectMsgToEmail: this.props.location.state.offerObj.user.email,
     }
+
+    console.log("data to reject: ", data);
 
     axios.put('http://localhost:8080/directexchange/user/counteroffer', data)
         .then(response => {
@@ -67,7 +71,6 @@ export default class Home extends Component {
             rejectFlag: false,
           })
         });
-
 
   }
 
@@ -148,13 +151,6 @@ export default class Home extends Component {
           })
         });
 
-
-
-
-
-
-
-
   }
 
 
@@ -167,6 +163,8 @@ export default class Home extends Component {
     let type = this.props.location.state.type;
 
     console.log("counterOfferId: ", counterOfferId);
+    console.log("sender: ", OfferObj);
+    console.log("receiver: ", receiverOfferObj);
 
     var errorMsg = "";
     var redirectVar = "";

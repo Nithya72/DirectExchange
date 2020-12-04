@@ -3,12 +3,11 @@ import { Link, Redirect } from "react-router-dom";
 import "./Navigation.css";
 
 export class Header extends Component {
-
   componentDidMount() {
     if (localStorage.getItem("token") === null) {
       this.setState({
         logout: true,
-      })
+      });
     }
   }
 
@@ -17,16 +16,17 @@ export class Header extends Component {
     this.setState({
       logout: true,
     });
-  }
+    console.log("In logout ", localStorage.getItem("token"));
+  };
 
   render() {
     var redirectUrl = null;
     if (this.state && this.state.logout) {
-      redirectUrl = <Redirect to="/login"/>;
-    } 
-    
+      redirectUrl = <Redirect to="/login" />;
+    }
+
     if (!localStorage.getItem("token")) {
-      redirectUrl = <Redirect to="/login"/>;
+      redirectUrl = <Redirect to="/login" />;
     }
     return (
       <div className="header">
@@ -38,9 +38,15 @@ export class Header extends Component {
                 <div className="header-search">
                   <form action="#">
                     <div className="input-group">
-                      <input type="text" className="form-control" placeholder="Search" />
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search"
+                      />
                       <div className="input-group-append">
-                        <span className="input-group-text" id="basic-addon2"><i className="fa fa-search" /></span>
+                        <span className="input-group-text" id="basic-addon2">
+                          <i className="fa fa-search" />
+                        </span>
                       </div>
                     </div>
                   </form>
@@ -48,10 +54,14 @@ export class Header extends Component {
                 <div className="dashboard_log my-2">
                   <div className="d-flex align-items-center">
                     <div className="profile_log dropdown">
-                      <div className="user" data-toggle="dropdown" >
-                        <span className="thumb"><i className="mdi mdi-account" /></span>
+                      <div className="user" data-toggle="dropdown">
+                        <span className="thumb">
+                          <i className="mdi mdi-account" />
+                        </span>
                         <span className="name">Hi User!</span>
-                        <span className="arrow"><i className="la la-angle-down" /></span>
+                        <span className="arrow">
+                          <i className="la la-angle-down" />
+                        </span>
                       </div>
                       <div className="dropdown-menu dropdown-menu-right">
                         <a href="/profile" className="dropdown-item">
@@ -63,7 +73,11 @@ export class Header extends Component {
                         {/*<a href="history.html" className="dropdown-item">
                           <i className="la la-book" /> History
                           </a>*/}
-                        <Link onClick={this.onLogoutClick} to="/login" className="dropdown-item logout">
+                        <Link
+                          onClick={this.onLogoutClick}
+                          to="/login"
+                          className="dropdown-item logout"
+                        >
                           <i className="la la-sign-out" /> Logout
                         </Link>
                       </div>

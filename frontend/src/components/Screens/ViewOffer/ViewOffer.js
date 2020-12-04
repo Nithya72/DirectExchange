@@ -119,6 +119,8 @@ export default class Home extends Component {
     let counterOfferId = this.props.location.state.counterOfferId;
 
     console.log("counterOfferId: ", counterOfferId);
+    console.log("sender: ", OfferObj);
+    console.log("receiver: ", receiverOfferObj);
 
     var errorMsg = "";
     var redirectVar = "";

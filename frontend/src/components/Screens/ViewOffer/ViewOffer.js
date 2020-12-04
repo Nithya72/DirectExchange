@@ -53,7 +53,9 @@ export default class Home extends Component {
 
     var data = {
       counterOfferId: this.props.location.state.counterOfferId,
-      senderInitialOfferId: this.props.location.state.offerObj.offerId
+      senderInitialOfferId: this.props.location.state.offerObj.offerId,
+      rejectMsgFromUser: this.props.location.state.receiverOfferObj.user.nickName,
+      rejectMsgToEmail: this.props.location.state.offerObj.user.emailId,
     }
 
     axios.put('http://localhost:8080/directexchange/user/counteroffer', data)

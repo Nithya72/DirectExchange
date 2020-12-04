@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -20,15 +22,18 @@ public class JwtTokenProvider {
     }
 
     public String createToken(User user) {
-       return createToken(Long.toString(user.getUserId()));
+       return createToken(Long.toString(user.getUserId()), user.getNickName());
     }
 
-    public String createToken(String userId) {
+    public String createToken(String userId, String nickName) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + appConfig.getJwtProps().getTokenExpirationMsec());
 
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("nickName", nickName);
+        claims.put("sub", userId);
         return Jwts.builder()
-                .setSubject(userId)
+                .setClaims(claims)
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, appConfig.getJwtProps().getTokenSecret())

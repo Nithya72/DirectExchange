@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import "./Navigation.css";
+import jwt_decode from "jwt-decode";
 
 export class Header extends Component {
   componentDidMount() {
@@ -13,6 +14,7 @@ export class Header extends Component {
 
   onLogoutClick = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("nickName");
     this.setState({
       logout: true,
     });
@@ -58,7 +60,9 @@ export class Header extends Component {
                         <span className="thumb">
                           <i className="mdi mdi-account" />
                         </span>
-                        <span className="name">Hi User!</span>
+                        <span className="name">{localStorage.getItem("nickName") == null 
+                                                ? 'Hi User!' : 'Hi ' + localStorage.getItem("nickName") + '!'
+                                              }</span>
                         <span className="arrow">
                           <i className="la la-angle-down" />
                         </span>

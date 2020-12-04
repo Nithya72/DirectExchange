@@ -74,6 +74,7 @@ export class Profile extends Component {
                     this.setState({
                         successFlag: true,
                     })
+                    localStorage.setItem("nickName", this.state.nickName )
                 }
             })
             .catch(error => {

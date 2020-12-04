@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom'
+import jwt_decode from "jwt-decode";
 
 class OAuth2RedirectHandler extends Component {
     getUrlParameter(name) {
@@ -16,6 +17,9 @@ class OAuth2RedirectHandler extends Component {
         console.log("I did come here!!!", token, error)
         if(token) {
             localStorage.setItem("token", token);
+            var decodedToken = jwt_decode(localStorage.getItem("token"));
+            console.log("decodedUserId: ", decodedToken.nickName);
+            localStorage.setItem("nickName", decodedToken.nickName);
             return <Redirect to={{
                 pathname: "/",
                 state: { from: this.props.location }

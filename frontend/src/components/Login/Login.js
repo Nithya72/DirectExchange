@@ -7,6 +7,7 @@ import fbLogo from '../img/fb-logo.png';
 import googleLogo from '../img/google-logo.png';
 import Header from "../Navigation/Header";
 import { Link, Redirect } from 'react-router-dom'
+import jwt_decode from "jwt-decode";
 
 export class Login extends Component {
     constructor(props) {
@@ -84,6 +85,11 @@ export class Login extends Component {
                 if (response.status === 200) {
                     console.log("Successful Login: ", response.data);
                     localStorage.setItem("token", response.data.accessToken);
+                    if (response.data.accessToken) {
+                        var decodedToken = jwt_decode(response.data.accessToken);
+                        console.log(decodedToken)
+                        localStorage.setItem("nickName", decodedToken.nickName);
+                    }
                     this.setState({
                         successFlag: true,
                         msg: 'Successfully Login!'

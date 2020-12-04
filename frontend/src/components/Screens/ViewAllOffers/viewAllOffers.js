@@ -15,11 +15,6 @@ export default class Home extends Component {
     super();
 
     this.state = {
-      offset: 0,
-      data: [],
-      perPage: 2,
-      currentPage: 0,
-
       srcCountry: null,
       srcCurrency: null,
       srcPriceStart: null,
@@ -31,10 +26,6 @@ export default class Home extends Component {
       dataFetched: {},
       isLoading: true,
     };
-
-    this.handlePageClick = this
-              .handlePageClick
-              .bind(this);
   }
 
   getCurrencies = () => {
@@ -58,40 +49,7 @@ export default class Home extends Component {
     return countriesList;
   };
 
-  receivedData() {
-        axios
-            .get(`https://jsonplaceholder.typicode.com/photos`)
-            .then(res => {
-
-                const data = res.data;
-                const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
-                const postData = slice.map(pd => <React.Fragment>
-                    <p>{pd.title}</p>
-                    <img src={pd.thumbnailUrl} alt=""/>
-                </React.Fragment>)
-
-                this.setState({
-                    pageCount: Math.ceil(data.length / this.state.perPage),
-
-                    postData
-                })
-            });
-    }
-    handlePageClick = (e) => {
-        const selectedPage = e.selected;
-        const offset = selectedPage * this.state.perPage;
-
-        this.setState({
-            currentPage: selectedPage,
-            offset: offset
-        }, () => {
-            this.receivedData()
-        });
-
-    };
-
   componentDidMount() {
-    this.receivedData()
     if (localStorage.getItem("token")) {
       axios.defaults.headers.common["authorization"] =
         "Bearer " + localStorage.getItem("token");
@@ -200,22 +158,6 @@ export default class Home extends Component {
           <div className="myContainer">
             <span className="PageTitle">View All Offers</span>
             <Automatch />
-
-            <div>
-                         {this.state.postData}
-                         <ReactPaginate
-                             previousLabel={"prev"}
-                             nextLabel={"next"}
-                             breakLabel={"..."}
-                             breakClassName={"break-me"}
-                             pageCount={this.state.pageCount}
-                             marginPagesDisplayed={2}
-                             pageRangeDisplayed={5}
-                             onPageChange={this.handlePageClick}
-                             containerClassName={"pagination"}
-                             subContainerClassName={"pages pagination"}
-                             activeClassName={"active"}/>
-                     </div>
 
             <div className="row">
               <div className="col-xl-3">
@@ -336,6 +278,15 @@ export default class Home extends Component {
 
               <div className="col-xl-9" style={{ maxWidth: "900px" }}>
                 <div className="row">
+                  {/* <OfferComponent
+                    postedBy="Vatsa Patel"
+                    srcCountry="India"
+                    srcCurrency="INR"
+                    remitAmount="75,000"
+                    destCurrency="USD"
+                    destCountry="United States"
+                    finalAmount="1000"
+                  /> */}
                   {this.state.isLoading ? (
                     <div className="preloading">
                       <div id="preloader">

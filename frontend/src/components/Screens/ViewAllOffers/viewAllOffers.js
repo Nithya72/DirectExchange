@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import {Redirect} from 'react-router-dom';
+import { Redirect } from "react-router-dom";
+import ReactPaginate from 'react-paginate';
 import Header from "../../Navigation/Header";
 import SideBar from "../../Navigation/SideBar";
+import { currencyList, countries } from "../../../helpers/currencies";
 
 import Automatch from "../../Automatch/automatch.js";
 import OfferComponent from "./offerComponent";
@@ -13,6 +15,11 @@ export default class Home extends Component {
     super();
 
     this.state = {
+      offset: 0,
+      data: [],
+      perPage: 2,
+      currentPage: 0,
+
       srcCountry: null,
       srcCurrency: null,
       srcPriceStart: null,
@@ -24,28 +31,86 @@ export default class Home extends Component {
       dataFetched: {},
       isLoading: true,
     };
+
+    this.handlePageClick = this
+              .handlePageClick
+              .bind(this);
   }
 
-  componentDidMount() {
-    if(localStorage.getItem('token')) {
-    axios.defaults.headers.common["authorization"] =
-      "Bearer " + localStorage.getItem("token");
-    var decodedToken = jwt_decode(localStorage.getItem("token"));
-    axios
-      .get(
-        "http://localhost:8080/directexchange/user/allOffers/" +
-          decodedToken.sub
-      )
-      .then((response) => {
-        if (response.status === 200) {
-          this.setState({ dataFetched: response.data, isLoading: false });
-        }
-      })
-      .catch((error) => {
-        console.log("Here we captured the error: ", error);
-        this.setState({ dataFetched: null, isLoading: true });
+  getCurrencies = () => {
+    let currencies = currencyList.map((curr) => {
+      return (
+        <option key={curr.code} value={curr.code}>
+          {curr.name} - {curr.code}
+        </option>
+      );
+    });
+    return currencies;
+  };
+
+  getCountries = (currency) => {
+    let listofcountries = countries[currency].split("|");
+    let countriesList = listofcountries
+      .filter((name) => name !== "")
+      .map((name) => {
+        return <option value={name}>{name}</option>;
       });
-    } 
+    return countriesList;
+  };
+
+  receivedData() {
+        axios
+            .get(`https://jsonplaceholder.typicode.com/photos`)
+            .then(res => {
+
+                const data = res.data;
+                const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
+                const postData = slice.map(pd => <React.Fragment>
+                    <p>{pd.title}</p>
+                    <img src={pd.thumbnailUrl} alt=""/>
+                </React.Fragment>)
+
+                this.setState({
+                    pageCount: Math.ceil(data.length / this.state.perPage),
+
+                    postData
+                })
+            });
+    }
+    handlePageClick = (e) => {
+        const selectedPage = e.selected;
+        const offset = selectedPage * this.state.perPage;
+
+        this.setState({
+            currentPage: selectedPage,
+            offset: offset
+        }, () => {
+            this.receivedData()
+        });
+
+    };
+
+  componentDidMount() {
+    this.receivedData()
+    if (localStorage.getItem("token")) {
+      axios.defaults.headers.common["authorization"] =
+        "Bearer " + localStorage.getItem("token");
+      var decodedToken = jwt_decode(localStorage.getItem("token"));
+      axios
+        .get(
+          "http://localhost:8080/directexchange/user/allOffers/" +
+            decodedToken.sub
+        )
+        .then((response) => {
+          if (response.status === 200) {
+            this.setState({ dataFetched: response.data, isLoading: false });
+          }
+        })
+        .catch((error) => {
+          console.log("Here we captured the error: ", error);
+          this.setState({ dataFetched: null, isLoading: true });
+        });
+    }
   }
 
   filterUpdate = (event, type) => {
@@ -56,7 +121,7 @@ export default class Home extends Component {
 
   render() {
     const offers = Object.assign([], this.state.dataFetched);
-    console.log(offers);
+    console.log(this.state);
     const items = offers
       .filter((offerObj) => {
         if (this.state.srcCountry == null) return offerObj;
@@ -119,15 +184,15 @@ export default class Home extends Component {
         );
       });
 
-      var redirectUrl = null;
+    var redirectUrl = null;
 
-    if(!localStorage.getItem('token')) {
-      redirectUrl = <Redirect to="/login"/>;
+    if (!localStorage.getItem("token")) {
+      redirectUrl = <Redirect to="/login" />;
     }
 
     return (
       <div>
-      {redirectUrl}
+        {redirectUrl}
         <Header />
         <SideBar />
 
@@ -135,6 +200,22 @@ export default class Home extends Component {
           <div className="myContainer">
             <span className="PageTitle">View All Offers</span>
             <Automatch />
+
+            <div>
+                         {this.state.postData}
+                         <ReactPaginate
+                             previousLabel={"prev"}
+                             nextLabel={"next"}
+                             breakLabel={"..."}
+                             breakClassName={"break-me"}
+                             pageCount={this.state.pageCount}
+                             marginPagesDisplayed={2}
+                             pageRangeDisplayed={5}
+                             onPageChange={this.handlePageClick}
+                             containerClassName={"pagination"}
+                             subContainerClassName={"pages pagination"}
+                             activeClassName={"active"}/>
+                     </div>
 
             <div className="row">
               <div className="col-xl-3">
@@ -150,9 +231,11 @@ export default class Home extends Component {
                           onChange={(e) => this.filterUpdate(e, "srcCountry")}
                         >
                           <option value>Select</option>
+                          <option value="United States">United States</option>
                           <option value="India">India</option>
                           <option value="United Kingdom">United Kingdom</option>
-                          <option value="United States">United States</option>
+                          <option value="China">China</option>
+                          <option value="Europe">Europe</option>
                         </select>
                       </div>
 
@@ -163,9 +246,7 @@ export default class Home extends Component {
                           onChange={(e) => this.filterUpdate(e, "srcCurrency")}
                         >
                           <option value>Select</option>
-                          <option value="INR">INR</option>
-                          <option value="GBP">GBP</option>
-                          <option value="USD">USD</option>
+                          {this.getCurrencies()}
                         </select>
                       </div>
 
@@ -204,9 +285,11 @@ export default class Home extends Component {
                           onChange={(e) => this.filterUpdate(e, "destCountry")}
                         >
                           <option value>Select</option>
+                          <option value="United States">United States</option>
                           <option value="India">India</option>
                           <option value="United Kingdom">United Kingdom</option>
-                          <option value="United States">United States</option>
+                          <option value="China">China</option>
+                          <option value="Europe">Europe</option>
                         </select>
                       </div>
 
@@ -217,9 +300,7 @@ export default class Home extends Component {
                           onChange={(e) => this.filterUpdate(e, "destCurrency")}
                         >
                           <option value>Select</option>
-                          <option value="INR">INR</option>
-                          <option value="GBP">GBP</option>
-                          <option value="USD">USD</option>
+                          {this.getCurrencies()}
                         </select>
                       </div>
 
@@ -255,26 +336,19 @@ export default class Home extends Component {
 
               <div className="col-xl-9" style={{ maxWidth: "900px" }}>
                 <div className="row">
-                  {/* <OfferComponent
-                    postedBy="Vatsa Patel"
-                    srcCountry="India"
-                    srcCurrency="INR"
-                    remitAmount="75,000"
-                    destCurrency="USD"
-                    destCountry="United States"
-                    finalAmount="1000"
-                  /> */}
-                {this.state.isLoading ?
-                  <div className="preloading">
-                    <div id="preloader">
-                      <div className="sk-three-bounce">
-                        <div className="sk-child sk-bounce1" />
-                        <div className="sk-child sk-bounce2" />
-                        <div className="sk-child sk-bounce3" />
+                  {this.state.isLoading ? (
+                    <div className="preloading">
+                      <div id="preloader">
+                        <div className="sk-three-bounce">
+                          <div className="sk-child sk-bounce1" />
+                          <div className="sk-child sk-bounce2" />
+                          <div className="sk-child sk-bounce3" />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  : items}
+                  ) : (
+                    items
+                  )}
                 </div>
               </div>
             </div>

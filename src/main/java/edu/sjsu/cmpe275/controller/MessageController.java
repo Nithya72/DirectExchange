@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe275.controller;
 
+import edu.sjsu.cmpe275.repository.UserRepository;
 import edu.sjsu.cmpe275.service.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +19,25 @@ public class MessageController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @PreAuthorize("#userId == authentication.principal")
     @PostMapping(value = "/{id}", produces = {"application/json"})
     public ResponseEntity sendMessage(@PathVariable(value = "id") String userId,
-                                            @RequestParam(name = "sender_name")  String sender_name,
-                                            @RequestParam(name = "reciever_name")  String reciever_name,
+                                            @RequestParam(name = "receiver_name")  String receiver_name,
                                             @RequestParam(name = "receiver_email") String receiver_email,
                                             @RequestParam(name = "message") String message
     ){
+        System.out.println("test" + receiver_email);
+        System.out.println("test" + receiver_name);
+        System.out.println("test" + message);
+        System.out.println("test" + receiver_email);
 
+        Long id = Long.parseLong(userId);
 
-
-        if(emailService.sendMessageNotification(sender_name,reciever_name,receiver_email,message)) {
+        String sender_name = userRepository.findByUserId(id).getNickName();
+        if(emailService.sendMessageNotification(sender_name,receiver_name,receiver_email,message)) {
             return ResponseEntity.status(HttpStatus.OK).body("Success");
         }
         else{

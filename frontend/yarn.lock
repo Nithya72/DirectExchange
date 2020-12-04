@@ -6517,7 +6517,7 @@ jsx-ast-utils@^2.2.1, jsx-ast-utils@^2.2.3:
     array-includes "^3.1.1"
     object.assign "^4.1.0"
 
-jwt-decode@^3.0.0:
+jwt-decode@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/jwt-decode/-/jwt-decode-3.1.2.tgz#3fb319f3675a2df0c2895c8f5e9fa4b67b04ed59"
   integrity sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==
@@ -8912,6 +8912,13 @@ react-native-vector-icons@^4.5.0:
     lodash "^4.0.0"
     prop-types "^15.5.10"
     yargs "^8.0.2"
+
+react-paginate@^6.5.0:
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/react-paginate/-/react-paginate-6.5.0.tgz#b9baf53627b115cfd688afa048776aa45bffda19"
+  integrity sha512-H7xSi9jyiJzgfaj+2nNhQcjZfwzJ/Mxb64V2RiyDctjZyCWojwsaGwMqhLBpQ58iAuMVtBMRQ7ECqMcUKG9QSQ==
+  dependencies:
+    prop-types "^15.6.1"
 
 react-redux@^7.2.1:
   version "7.2.2"

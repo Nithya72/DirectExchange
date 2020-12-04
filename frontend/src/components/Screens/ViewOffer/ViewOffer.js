@@ -22,15 +22,25 @@ export default class Home extends Component {
   }
 
   sendMessage=()=>{
-    const message = {
-      message: this.state.message
-    };
 
-    axios.post(`https://jsonplaceholder.typicode.com/users`, { message })
-      .then(res => {
-        console.log(res);
-        console.log(res.data);
-      })
+    let formdata = new FormData();
+    formdata.append("receiver_name", this.props.location.state.offerObj.user.nickName);
+    formdata.append("receiver_email", this.props.location.state.offerObj.user.emailId);
+    formdata.append("message", this.state.message);
+    axios.defaults.headers.common["authorization"] =
+      "Bearer " + localStorage.getItem("token");
+    var decodedToken = jwt_decode(localStorage.getItem("token"));
+    axios
+      .post(
+        "http://localhost:8080/directexchange/api/message/" +
+          decodedToken.sub,
+        formdata
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          window.location.reload();
+        }
+      });
   }
 
 
@@ -118,6 +128,7 @@ export default class Home extends Component {
     let receiverOfferObj = this.props.location.state.receiverOfferObj;
     let counterOfferId = this.props.location.state.counterOfferId;
 
+    console.log(OfferObj);
     console.log("counterOfferId: ", counterOfferId);
     console.log("sender: ", OfferObj);
     console.log("receiver: ", receiverOfferObj);

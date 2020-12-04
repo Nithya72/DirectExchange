@@ -224,9 +224,7 @@ public class EmailService {
 
 
     public boolean sendMessageNotification(@NonNull String senderName,@NonNull String recieverName, @NonNull String emailId, @NonNull String emailMessage)  {
-
         try {
-
             // If a test email is set up in the application properties, send email to that instead all the time.
             if (appConfig.getEmail() != null && StringUtils.hasText(appConfig.getEmail().getTestEmail())) {
                 emailId = appConfig.getEmail().getTestEmail();

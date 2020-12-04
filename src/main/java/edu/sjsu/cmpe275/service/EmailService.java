@@ -192,7 +192,7 @@ public class EmailService {
     public boolean sendRejectCounterOfferEmail(@NonNull String rejectMsgFromUser,@NonNull String rejectMsgToEmail) {
 
         try {
-
+//            log.info("inside reject test mail: {} --- {}", rejectMsgFromUser, rejectMsgToEmail);
             // If a test email is set up in the application properties, send email to that instead all the time.
             if (appConfig.getEmail() != null && StringUtils.hasText(appConfig.getEmail().getTestEmail())) {
                 rejectMsgToEmail = appConfig.getEmail().getTestEmail();

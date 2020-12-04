@@ -46,7 +46,7 @@ export default class Home extends Component {
       counterOfferId: this.props.location.state.counterOfferId,
       senderInitialOfferId: this.props.location.state.offerObj.offerId,
       rejectMsgFromUser: this.props.location.state.receiverOfferObj.user.nickName,
-      rejectMsgToEmail: this.props.location.state.offerObj.user.email,
+      rejectMsgToEmail: this.props.location.state.offerObj.user.emailId,
     }
 
     console.log("data to reject: ", data);

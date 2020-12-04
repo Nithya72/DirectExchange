@@ -221,4 +221,36 @@ public class EmailService {
             return false;
         }
     }
+
+
+    public boolean sendMessageNotification(@NonNull String senderName,@NonNull String recieverName, @NonNull String emailId, @NonNull String emailMessage)  {
+
+        try {
+
+            // If a test email is set up in the application properties, send email to that instead all the time.
+            if (appConfig.getEmail() != null && StringUtils.hasText(appConfig.getEmail().getTestEmail())) {
+                emailId = appConfig.getEmail().getTestEmail();
+            }
+
+
+            Message message = new MimeMessage(getSession());
+            message.setFrom(new InternetAddress(appConfig.getEmail().getUsername()));
+            message.setRecipients(
+                    Message.RecipientType.TO,
+                    InternetAddress.parse(emailId)
+            );
+            message.setSubject(String.format("Direct Exchange - You have a message from %s", senderName));
+            message.setText(
+                    String.format("Dear %s,\n\n" + emailMessage, recieverName)
+            );
+
+            Transport.send(message);
+            log.info("Successfully send email to {}", emailId);
+            return true;
+
+        } catch (MessagingException e) {
+            log.error("Unable to send email for email {}", emailId, e);
+            return false;
+        }
+    }
 }

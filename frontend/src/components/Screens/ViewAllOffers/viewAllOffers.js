@@ -2,9 +2,12 @@ import React, { Component } from "react";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { Redirect } from "react-router-dom";
-import ReactPaginate from 'react-paginate';
+import ReactPaginate from "react-paginate";
 import Header from "../../Navigation/Header";
 import SideBar from "../../Navigation/SideBar";
+
+import Pagination from "./Pagination";
+
 import { currencyList, countries } from "../../../helpers/currencies";
 
 import Automatch from "../../Automatch/automatch.js";
@@ -142,6 +145,18 @@ export default class Home extends Component {
         );
       });
 
+    const array = Array(400)
+        .fill(0)
+        .map((_, i) => i);
+
+    const totalPages = Math.ceil(items.length / 10);
+
+      const Elemento = ({ item }) => (
+        <>
+          <h4>Este é o elemnto {item}</h4>
+        </>
+      );
+
     var redirectUrl = null;
 
     if (!localStorage.getItem("token")) {
@@ -157,9 +172,8 @@ export default class Home extends Component {
         <div className="content-body">
           <div className="myContainer">
             <span className="PageTitle">View All Offers</span>
-            <Automatch />
 
-            <div className="row">
+            <div className="row" style={{marginTop: '40px'}}>
               <div className="col-xl-3">
                 <div className="card">
                   <div className="card-body">
@@ -277,7 +291,7 @@ export default class Home extends Component {
               </div>
 
               <div className="col-xl-9" style={{ maxWidth: "900px" }}>
-                <div className="row">
+
                   {/* <OfferComponent
                     postedBy="Vatsa Patel"
                     srcCountry="India"
@@ -298,9 +312,19 @@ export default class Home extends Component {
                       </div>
                     </div>
                   ) : (
-                    items
+                    <Pagination
+                      elementToRender={(e) => e}
+                      elementsPerPage={10}
+                      totalPages={totalPages}
+                      handleNextPage={(page, pageSize) => {
+                        const pageParsed = page - 1;
+                        return items.slice(
+                          pageParsed * pageSize,
+                          (pageParsed + 1) * pageSize
+                        );
+                      }}
+                    />
                   )}
-                </div>
               </div>
             </div>
           </div>

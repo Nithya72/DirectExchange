@@ -1,15 +1,12 @@
 package edu.sjsu.cmpe275.service;
 
-import edu.sjsu.cmpe275.config.AppConfig;
 import edu.sjsu.cmpe275.dao.CounterOffer;
 import edu.sjsu.cmpe275.dao.ExchangeOffer;
-import edu.sjsu.cmpe275.dao.User;
 import edu.sjsu.cmpe275.repository.CounterOfferRepository;
 import edu.sjsu.cmpe275.repository.ExchangeOfferRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -115,11 +112,11 @@ public class CounterOfferService {
   }
 
 
-  public ResponseEntity<?> rejectCounterOffer(Long counterOfferId, Long senderInitialOfferId){
+  public ResponseEntity<?> rejectCounterOffer(Long counterOfferId, Long senderInitialOfferId, String rejectMsgFromUser, String rejectMsgToEmail){
     try {
         counterOfferRepository.updateCounterOfferStatus(counterOfferId, "rejected");
         exchangeOfferRepository.updateExchangeOfferStatus(senderInitialOfferId, "Open");
-//        emailService.sendRejectCounterOfferEmail(senderOffer.getUser().getNickName(), receiverOffer.getUser().getEmailId(), receiverOffer.getUser().getNickName(), receiverOffer.getSrcCurrency(), receiverOffer.getRemitAmount());
+        emailService.sendRejectCounterOfferEmail(rejectMsgFromUser, rejectMsgToEmail);
 
         return ResponseEntity.status(HttpStatus.OK).body("Counter offer rejected successfully");
     }

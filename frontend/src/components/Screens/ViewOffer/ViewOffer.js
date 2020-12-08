@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
-
+import StarRatings from 'react-star-ratings';
 import Header from "../../Navigation/Header";
 import SideBar from "../../Navigation/SideBar";
 import jwt_decode from "jwt-decode";
@@ -176,6 +176,14 @@ export default class Home extends Component {
                                 <i class="mdi mdi-account"></i>
                               </span>
                               {OfferObj.user.nickName}
+                              <span>
+                                  {OfferObj.user.rating > 0 ?
+                                      <span >&nbsp;{OfferObj.user.rating}&nbsp;
+                                        <StarRatings rating={1} starRatedColor="red" starDimension='17px' numberOfStars={1} name='rating'/>
+                                      </span>
+                                      : ""}
+                              </span>
+
                             </h4>
                           { !this.state.showMessage ?
                             <button

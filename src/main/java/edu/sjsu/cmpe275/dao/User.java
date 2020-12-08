@@ -46,6 +46,9 @@ public class User {
     @JsonIgnore
     @Column(name = "validUser", columnDefinition = "boolean default 0", nullable = false)
     private Boolean validUser;
+
+    @Column(name="rating")
+    private String rating;
 }
 
 

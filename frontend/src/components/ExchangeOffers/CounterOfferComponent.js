@@ -17,10 +17,10 @@ export default class Home extends Component {
             >
               <div className="offerDetails">
                 <span className="offerDetailTop">Your Initial Offer:</span>
-                <span className="offerCountry">{this.props.receiverCountry}</span>
+                <span className="offerCountry">{this.props.receiverOffer.srcCountry}</span>
                 <div>
-                  <span className="offerCurrency">{this.props.receiverCurrency}{' '}</span>
-                  <span className="offerAmount">{this.props.receiverRemitAmount}</span>
+                  <span className="offerCurrency">{this.props.receiverOffer.srcCurrency}{' '}</span>
+                  <span className="offerAmount">{this.props.receiverOffer.remitAmount}</span>
                 </div>
               </div>
 
@@ -30,16 +30,16 @@ export default class Home extends Component {
 
               <div className="offerDetails">
                 <span className="offerDetailTop">Received Offer:</span>
-                <span className="offerCountry">{this.props.senderCountry}</span>
+                <span className="offerCountry">{this.props.receiverOffer.destCountry}</span>
                 <div>
-                  <span className="offerCurrency">{this.props.senderCurrency}{' '}</span>
-                  <span className="offerAmount">{this.props.senderRemitAmount}</span>
+                  <span className="offerCurrency">{this.props.receiverOffer.destCurrency}{' '}</span>
+                  <span className="offerAmount">{this.props.receiverOffer.finalAmount}</span>
                 </div>
               </div>
             </div>
 
             <Link
-                to={{ pathname: '/ViewCounterOffer', state: { offerObj: this.props.senderOffer, counterOfferId: this.props.counterOfferId, nickName: this.props.senderNickName, counterOfferAmount: this.props.counterOfferAmount, receiverOfferObj:this.props.receiverOffer } }}
+                to={{ pathname: '/ViewCounterOffer', state: { offerObj: this.props.senderOffer, counterOfferId: this.props.counterOfferId, nickName: this.props.senderNickName, counterOfferAmount: this.props.counterOfferAmount, receiverOfferObj:this.props.receiverOffer, type: this.props.type } }}
                 className="customBtn"
             >View Offer</Link>
           </div>

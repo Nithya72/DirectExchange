@@ -1,20 +1,17 @@
 import React, {Component} from "react";
 import "../../App.css";
 import axios from "axios";
-import {Redirect} from "react-router";
 import Header from "../Navigation/Header";
 import SideBar from "../Navigation/SideBar";
-import PostOffer from "./PostOffer";
 import jwt_decode from "jwt-decode";
-import Collapsible from "react-collapsible";
 import CounterOfferComponent from "./CounterOfferComponent";
 import CounterSplitOfferComponent from "./CounterSplitOfferComponent";
 
 export class ViewCounterOffers extends Component {
   constructor(props) {
-    //Call the constrictor of Super class i.e The Component
+
     super(props);
-    //maintain the state required for this component
+
     this.state = {
       submitted: false,
       myCounterOffers: "",
@@ -76,49 +73,36 @@ export class ViewCounterOffers extends Component {
                   <div className="card-header">
                     <h5 className="card-title" style={{fontSize: "28px"}}>Counter Offers</h5>
                   </div>
-                  <br /><br />
+                  <br/><br/>
                   {this.state.counterOffersForMe && this.state.counterOffersForMe.length !== 0 ?
 
                       this.state.counterOffersForMe.map(offerObj => {
-                            return (
-                                offerObj.type === "single" ?
-                                    <CounterOfferComponent
-                                        senderOffer={offerObj.senderOffer}
-                                        receiverOffer={offerObj.receiverOffer}
-                                        senderCountry={offerObj.senderOffer.srcCountry}
-                                        senderCurrency={offerObj.senderOffer.srcCurrency}
-                                        senderRemitAmount={offerObj.senderOffer.remitAmount}
-                                        receiverCountry={offerObj.receiverOffer.srcCountry}
-                                        receiverCurrency={offerObj.receiverOffer.srcCurrency}
-                                        receiverRemitAmount={offerObj.receiverOffer.remitAmount}
-                                        counterOfferAmount={offerObj.counterOfferAmount}
-                                        senderNickName={offerObj.sender.nickName}
-                                        receiverNickName={offerObj.receiver.nickName}
-                                        counterOfferId={offerObj.offerId}
-                                        type={offerObj.type}
-                                    />
-                                    :
+                        return (
+                            offerObj.type === "single" ?
+                                <CounterOfferComponent
+                                    senderOffer={offerObj.senderOffer}
+                                    receiverOffer={offerObj.receiverOffer}
+                                    counterOfferAmount={offerObj.counterOfferAmount}
+                                    senderNickName={offerObj.sender.nickName}
+                                    receiverNickName={offerObj.receiver.nickName}
+                                    counterOfferId={offerObj.offerId}
+                                    type={offerObj.type}
+                                />
+                                :
 
-                                    <CounterSplitOfferComponent
-                                        senderOffer={offerObj.senderOffer}
-                                        receiverOffer={offerObj.receiverOffer}
-                                        senderCountry={offerObj.senderOffer.srcCountry}
-                                        senderCurrency={offerObj.senderOffer.srcCurrency}
-                                        senderRemitAmount={offerObj.senderOffer.remitAmount}
-                                        receiverCountry={offerObj.receiverOffer.srcCountry}
-                                        receiverCurrency={offerObj.receiverOffer.srcCurrency}
-                                        receiverRemitAmount={offerObj.receiverOffer.remitAmount}
-                                        counterOfferAmount={offerObj.counterOfferAmount}
-                                        senderNickName={offerObj.sender.nickName}
-                                        receiverNickName={offerObj.receiver.nickName}
-                                        counterOfferId={offerObj.offerId}
-                                        thirdParty = {offerObj.thirdPartyOffer}
-                                        type={offerObj.type}
-                                    />
-                                )
-                          }) : <div> No Counter Offer Posted Yet! </div>
-                      }
-
+                                <CounterSplitOfferComponent
+                                    senderOffer={offerObj.senderOffer}
+                                    receiverOffer={offerObj.receiverOffer}
+                                    counterOfferAmount={offerObj.counterOfferAmount}
+                                    senderNickName={offerObj.sender.nickName}
+                                    receiverNickName={offerObj.receiver.nickName}
+                                    counterOfferId={offerObj.offerId}
+                                    thirdParty={offerObj.thirdPartyOffer}
+                                    type={offerObj.type}
+                                />
+                        )
+                      }) : <div> No Counter Offer Posted Yet! </div>
+                  }
                 </div>
               </div>
             </div>

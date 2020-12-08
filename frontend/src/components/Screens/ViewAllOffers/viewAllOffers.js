@@ -2,15 +2,10 @@ import React, { Component } from "react";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { Redirect } from "react-router-dom";
-import ReactPaginate from "react-paginate";
 import Header from "../../Navigation/Header";
 import SideBar from "../../Navigation/SideBar";
-
 import Pagination from "./Pagination";
-
 import { currencyList, countries } from "../../../helpers/currencies";
-
-import Automatch from "../../Automatch/automatch.js";
 import OfferComponent from "./offerComponent";
 
 export default class Home extends Component {

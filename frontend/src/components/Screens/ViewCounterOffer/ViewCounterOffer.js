@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import React, {Component} from "react";
+import {Link} from "react-router-dom";
 import axios from 'axios';
 
 import Header from "../../Navigation/Header";
@@ -14,7 +14,8 @@ export default class Home extends Component {
     this.state = {
       message: null,
       showMessage: false,
-      rejectFlag:null,
+      rejectFlag: null,
+      transactionFlag: null
     };
 
     this.rejectCounterHandler = this.rejectCounterHandler.bind(this);
@@ -22,12 +23,12 @@ export default class Home extends Component {
     this.acceptSplitOfferHandler = this.acceptSplitOfferHandler.bind(this);
   }
 
-  sendMessage=()=>{
+  sendMessage = () => {
     const message = {
       message: this.state.message
     };
 
-    axios.post(`https://jsonplaceholder.typicode.com/users`, { message })
+    axios.post(`https://jsonplaceholder.typicode.com/users`, {message})
         .then(res => {
           console.log(res);
           console.log(res.data);
@@ -59,7 +60,7 @@ export default class Home extends Component {
             this.setState({
               rejectFlag: true,
             })
-          }else{
+          } else {
             this.setState({
               rejectFlag: false,
             })
@@ -74,7 +75,9 @@ export default class Home extends Component {
 
   }
 
-  acceptSingleOfferHandler(e){
+  acceptSingleOfferHandler(e) {
+
+    console.log("inside single offer");
 
     e.preventDefault();
 
@@ -85,7 +88,7 @@ export default class Home extends Component {
     var data = {
       source_offer: this.props.location.state.receiverOfferObj.offerId,
       offers_matched1: this.props.location.state.offerObj,
-      source_offer_amount: this.props.location.state.counterOfferAmount * this.props.location.state.offerObj.exchangeRate
+      source_offer_amount: this.props.location.state.counterOfferAmount
     }
 
     console.log("counter offer accept data: ", data);
@@ -98,10 +101,10 @@ export default class Home extends Component {
             this.setState({
               transactionFlag: true,
             })
-          }else{
+          } else {
             this.setState({
               transactionFlag: false,
-              transactionMsg: response.data
+              transactionMsg: "Accept transaction failed! Try after sometime."
             })
           }
         })
@@ -114,8 +117,9 @@ export default class Home extends Component {
   }
 
 
-  acceptSplitOfferHandler(e){
+  acceptSplitOfferHandler(e) {
 
+    console.log("inside split offer");
 
     e.preventDefault();
     axios.defaults.headers.common["authorization"] =
@@ -126,8 +130,10 @@ export default class Home extends Component {
       source_offer: this.props.location.state.receiverOfferObj.offerId,
       offers_matched1: this.props.location.state.offerObj,
       offers_matched2: this.props.location.state.thirdParty,
-      source_offer_amount: this.props.location.state.counterOfferAmount * this.props.location.state.offerObj.exchangeRate
+      source_offer_amount: this.props.location.state.counterOfferAmount
     }
+
+    console.log("split counter transaction data: ", data);
 
     axios.post('http://localhost:8080/directexchange/api/transactions/' + decodedToken.sub, data)
         .then(response => {
@@ -137,7 +143,7 @@ export default class Home extends Component {
             this.setState({
               transactionFlag: true,
             })
-          }else{
+          } else {
             this.setState({
               transactionFlag: false,
               transactionMsg: response.data
@@ -165,26 +171,27 @@ export default class Home extends Component {
     console.log("counterOfferId: ", counterOfferId);
     console.log("sender: ", OfferObj);
     console.log("receiver: ", receiverOfferObj);
+    console.log("type: ", type);
 
     var errorMsg = "";
     var redirectVar = "";
 
-    if(this.state.rejectFlag == false){
-      errorMsg = <div style={{color:"red"}}>Couldn't reject counter offer, Try after sometime.</div>
-    }else if(this.state.rejectFlag){
-      redirectVar = <Redirect to={{ pathname: "/viewCounterOffers"}} />
+    if (this.state.rejectFlag == false) {
+      errorMsg = <div style={{color: "red"}}>Couldn't reject counter offer, Try after sometime.</div>
+    } else if (this.state.rejectFlag) {
+      redirectVar = <Redirect to={{pathname: "/viewCounterOffers"}}/>
     }
 
-    if(this.state.transactionFlag){
-      redirectVar = <Redirect to={{ pathname: "/transact"}} />
+    if (this.state.transactionFlag) {
+      redirectVar = <Redirect to={{pathname: "/transact"}}/>
     }
 
 
     return (
         <div>
           {redirectVar}
-          <Header />
-          <SideBar />
+          <Header/>
+          <SideBar/>
 
           <div className="content-body">
             <div className="myContainer">
@@ -212,12 +219,12 @@ export default class Home extends Component {
                               </span>
                                 {OfferObj.user.nickName}
                               </h4>
-                              { !this.state.showMessage ?
+                              {!this.state.showMessage ?
                                   <button
                                       className="btn btn-primary myButton2"
-                                      style={{ height: "30px", marginLeft: "38px" }}
+                                      style={{height: "30px", marginLeft: "38px"}}
                                       onClick={(e) =>
-                                          this.setState({ showMessage: true })
+                                          this.setState({showMessage: true})
                                       }
                                   >
                                     Message
@@ -226,7 +233,7 @@ export default class Home extends Component {
                           </div>
                         </div>
                       </div>
-                      { this.state.showMessage ?
+                      {this.state.showMessage ?
                           <div className="form-row" style={{justifyContent: 'flex-end'}}>
                             <div className="col-md-12">
                           <textarea
@@ -236,32 +243,12 @@ export default class Home extends Component {
                               onChange={(e) => this.setState({message: e.target.value})}
                           />
                             </div>
-                            <button className="btn btn-primary myButton" onClick={(e) =>this.sendMessage()}>Send Message!</button>
+                            <button className="btn btn-primary myButton" onClick={(e) => this.sendMessage()}>Send Message!</button>
                           </div>
                           : ''}
                       <div className="table-responsive">
                         <table className="table">
                           <tbody>
-
-                          <tr>
-                            <td>
-                              <span>Your Initial Offer to Send</span>
-                            </td>
-                            <td>
-                              <span>{receiverOfferObj.destCurrency} {receiverOfferObj.finalAmount}</span>
-                            </td>
-                          </tr>
-
-                          {counterOfferAmount ? (
-                              <tr>
-                                <td>Counter Offer Amount</td>
-                                <td>
-                                  {OfferObj.srcCurrency} {counterOfferAmount}
-                                </td>
-                              </tr>
-                          ) : (
-                              ""
-                          )}
 
                           <tr>
                             <td>
@@ -272,13 +259,33 @@ export default class Home extends Component {
                             </td>
                           </tr>
 
+                          {counterOfferAmount ? (
+                              <tr>
+                                <td>Counter Offer Amount</td>
+                                <td>
+                                  {receiverOfferObj.srcCurrency} {counterOfferAmount}
+                                </td>
+                              </tr>
+                          ) : (
+                              ""
+                          )}
 
                           <tr>
                             <td>
-                              <span>Now you have to pay</span>
+                              <span>Your Initial Money To Receive</span>
                             </td>
                             <td>
-                              <span>{OfferObj.destCurrency} {(counterOfferAmount * OfferObj.exchangeRate).toFixed(2)}</span>
+                              <span>{receiverOfferObj.destCurrency} {receiverOfferObj.finalAmount}</span>
+                            </td>
+                          </tr>
+
+
+                          <tr>
+                            <td>
+                              <span>New Amount To Receive</span>
+                            </td>
+                            <td>
+                              <span>{receiverOfferObj.destCurrency} {(counterOfferAmount * receiverOfferObj.exchangeRate).toFixed(2)}</span>
                             </td>
                           </tr>
 
@@ -287,19 +294,14 @@ export default class Home extends Component {
                             <td>{receiverOfferObj.exchangeRate}</td>
                           </tr>
 
-                          {type=="split" ?
-                          <tr>
-                            <td>Another User Involved</td>
-                            <td>Yes</td>
-                          </tr>
+                          {type === "split" ?
+                              <tr>
+                                <td>Another User Involved</td>
+                                <td>Yes</td>
+                              </tr>
 
                               : ""}
-                          {/*<tr>*/}
-                          {/*  <td>Final Exchanges Amount</td>*/}
-                          {/*  <td>*/}
-                          {/*    {OfferObj.destCurrency} {OfferObj.finalAmount}*/}
-                          {/*  </td>*/}
-                          {/*</tr>*/}
+
                           <tr>
                             <td>Expiry Date</td>
                             <td>{Date(OfferObj.expDate)}</td>
@@ -313,23 +315,23 @@ export default class Home extends Component {
                       </div>
 
 
-                      <div style={{ display: "flex", justifyContent: "center" }}>
+                      <div style={{display: "flex", justifyContent: "center"}}>
 
-                        {type=="single" ?
-                        <button
-                            type="submit"
-                            className="post-counter-offer-custom-button"
-                            style={{ marginRight:"50px", marginTop:"0px", height:"45px" }}
-                            onClick={this.acceptSingleOfferHandler}
-                        >
-                          Accept Offer{" "}
-                        </button>
+                        {type === "single" ?
+                            <button
+                                type="submit"
+                                className="post-counter-offer-custom-button"
+                                style={{marginRight: "50px", marginTop: "0px", height: "45px"}}
+                                onClick={this.acceptSingleOfferHandler}
+                            >
+                              Accept Offer{" "}
+                            </button>
                             :
 
                             <button
                                 type="submit"
                                 className="post-counter-offer-custom-button"
-                                style={{ marginRight:"50px", marginTop:"0px", height:"45px" }}
+                                style={{marginRight: "50px", marginTop: "0px", height: "45px"}}
                                 onClick={this.acceptSplitOfferHandler}
                             >
                               Accept Offer{" "}
@@ -337,22 +339,22 @@ export default class Home extends Component {
 
                         }
 
-                        { counterOfferId && counterOfferId.length !== 0 ?
+                        {counterOfferId && counterOfferId.length !== 0 ?
                             <button
                                 type="submit"
                                 className="post-counter-offer-custom-button"
-                                style={{ marginRight:"50px", marginTop:"0px", height:"45px" }}
+                                style={{marginRight: "50px", marginTop: "0px", height: "45px"}}
                                 onClick={this.rejectCounterHandler}
                             >
                               Reject Offer
                             </button>
-                            : "" }
+                            : ""}
 
                         {(OfferObj.counterOfferFlag && !counterOfferId) ? (
                             <Link
                                 to={{
                                   pathname: "/ViewOffer",
-                                  state: { offerObj: this.props.offerObj },
+                                  state: {offerObj: this.props.offerObj},
                                 }}
                                 className="btn btn-primary myButton"
                             >
@@ -362,8 +364,8 @@ export default class Home extends Component {
                             ""
                         )}
                       </div>
-                      <br />
-                      <div style={{textAlign:"center"}}>{errorMsg}</div>
+                      <br/>
+                      <div style={{textAlign: "center"}}>{errorMsg}</div>
                     </div>
                   </div>
                 </div>

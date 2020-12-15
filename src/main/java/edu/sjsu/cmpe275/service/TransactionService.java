@@ -75,7 +75,7 @@ public class TransactionService {
 
             String trans_id = UUID.randomUUID().toString();
 
-            ZonedDateTime expirationDate = ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(10);
+            ZonedDateTime expirationDate = ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(1);
             double transaction_amount =sourceOffer.getRemitAmount()*exchangeRate.get(sourceOffer.getSrcCurrency());
             double transaction_remit_amount = Math.round(transaction_amount*100)/100;
 
@@ -180,15 +180,19 @@ public class TransactionService {
     public void setAtFaultTransactions(String transaction_id){
 
         try{
-            transactionsRepository.updateAbortedTransactionStatus("aborted",transaction_id);
-            List<Transactions> transactions = transactionsRepository.findByTransactionId(transaction_id);
+            int updated = transactionsRepository.updateAbortedTransactionStatus("aborted",transaction_id);
+            System.out.println("Updated "+updated+"\n\n\n");
+            if(updated!=0){
+                List<Transactions> transactions = transactionsRepository.findByTransactionId(transaction_id);
 
-            List<Long> offersToReset = new ArrayList<Long>();
-            for(Transactions t: transactions){
-                if(!t.getOfferDetails().getStatus().equals("Fulfilled"))
-                    offersToReset.add(t.getOfferDetails().getOfferId());
+                List<Long> offersToReset = new ArrayList<Long>();
+                for(Transactions t: transactions){
+                    if(!t.getOfferDetails().getStatus().equals("Fulfilled"))
+                        offersToReset.add(t.getOfferDetails().getOfferId());
+                }
+                exchangeOfferRepository.resetOfferStatus(offersToReset,"Open");
             }
-            exchangeOfferRepository.resetOfferStatus(offersToReset,"Open");
+
         }catch(Exception e){
             System.out.println("Error "+e.getMessage());
         }

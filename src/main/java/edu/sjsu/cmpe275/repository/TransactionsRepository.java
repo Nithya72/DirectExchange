@@ -42,7 +42,7 @@ public interface TransactionsRepository extends JpaRepository<Transactions, Stri
                                    List<String> transaction_id);
 
     @Modifying
-    @Query(value = "update transactions t set t.transaction_status = :status where t.transaction_id =:transaction_id",
+    @Query(value = "update transactions t set t.transaction_status = :status where t.transaction_id =:transaction_id and t.transaction_status!='completed'",
             nativeQuery = true)
     int updateAbortedTransactionStatus(String status,
                                 String transaction_id);

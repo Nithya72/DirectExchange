@@ -86,6 +86,13 @@ public class TransactionController {
         return transactionService.getTransactions(Long.parseLong(userId));
     }
 
+    @PreAuthorize("#userId == authentication.principal")
+    @GetMapping(value = "/systemreport/{id}", produces = {"application/json"})
+    public ResponseEntity getSystemReport(@PathVariable(name="id") String userId ){
+
+        return transactionService.getSystemReport();
+    }
+
 //    @PreAuthorize("#userId == authentication.principal")
     @GetMapping(value = "/history/{id}", produces = {"application/json"})
     public ResponseEntity getTransactionHistory(@PathVariable(name="id") String userId ){

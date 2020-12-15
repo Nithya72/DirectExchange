@@ -40,13 +40,17 @@ public class Transactions {
     @Column(name = "dest_account_id")
     private Long dest_account_id;
 
+    @Column(name="transaction_remit_amount")
+    private double transaction_remit_amount;
+
     public Transactions() {
     }
-    public Transactions(String transactionId, ExchangeOffer offerid, long userid, ZonedDateTime expirationDate){
+    public Transactions(String transactionId, ExchangeOffer offerid, long userid, ZonedDateTime expirationDate, Double transactionRemitAmount){
         this.transactionId=transactionId;
         this.offerid=offerid;
         this.userId=userid;
         this.expirationDate=expirationDate;
+        this.transaction_remit_amount= transactionRemitAmount;
     }
 
     public Transactions(String transactionId, ExchangeOffer offerid){
@@ -124,5 +128,13 @@ public class Transactions {
 
     public void setDest_account_id(Long dest_account_id) {
         this.dest_account_id = dest_account_id;
+    }
+
+    public double getTransaction_remit_amount() {
+        return transaction_remit_amount;
+    }
+
+    public void setTransaction_remit_amount(double transaction_remit_amount) {
+        this.transaction_remit_amount = transaction_remit_amount;
     }
 }

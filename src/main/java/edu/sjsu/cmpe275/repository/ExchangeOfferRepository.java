@@ -36,4 +36,8 @@ public interface ExchangeOfferRepository extends JpaRepository<ExchangeOffer, St
     @Modifying
     @Query(value="update exchange_offer set status=:status where offer_id =:id ", nativeQuery = true)
     int updateExchangeOfferStatus(Long id, String status);
+
+    @Modifying
+    @Query(value="update exchange_offer set status=:status where offer_id in(:offer_id) ", nativeQuery = true)
+    int resetOfferStatus(List<Long> offer_id, String status);
 }

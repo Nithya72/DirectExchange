@@ -18,6 +18,7 @@ export class Transact extends Component {
     axios.defaults.headers.common["authorization"] =
       "Bearer " + localStorage.getItem("token");
     var decodedToken = jwt_decode(localStorage.getItem("token"));
+
     axios
       .get(
         "http://localhost:8080/directexchange/api/transactions/" +

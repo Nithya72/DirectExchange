@@ -36,7 +36,7 @@ public class SchedulerService {
     @Scheduled(fixedRate = 15000)
     public void reportCurrentTime() {
         ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneOffset.UTC);
-        log.info("The time is", currentDateTime);
+        log.info("The time is {}", currentDateTime);
         if(queue.size()>0 && currentDateTime.toInstant().compareTo(((ZonedDateTime) queue.peek().get(1)).toInstant())>0){
             log.info("Setting at fault transactions");
             transactionService.setAtFaultTransactions((String) queue.peek().get(0));

@@ -21,6 +21,18 @@ public interface TransactionsRepository extends JpaRepository<Transactions, Stri
     @Query(value="select * from transactions where user_id=:userid order by transaction_status desc", nativeQuery = true)
     List<Transactions> fetchTransactionsByUserID(Long userid);
 
+    @Query(value="select * from transactions where transaction_id in(:transactionId) ", nativeQuery = true)
+    List<Transactions> getTransactionsByTransactionIds(List<String> transactionId);
+
+    @Query(value="select count(*) from transactions where transaction_status='completed' group by transaction_id", nativeQuery = true)
+    List<Integer> getCompletedTransactions();
+
+    @Query(value="select count(*) from transactions where transaction_status='aborted' group by transaction_id", nativeQuery = true)
+    List<Integer> getUnCompletedTransactions();
+
+    @Query(value="select sum(transaction_remit_amount)  from transactions where transaction_status='completed'", nativeQuery = true)
+    Double getTotalRemittedAmount();
+
     List<Transactions> findByTransactionId(String transactionId);
 
     @Modifying
@@ -34,4 +46,6 @@ public interface TransactionsRepository extends JpaRepository<Transactions, Stri
             nativeQuery = true)
     int updateAbortedTransactionStatus(String status,
                                 String transaction_id);
+
+
 }

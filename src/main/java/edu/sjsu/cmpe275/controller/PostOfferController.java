@@ -75,9 +75,6 @@ public class PostOfferController {
     ) {
 
         try {
-
-            System.out.println("\n\n\n\n in here");
-
             User user = userRepository.findByUserId(Long.parseLong(userId));
             if(user==null){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please login to post an offer");

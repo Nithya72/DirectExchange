@@ -82,7 +82,13 @@ public class TransactionController {
     @GetMapping(value = "/{id}", produces = {"application/json"})
     public ResponseEntity getTransactions(@PathVariable(name="id") String userId ){
 
-        System.out.println("Transaction "+userId);
         return transactionService.getTransactions(Long.parseLong(userId));
+    }
+
+    @PreAuthorize("#userId == authentication.principal")
+    @GetMapping(value = "/systemreport/{id}", produces = {"application/json"})
+    public ResponseEntity getSystemReport(@PathVariable(name="id") String userId ){
+
+        return transactionService.getSystemReport();
     }
 }

@@ -75,7 +75,7 @@ public class TransactionService {
 
             String trans_id = UUID.randomUUID().toString();
 
-            ZonedDateTime expirationDate = ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(1);
+            ZonedDateTime expirationDate = ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(10);
             double transaction_amount =sourceOffer.getRemitAmount()*exchangeRate.get(sourceOffer.getSrcCurrency());
             double transaction_remit_amount = Math.round(transaction_amount*100)/100;
 

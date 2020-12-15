@@ -19,12 +19,17 @@ export class GetMyOffers extends Component {
       allOffers: "",
       offer: "",
       redirectToFindMatches: "",
+      loading: false,
     };
     this.getAllOffers = this.getAllOffers.bind(this);
   }
 
   componentDidMount() {
     // axios.defaults.withCredentials = true;
+
+    this.setState({
+      loading: true,
+    });
 
     axios.defaults.headers.common["authorization"] =
       "Bearer " + localStorage.getItem("token");
@@ -42,6 +47,7 @@ export class GetMyOffers extends Component {
           this.setState({
             successFlag: true,
             myOffers: response.data,
+            loading: false,
           });
         }
       })
@@ -50,6 +56,7 @@ export class GetMyOffers extends Component {
         this.setState({
           successFlag: false,
           myOffers: null,
+          loading: false,
         });
       });
   }
@@ -63,9 +70,9 @@ export class GetMyOffers extends Component {
     });
   };
 
-  handleRefresh = ()=>{
+  handleRefresh = () => {
     window.location.reload();
-  }
+  };
 
   render() {
     console.log("msg from java controller: ", this.state.myOffers);
@@ -82,7 +89,6 @@ export class GetMyOffers extends Component {
       );
     }
 
-
     return (
       <div>
         {redirectVar}
@@ -92,10 +98,22 @@ export class GetMyOffers extends Component {
         <div className="content-body">
           <div className="myContainer">
             <span className="PageTitle">Get My Offers</span>
-            <PostOffer handleRefresh={this.handleRefresh}/>
+            <PostOffer handleRefresh={this.handleRefresh} />
 
             <div className="col-xl-9" style={{ maxWidth: "900px" }}>
               <div className="row">
+                {this.state.loading && (
+                  <div className="preloading">
+                    <div id="preloader">
+                      <div className="sk-three-bounce">
+                        <div className="sk-child sk-bounce1" />
+                        <div className="sk-child sk-bounce2" />
+                        <div className="sk-child sk-bounce3" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {this.state.myOffers && this.state.myOffers.length !== 0 ? (
                   this.state.myOffers.map((offer) => (
                     <OfferComponent
@@ -108,22 +126,15 @@ export class GetMyOffers extends Component {
                       destCurrency={offer.destCurrency}
                       destCountry={offer.destCountry}
                       finalAmount={offer.finalAmount}
-                      status = {offer.status}
+                      status={offer.status}
                       getAllOffers={this.getAllOffers}
                       splitOfferFlag={offer.splitOfferFlag}
                       counterOfferFlag={offer.counterOfferFlag}
+                      handleRefresh={this.handleRefresh}
                     />
                   ))
                 ) : (
-                  <div className="preloading">
-                    <div id="preloader">
-                      <div className="sk-three-bounce">
-                        <div className="sk-child sk-bounce1" />
-                        <div className="sk-child sk-bounce2" />
-                        <div className="sk-child sk-bounce3" />
-                      </div>
-                    </div>
-                  </div>
+                  <p>No Offers posted</p>
                 )}
               </div>
             </div>

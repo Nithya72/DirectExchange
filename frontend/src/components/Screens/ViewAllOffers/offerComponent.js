@@ -4,6 +4,7 @@ import StarRatings from 'react-star-ratings';
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import TransactHistory from "../../ExchangeOffers/TransactHistory";
+import backend from '../../../../src/helpers/serverDetails';
 
 export default class Home extends Component {
 
@@ -22,7 +23,7 @@ export default class Home extends Component {
     axios.defaults.headers.common["authorization"] = "Bearer " + localStorage.getItem("token");
     var decodedToken = jwt_decode(localStorage.getItem("token"));
 
-    axios.get('http://localhost:8080/directexchange/api/transactions/history/' + offer.user.userId)
+    axios.get(`${backend}/directexchange/api/transactions/history/` + offer.user.userId)
         .then(response => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {

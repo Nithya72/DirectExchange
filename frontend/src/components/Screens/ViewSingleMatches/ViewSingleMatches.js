@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import {Redirect} from "react-router";
+import backend from '../../../../src/helpers/serverDetails';
 
 export default class Home extends Component {
 
@@ -57,7 +58,7 @@ export default class Home extends Component {
       console.log("accept-match - final data: ", data);
     }
 
-    axios.post('http://localhost:8080/directexchange/api/transactions/' + decodedToken.sub, data)
+    axios.post(`${backend}/directexchange/api/transactions/` + decodedToken.sub, data)
         .then(response => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -103,7 +104,7 @@ export default class Home extends Component {
       var decodedToken = jwt_decode(localStorage.getItem('token'));
       console.log("decodedUserId: ", decodedToken.sub);
 
-      axios.post('http://localhost:8080/directexchange/user/counteroffer', data)
+      axios.post(`${backend}/directexchange/user/counteroffer`, data)
           .then(response => {
             console.log("Status Code : ", response.status);
             if (response.status === 200) {

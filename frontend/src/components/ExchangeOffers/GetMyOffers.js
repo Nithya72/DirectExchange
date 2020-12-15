@@ -7,6 +7,7 @@ import SideBar from "../Navigation/SideBar";
 import PostOffer from "./PostOffer";
 import jwt_decode from "jwt-decode";
 import OfferComponent from "./offerComponent.js";
+import backend from '../../../src/helpers/serverDetails';
 
 export class GetMyOffers extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ export class GetMyOffers extends Component {
 
     axios
       .get(
-        "http://localhost:8080/directexchange/user/myoffer/" + decodedToken.sub
+        `${backend}/directexchange/user/myoffer/` + decodedToken.sub
       )
       .then((response) => {
         console.log("Status Code : ", response.status);

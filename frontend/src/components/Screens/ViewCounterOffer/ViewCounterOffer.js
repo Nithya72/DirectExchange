@@ -6,6 +6,7 @@ import Header from "../../Navigation/Header";
 import SideBar from "../../Navigation/SideBar";
 import jwt_decode from "jwt-decode";
 import {Redirect} from "react-router";
+import backend from '../../../../src/helpers/serverDetails';
 
 export default class Home extends Component {
   constructor() {
@@ -52,7 +53,7 @@ export default class Home extends Component {
 
     console.log("data to reject: ", data);
 
-    axios.put('http://localhost:8080/directexchange/user/counteroffer', data)
+    axios.put(`${backend}/directexchange/user/counteroffer`, data)
         .then(response => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -93,7 +94,7 @@ export default class Home extends Component {
 
     console.log("counter offer accept data: ", data);
 
-    axios.post('http://localhost:8080/directexchange/api/transactions/' + decodedToken.sub, data)
+    axios.post(`${backend}/directexchange/api/transactions/` + decodedToken.sub, data)
         .then(response => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -135,7 +136,7 @@ export default class Home extends Component {
 
     console.log("split counter transaction data: ", data);
 
-    axios.post('http://localhost:8080/directexchange/api/transactions/' + decodedToken.sub, data)
+    axios.post(`${backend}/directexchange/api/transactions/` + decodedToken.sub, data)
         .then(response => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {

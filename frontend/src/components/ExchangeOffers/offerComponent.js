@@ -3,6 +3,7 @@ import { currencyList, countries } from "../../helpers/currencies";
 import { exchangerates } from "../../helpers/exchangerates";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import backend from '../../../src/helpers/serverDetails';
 
 export default class Home extends Component {
   constructor(props) {
@@ -95,7 +96,7 @@ export default class Home extends Component {
 
       axios
         .put(
-          "http://localhost:8080/directexchange/api/postoffer/" +
+          `${backend}/directexchange/api/postoffer/` +
             decodedToken.sub +
             "/" +
             this.props.offer.offerId,

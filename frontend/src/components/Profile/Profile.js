@@ -6,6 +6,7 @@ import Header from "../Navigation/Header";
 import { Redirect } from 'react-router-dom'
 import jwt_decode from "jwt-decode";
 import SideBar from '../Navigation/SideBar';
+import backend from '../../../src/helpers/serverDetails';
 
 export class Profile extends Component {
     constructor(props) {
@@ -27,7 +28,7 @@ export class Profile extends Component {
         var decodedToken = jwt_decode(localStorage.getItem('token'));
         console.log("decodedUserId: ", decodedToken.sub);
 
-        axios.get("http://localhost:8080/directexchange/profile/"+decodedToken.sub)
+        axios.get(`${backend}/directexchange/profile/`+decodedToken.sub)
         .then((response) => {
             console.log("Status Code : ", response.status);
             if (response.status === 200) {
@@ -66,7 +67,7 @@ export class Profile extends Component {
 
         axios.defaults.withCredentials = true;
         var decodedToken = jwt_decode(localStorage.getItem('token'));
-        axios.put('http://localhost:8080/directexchange/profile/' + decodedToken.sub, data)
+        axios.put(`${backend}/directexchange/profile/` + decodedToken.sub, data)
             .then(response => {
                 console.log("Status Code : ", response.status);
                 if (response.status === 200) {

@@ -66,4 +66,48 @@ public class PostOfferController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
         }
     }
+
+    @PreAuthorize("#userId == authentication.principal")
+    @PutMapping(value = "/{userid}/{offerid}", produces = {"application/json"})
+    public ResponseEntity<?> editOffer(@PathVariable(value = "userid") String userId,
+                                       @PathVariable(value = "offerid") String offerId,
+                                         @RequestBody PostOffer postOffer
+    ) {
+
+        try {
+
+            System.out.println("\n\n\n\n in here");
+
+            User user = userRepository.findByUserId(Long.parseLong(userId));
+            if(user==null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please login to post an offer");
+            }
+            if(!user.getValidUser()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please enter two bank accounts to send and receive money!");
+            }
+
+            ExchangeOffer exchangeOffer = exchangeOfferRepository.findByofferId(Long.parseLong(offerId));
+            exchangeOffer.setRemitAmount(postOffer.getAmount());
+            exchangeOffer.setExchangeRate(postOffer.getExchange_rate());
+            float finalAmount = Math.round(postOffer.getAmount() * (float)postOffer.getExchange_rate()*100)/100;
+            exchangeOffer.setFinalAmount(finalAmount);
+            exchangeOffer.setExpDate(postOffer.getExpirationdate());
+            exchangeOffer.setSrcCountry(postOffer.getSource_country());
+            exchangeOffer.setSrcCurrency(postOffer.getSource_currency());
+            exchangeOffer.setDestCountry(postOffer.getDestination_country());
+            exchangeOffer.setDestCurrency(postOffer.getDestination_currency());
+            exchangeOffer.setCounterOfferFlag(postOffer.getAllowCounterOffers());
+            exchangeOffer.setSplitOfferFlag(postOffer.getAllowOfferSplit());
+            exchangeOffer.setStatus("Open");
+            exchangeOffer.setUser(user);
+            exchangeOfferRepository.save(exchangeOffer);
+            String message="Offer has been created successfully!";
+            return ResponseEntity.status(HttpStatus.OK).body(message);
+
+        }catch(Exception e){
+            System.out.println("Error while creating offer "+e.getMessage());
+            String message ="Something went wrong! Please try again later";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+        }
+    }
 }

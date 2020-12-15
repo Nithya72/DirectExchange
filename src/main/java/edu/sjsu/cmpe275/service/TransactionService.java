@@ -38,13 +38,14 @@ public class TransactionService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private SchedulerService schedulerService;
+
     public ResponseEntity createNewTransaction(Long source_offer_id,
                                                List<Long> offer_matched, float amount){
 
         try {
             ExchangeOffer sourceOffer = exchangeOfferRepository.findByOfferIdAndStatus(source_offer_id,"Open");
-
-
 
             if (sourceOffer == null) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Your offer has already been completed!");
@@ -62,11 +63,10 @@ public class TransactionService {
 
             String trans_id = UUID.randomUUID().toString();
 
-            ZonedDateTime expirationDate = ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(10);
-
-            System.out.println("DATETIME = " + expirationDate);
+            ZonedDateTime expirationDate = ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(1);
             Transactions newTransaction = new Transactions(trans_id, sourceOffer, sourceOffer.getUser().getUserId(),expirationDate);
             transactionsRepository.save(newTransaction);
+            schedulerService.addNewTransaction(newTransaction.getTransactionId(),expirationDate);
 
             for (ExchangeOffer offer : otheroffers) {
                 Transactions otherofferTransaction = new Transactions(trans_id, offer, offer.getUser().getUserId(),expirationDate);
@@ -91,8 +91,7 @@ public class TransactionService {
         try {
             ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneOffset.UTC);
             String currentStatus = transactionsRepository.getTransactionStatus(transaction_id,currentDateTime);
-            if(currentStatus==null){
-                transactionsRepository.updateAbortedTransactionStatus("aborted",transaction_id);
+            if(currentStatus.equals("aborted")){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Transaction has been aborted!!");
             }
             if(!currentStatus.equals("pending")){
@@ -149,6 +148,16 @@ public class TransactionService {
             System.out.println("Error "+e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong! Please try again later!");
         }
+    }
+
+    public void setAtFaultTransactions(String transaction_id){
+
+        try{
+            transactionsRepository.updateAbortedTransactionStatus("aborted",transaction_id);
+        }catch(Exception e){
+            System.out.println("Error "+e.getMessage());
+        }
+
     }
 
 

@@ -3,9 +3,12 @@ package edu.sjsu.cmpe275.service;
 import edu.sjsu.cmpe275.dao.BankAccount;
 import edu.sjsu.cmpe275.dao.ExchangeOffer;
 import edu.sjsu.cmpe275.dao.Transactions;
+import edu.sjsu.cmpe275.dao.User;
 import edu.sjsu.cmpe275.repository.BankAccountRepository;
 import edu.sjsu.cmpe275.repository.ExchangeOfferRepository;
 import edu.sjsu.cmpe275.repository.TransactionsRepository;
+import edu.sjsu.cmpe275.repository.UserRepository;
+import org.hibernate.Transaction;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +31,9 @@ public class TransactionService {
 
     @Autowired
     private BankAccountRepository bankAccountRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private EmailService emailService;
@@ -145,4 +151,18 @@ public class TransactionService {
         }
     }
 
+
+    public ResponseEntity getTransactionHistory(Long userid){
+
+        try {
+            JSONObject data = new JSONObject();
+            List<Object> transactionHistory = transactionsRepository.fetchTransactionHistoryByUserID(userid);
+
+            data.put("transactionHistory",transactionHistory);
+            return new ResponseEntity<>(data, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println("Error "+e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong! Please try again later!");
+        }
+    }
 }

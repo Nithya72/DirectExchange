@@ -24,14 +24,16 @@ public interface TransactionsRepository extends JpaRepository<Transactions, Stri
     List<Transactions> findByTransactionId(String transactionId);
 
     @Modifying
-    @Query(value = "update transactions t set t.transaction_status = :status where t.transaction_id in(:transaction_id)",
-            nativeQuery = true)
-    int updateTransactionStatus(String status,
-                                   List<String> transaction_id);
+    @Query(value = "update transactions t set t.transaction_status = :status where t.transaction_id in(:transaction_id)", nativeQuery = true)
+    int updateTransactionStatus(String status, List<String> transaction_id);
 
     @Modifying
-    @Query(value = "update transactions t set t.transaction_status = :status where t.transaction_id =:transaction_id",
-            nativeQuery = true)
-    int updateAbortedTransactionStatus(String status,
-                                String transaction_id);
+    @Query(value = "update transactions t set t.transaction_status = :status where t.transaction_id =:transaction_id", nativeQuery = true)
+    int updateAbortedTransactionStatus(String status, String transaction_id);
+
+    @Query(value = "select t.transaction_id, t.transaction_status, t.offerid, u.username, eo.remit_amount, eo.exchange_rate from transactions as t " +
+        "join users as u on u.id = t.user_id join exchange_offer eo on eo.offer_id = t.offerid " +
+        "where transaction_id in (select t1.transaction_id from transactions t1 where t1.user_id = :userid) and t.user_id!=:userid and " +
+        "t.transaction_status in ('completed', 'aborted') order by t.transaction_status desc", nativeQuery = true)
+    List<Object> fetchTransactionHistoryByUserID(Long userid);
 }

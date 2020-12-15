@@ -100,15 +100,11 @@ export default class Home extends Component {
               <div className="modal fade" id="transactionHistoryModalPopup" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 
                 <div className="modal-dialog modal-dialog-centered" role="document">
-                  <div className="modal-content" style={{width: "1000px", background: "#eff2f7"}}>
+                  <div className="modal-content" style={{background: "#eff2f7", width:"fit-content"}}>
 
                     <div className="modal-body" style={{padding: "0px"}}>
 
-                      {this.state.historyDetails.transactionHistory.map(history => {
-                        return (
-                            <TransactHistory history={history}/>
-                        )
-                      })}
+                            <TransactHistory history={this.state.historyDetails.transactionHistory}/>
 
                     </div>
                   </div>

@@ -266,41 +266,41 @@ export default class Home extends Component {
                       </table>
                     </div>
 
-                    <div style={{ display: "flex", justifyContent: "center" }}>
-                      <button
-                          type="submit"
-                          className="post-counter-offer-custom-button"
-                          style={{ marginRight:"50px", marginTop:"0px", height:"45px" }}
-                          onClick={this.acceptSingleOfferHandler}
-                      >
-                        Accept Offer{" "}
-                      </button>
+                    {/*<div style={{ display: "flex", justifyContent: "center" }}>*/}
+                    {/*  <button*/}
+                    {/*      type="submit"*/}
+                    {/*      className="post-counter-offer-custom-button"*/}
+                    {/*      style={{ marginRight:"50px", marginTop:"0px", height:"45px" }}*/}
+                    {/*      onClick={this.acceptSingleOfferHandler}*/}
+                    {/*  >*/}
+                    {/*    Accept Offer{" "}*/}
+                    {/*  </button>*/}
 
-                      { counterOfferId && counterOfferId.length !== 0 ?
-                      <button
-                          type="submit"
-                          className="post-counter-offer-custom-button"
-                          style={{ marginRight:"50px", marginTop:"0px", height:"45px" }}
-                          onClick={this.rejectCounterHandler}
-                      >
-                        Reject Offer
-                      </button>
-                      : "" }
+                    {/*  { counterOfferId && counterOfferId.length !== 0 ?*/}
+                    {/*  <button*/}
+                    {/*      type="submit"*/}
+                    {/*      className="post-counter-offer-custom-button"*/}
+                    {/*      style={{ marginRight:"50px", marginTop:"0px", height:"45px" }}*/}
+                    {/*      onClick={this.rejectCounterHandler}*/}
+                    {/*  >*/}
+                    {/*    Reject Offer*/}
+                    {/*  </button>*/}
+                    {/*  : "" }*/}
 
-                      {(OfferObj.counterOfferFlag && !counterOfferId) ? (
-                        <Link
-                          to={{
-                            pathname: "/ViewOffer",
-                            state: { offerObj: this.props.offerObj },
-                          }}
-                          className="btn btn-primary myButton"
-                        >
-                          Counter Offer
-                        </Link>
-                      ) : (
-                        ""
-                      )}
-                    </div>
+                    {/*  {(OfferObj.counterOfferFlag && !counterOfferId) ? (*/}
+                    {/*    <Link*/}
+                    {/*      to={{*/}
+                    {/*        pathname: "/ViewOffer",*/}
+                    {/*        state: { offerObj: this.props.offerObj },*/}
+                    {/*      }}*/}
+                    {/*      className="btn btn-primary myButton"*/}
+                    {/*    >*/}
+                    {/*      Counter Offer*/}
+                    {/*    </Link>*/}
+                    {/*  ) : (*/}
+                    {/*    ""*/}
+                    {/*  )}*/}
+                    {/*</div>*/}
                     <br />
                     <div style={{textAlign:"center"}}>{errorMsg}</div>
                   </div>

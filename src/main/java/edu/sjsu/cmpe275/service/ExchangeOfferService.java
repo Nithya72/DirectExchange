@@ -30,18 +30,20 @@ public class ExchangeOfferService {
    * @return ResponseEntity Object
    * This method generates the json output in desired format - message, status and timestamp
    */
-  public ResponseEntity<Object> generateResponse(HttpStatus status, List<ExchangeOffer> singleMatches, List<List<ExchangeOffer>> splitMatches) {
+  public ResponseEntity<Object> generateResponse(HttpStatus status, List<ExchangeOffer> singleMatches, List<List<ExchangeOffer>> splitMatches, List<List<ExchangeOffer>> otherSplitMatches) {
     Map<String, Object> response = new HashMap<>();
     log.info("generate response:");
     try {
       response.put("status", status.value());
       response.put("singleMatches", singleMatches);
       response.put("splitMatches", splitMatches);
+      response.put("otherSplitMatches", otherSplitMatches);
       return new ResponseEntity<Object>(response, status);
     } catch (Exception e) {
       response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
       response.put("singleMatches", null);
       response.put("splitMatches", null);
+      response.put("otherSplitMatches", null);
       return new ResponseEntity<Object>(response, status);
     }
   }
@@ -99,10 +101,12 @@ public class ExchangeOfferService {
 
       List<List<ExchangeOffer>> splitMatches = fetchSplitMatches(exchangeOffersList, remitAmount);
 
-      return generateResponse(HttpStatus.OK, singleMatches, splitMatches);
+      List<List<ExchangeOffer>> otherSplitMatches = fetchOtherSplitMatches(exchangeOffersList, remitAmount);
+
+      return generateResponse(HttpStatus.OK, singleMatches, splitMatches, otherSplitMatches);
 
     } catch (Exception exception) {
-      return generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, null);
+      return generateResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, null, null);
     }
   }
 
@@ -116,8 +120,7 @@ public class ExchangeOfferService {
     for (List<ExchangeOffer> subset : generateSubsets) {
       if (subset.size() == 2) {
         float sum = subset.get(0).getRemitAmount() + subset.get(1).getRemitAmount();
-//                System.out.println("sum: " + sum);
-        if (sum >= remitAmount * 0.9 && sum <= remitAmount * 1.1) {
+        if ((sum >= remitAmount * 0.9 && sum <= remitAmount * 1.1)) {
           splitMatches.add(subset);
           counter++;
         }
@@ -126,6 +129,23 @@ public class ExchangeOfferService {
     return splitMatches;
   }
 
+  public List<List<ExchangeOffer>> fetchOtherSplitMatches(List<ExchangeOffer> exchangeOffersList, Integer remitAmount) {
+    List<List<ExchangeOffer>> splitMatches = new ArrayList<>();
+
+    List<List<ExchangeOffer>> generateSubsets = generateSubsets(exchangeOffersList);
+    int counter = 1;
+
+    for (List<ExchangeOffer> subset : generateSubsets) {
+      if (subset.size() == 2) {
+        float diff = Math.abs(subset.get(0).getRemitAmount() - subset.get(1).getRemitAmount());
+        if (diff >= remitAmount * 0.9 && diff <= remitAmount * 1.1) {
+          splitMatches.add(subset);
+          counter++;
+        }
+      }
+    }
+    return splitMatches;
+  }
 
   public List<List<ExchangeOffer>> generateSubsets(List<ExchangeOffer> exchangeOffersList) {
 

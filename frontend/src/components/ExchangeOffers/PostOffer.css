@@ -165,3 +165,7 @@ input::-webkit-inner-spin-button {
 .view-split-match-collapsible-tab {
   background: #10d876;
 }
+
+.view-other-split-match-collapsible-tab {
+  background: #7a3ba0;
+}

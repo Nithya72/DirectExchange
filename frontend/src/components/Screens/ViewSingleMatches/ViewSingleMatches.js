@@ -135,8 +135,11 @@ export default class Home extends Component {
 
     var redirectVar = "";
     var errorMsg = "";
+    var successMsg = "";
+
     if (this.state.transactionFlag) {
       redirectVar = <Redirect to={{pathname: "/transact"}}/>
+       //successMsg = <div style={{color: "green"}}>Transaction initiated. Redirect to Transact page to complete it!</div>
     }
 
     if (this.state.transactionFlag === false) {
@@ -219,13 +222,13 @@ export default class Home extends Component {
                             <div className="modal-content" style={{width: "1000px", background: "#eff2f7"}}>
 
                               <div className="modal-body" style={{padding: "0px"}}>
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close" style={{padding: "10px"}}>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close" style={{padding: "10px"}} onClick={this.props.handleRefresh.bind(this)}>
                                   <span aria-hidden="true">&times;</span>
                                 </button>
                                 {/*<form>*/}
                                 <div className="counter-offer-details">
                                   <br/>
-                                  <h4 className="main-title">Counter Offer Details</h4>
+                                  <h4 className="main-title">Accept Offer Details</h4>
 
                                   <div className="form-group">
                                     <br/>
@@ -256,7 +259,7 @@ export default class Home extends Component {
                                 <div className="modal-dialog modal-dialog-centered" role="document">
                                   <div className="modal-content" style={{width: "1000px", background: "#eff2f7"}}>
                                     <div className="modal-body" style={{padding: "0px"}}>
-                                      <button type="button" className="close" data-dismiss="modal" aria-label="Close" style={{padding: "10px"}}>
+                                      <button type="button" className="close" data-dismiss="modal" aria-label="Close" style={{padding: "10px"}}  onClick={this.props.handleRefresh.bind(this)}>
                                         <span aria-hidden="true">&times;</span>
                                       </button>
                                       {/*<form>*/}
@@ -272,7 +275,7 @@ export default class Home extends Component {
                                           <div>Note: The counter offer must be within the range of 90% to 110% of source remit amount
                                           </div>
                                           <br/>
-                                          <div> eg: {(parseInt(offer.remitAmount) * 0.9)} to {(parseInt(offer.remitAmount) * 1.1)}
+                                          <div> eg: {(parseInt(offer.remitAmount) * 0.9).toFixed(2)} to {(parseInt(offer.remitAmount) * 1.1).toFixed(2)}
                                           </div>
                                           <br/>
                                           <input type="number" className="form-control" placeholder="Counter Offer Amount" name="amount" onChange={(e) => this.counterOfferAmountHandler(e, offer)} required/>

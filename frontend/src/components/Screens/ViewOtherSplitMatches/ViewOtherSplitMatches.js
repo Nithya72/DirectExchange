@@ -53,18 +53,20 @@ export default class Home extends Component {
 
       var final_source_offer_ammount = 0;
 
-      if (this.state.offer.remitAmount - (offer1.finalAmount + offer2.finalAmount) > 0) {
-        // console.log("inside if");
-        console.log("if offer1.finalAmount: ", offer1.finalAmount);
-        console.log("if offer2.finalAmount: ", offer2.finalAmount);
-        console.log("if this.state.offer.remitAmount: ", this.state.offer.remitAmount);
-        final_source_offer_ammount = this.state.offer.remitAmount - (this.state.offer.remitAmount - (offer1.finalAmount + offer2.finalAmount))
-      } else {
-        console.log("else offer1.finalAmount: ", offer1.finalAmount);
-        console.log("else offer2.finalAmount: ", offer2.finalAmount);
-        console.log("else this.state.offer.remitAmount: ", this.state.offer.remitAmount);
-        // console.log("inside else: ", this.state.offer.remitAmount , "---", ((offer1.finalAmount + offer2.finalAmount) - this.state.offer.remitAmount));
-        final_source_offer_ammount = this.state.offer.remitAmount + ((offer1.finalAmount + offer2.finalAmount) - this.state.offer.remitAmount)
+
+      if(offer1.finalAmount >= offer2.finalAmount){
+
+        if (offer1.finalAmount - (this.state.offer.remitAmount + offer2.finalAmount) > 0) {
+          final_source_offer_ammount = this.state.offer.remitAmount + (offer1.finalAmount- (this.state.offer.remitAmount  + offer2.finalAmount))
+        } else {
+          final_source_offer_ammount = this.state.offer.remitAmount - ((this.state.offer.remitAmount + offer2.finalAmount) - offer1.finalAmount )
+        }
+      }else{
+        if (offer2.finalAmount - (this.state.offer.remitAmount + offer1.finalAmount) > 0) {
+          final_source_offer_ammount = this.state.offer.remitAmount + (offer2.finalAmount- (this.state.offer.remitAmount  + offer1.finalAmount))
+        } else {
+          final_source_offer_ammount = this.state.offer.remitAmount - ((this.state.offer.remitAmount + offer1.finalAmount) - offer2.finalAmount )
+        }
       }
 
       console.log("after calculations; ", final_source_offer_ammount);
@@ -76,7 +78,6 @@ export default class Home extends Component {
         source_offer_amount: final_source_offer_ammount
       }
     }
-
 
     console.log("data for transaction: ", data, "--- offer initial amount: ", this.state.offer.remitAmount);
 
@@ -198,7 +199,7 @@ export default class Home extends Component {
   }
 
   render() {
-    console.log("inside all split matches:", this.props.allSplitMatches);
+    console.log("inside all other split matches:", this.props.otherSplitMatches);
 
     var redirectVar = "";
     var errorMsg = "";
@@ -214,9 +215,9 @@ export default class Home extends Component {
     return (
         <div>
           {redirectVar}
-          {(this.props.allSplitMatches && this.props.allSplitMatches.length !== 0) ?
+          {(this.props.otherSplitMatches && this.props.otherSplitMatches.length !== 0) ?
 
-              this.props.allSplitMatches.map(offer => (
+              this.props.otherSplitMatches.map(offer => (
                   <div>
                     <table className="table mb-0 table-responsive-sm view-offer-table" style={{color: "#5a656d"}}>
                       <thead>
@@ -254,14 +255,14 @@ export default class Home extends Component {
 
                         {(offer[0].remitAmount >= offer[1].remitAmount) ?
 
-                            //
-                            // (parseInt(offer[1].remitAmount + this.state.offer.finalAmount) < parseInt(offer[0].remitAmount)) ?
-                            //
-                            //     <td className="text-danger">{((offer[1].remitAmount + this.state.offer.finalAmount) - offer[0].remitAmount)} {offer[0].srcCurrency}</td> :
-                            //
-                            //     (parseInt(offer[1].remitAmount + this.state.offer.finalAmount) <= parseInt(offer[0].remitAmount) * 1.1) ?
-                            //
-                            //         <td className="text-success">+{((offer[1].remitAmount + this.state.offer.finalAmount) - offer[0].remitAmount)} {offer[0].srcCurrency}</td> :
+
+                            (parseInt(offer[1].remitAmount + this.state.offer.finalAmount) < parseInt(offer[0].remitAmount)) ?
+
+                                <td className="text-danger">{((offer[1].remitAmount + this.state.offer.finalAmount) - offer[0].remitAmount)} {offer[0].srcCurrency}</td> :
+
+                                (parseInt(offer[1].remitAmount + this.state.offer.finalAmount) <= parseInt(offer[0].remitAmount) * 1.1) ?
+
+                                    <td className="text-success">+{((offer[1].remitAmount + this.state.offer.finalAmount) - offer[0].remitAmount)} {offer[0].srcCurrency}</td> :
 
                                     (parseInt(offer[0].remitAmount + offer[1].remitAmount) - parseInt(this.state.offer.finalAmount)) >= 0 ?
 
@@ -296,13 +297,13 @@ export default class Home extends Component {
 
                         {(offer[1].remitAmount > offer[0].remitAmount) ?
 
-                            // (parseInt(offer[0].remitAmount + this.state.offer.finalAmount) < parseInt(offer[1].remitAmount)) ?
-                            //
-                            //     <td className="text-danger">{((offer[0].remitAmount + this.state.offer.finalAmount) - offer[1].remitAmount)} {offer[1].srcCurrency}</td> :
-                            //
-                            //     (parseInt(offer[0].remitAmount + this.state.offer.finalAmount) <= parseInt(offer[1].remitAmount) * 1.1) ?
-                            //
-                            //         <td className="text-success">+{((offer[0].remitAmount + this.state.offer.finalAmount) - offer[1].remitAmount)} {offer[1].srcCurrency}</td> :
+                            (parseInt(offer[0].remitAmount + this.state.offer.finalAmount) < parseInt(offer[1].remitAmount)) ?
+
+                                <td className="text-danger">{((offer[0].remitAmount + this.state.offer.finalAmount) - offer[1].remitAmount)} {offer[1].srcCurrency}</td> :
+
+                                (parseInt(offer[0].remitAmount + this.state.offer.finalAmount) <= parseInt(offer[1].remitAmount) * 1.1) ?
+
+                                    <td className="text-success">+{((offer[0].remitAmount + this.state.offer.finalAmount) - offer[1].remitAmount)} {offer[1].srcCurrency}</td> :
 
 
                                     (parseInt(offer[0].remitAmount + offer[1].remitAmount) - parseInt(this.state.offer.finalAmount)) >= 0 ?

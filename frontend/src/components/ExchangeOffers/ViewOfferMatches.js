@@ -8,6 +8,8 @@ import jwt_decode from "jwt-decode";
 import {Redirect} from "react-router";
 import ViewSingleMatches from "../Screens/ViewSingleMatches/ViewSingleMatches";
 import ViewSplitMatches from "../Screens/ViewSplitMatches/ViewSplitMatches";
+import ViewOtherSplitMatches from "../Screens/ViewOtherSplitMatches/ViewOtherSplitMatches";
+import PostOffer from "./PostOffer";
 
 export class ViewOfferMatches extends Component {
   constructor(props) {
@@ -19,6 +21,7 @@ export class ViewOfferMatches extends Component {
       submitted: false,
       allSingleMatches: null,
       allSplitMatches: null,
+      otherSplitMatches: null,
       counter_error: null,
       postCounterOfferFlag: false,
       postCounterMsg: "",
@@ -52,7 +55,8 @@ export class ViewOfferMatches extends Component {
             this.setState({
               successFlag: true,
               allSingleMatches: response.data.singleMatches,
-              allSplitMatches: response.data.splitMatches
+              allSplitMatches: response.data.splitMatches,
+              otherSplitMatches: response.data.otherSplitMatches
             })
           }
         }).catch(error => {
@@ -60,10 +64,15 @@ export class ViewOfferMatches extends Component {
       this.setState({
         successFlag: false,
         allSingleMatches: null,
-        allSplitMatches: null
+        allSplitMatches: null,
+        otherSplitMatches: null
       })
     });
   }
+
+  handleRefresh = () => {
+    window.location.reload();
+  };
 
   render() {
 
@@ -157,7 +166,7 @@ export class ViewOfferMatches extends Component {
                       <div className="transaction-table">
                         <div className="table-responsive">
 
-                          <ViewSingleMatches allSingleMatches={this.state.allSingleMatches} myOffer={this.state.offer}/>
+                          <ViewSingleMatches allSingleMatches={this.state.allSingleMatches} myOffer={this.state.offer} handleRefresh={this.handleRefresh} />
 
                         </div>
                       </div>
@@ -176,11 +185,25 @@ export class ViewOfferMatches extends Component {
                           <div className="transaction-table">
                             <div className="table-responsive">
 
-                              <ViewSplitMatches allSplitMatches={this.state.allSplitMatches} myOffer={this.state.offer}/>
+                              <ViewSplitMatches allSplitMatches={this.state.allSplitMatches} myOffer={this.state.offer} handleRefresh={this.handleRefresh} />
                             </div>
                           </div>
                         </div>
                       </Collapsible> : ""}
+                  <Collapsible trigger="View Matches in Others Split Offers"
+                               triggerClassName="view-collapsible-tab view-other-split-match-collapsible-tab"
+                               triggerOpenedClassName="view-collapsible-tab view-other-split-match-collapsible-tab">
+
+
+                    <div className="card-body pt-0">
+                      <div className="transaction-table">
+                        <div className="table-responsive">
+
+                          <ViewOtherSplitMatches otherSplitMatches={this.state.otherSplitMatches} myOffer={this.state.offer} handleRefresh={this.handleRefresh} />
+                        </div>
+                      </div>
+                    </div>
+                  </Collapsible>
                 </div>
               </div>
             </div>

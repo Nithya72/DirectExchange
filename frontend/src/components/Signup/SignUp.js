@@ -8,6 +8,7 @@ import fbLogo from '../img/fb-logo.png';
 import googleLogo from '../img/google-logo.png';
 import Header from "../Navigation/Header";
 import { Link, Redirect } from 'react-router-dom'
+import backend from '../../../src/helpers/serverDetails';
 
 export class SignUp extends Component {
     constructor(props) {
@@ -41,7 +42,7 @@ export class SignUp extends Component {
         console.log("sign up data: ", data);
 
         axios.defaults.withCredentials = true;
-        axios.post('http://localhost:8080/directexchange/auth/signup', data)
+        axios.post(`${backend}/directexchange/auth/signup`, data)
             .then(response => {
                 console.log("Status Code : ", response.status);
                 if (response.status === 200) {

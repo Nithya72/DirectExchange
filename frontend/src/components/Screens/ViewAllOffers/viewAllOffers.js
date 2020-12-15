@@ -7,6 +7,7 @@ import SideBar from "../../Navigation/SideBar";
 import Pagination from "./Pagination";
 import { currencyList, countries } from "../../../helpers/currencies";
 import OfferComponent from "./offerComponent";
+import backend from '../../../../src/helpers/serverDetails';
 
 export default class Home extends Component {
   constructor() {
@@ -54,7 +55,7 @@ export default class Home extends Component {
       var decodedToken = jwt_decode(localStorage.getItem("token"));
       axios
         .get(
-          "http://localhost:8080/directexchange/user/allOffers/" +
+          `${backend}/directexchange/user/allOffers/` +
             decodedToken.sub
         )
         .then((response) => {

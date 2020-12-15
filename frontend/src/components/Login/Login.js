@@ -8,6 +8,7 @@ import googleLogo from '../img/google-logo.png';
 import Header from "../Navigation/Header";
 import { Link, Redirect } from 'react-router-dom'
 import jwt_decode from "jwt-decode";
+import backend from '../../../src/helpers/serverDetails';
 
 export class Login extends Component {
     constructor(props) {
@@ -79,7 +80,7 @@ export class Login extends Component {
         console.log("sign up data: ", data);
 
         axios.defaults.withCredentials = true;
-        axios.post('http://localhost:8080/directexchange/auth/login', data)
+        axios.post(`${backend}/directexchange/auth/login`, data)
             .then(response => {
                 console.log("Status Code : ", response.status);
                 if (response.status === 200) {

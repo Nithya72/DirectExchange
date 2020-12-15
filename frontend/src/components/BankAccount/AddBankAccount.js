@@ -5,6 +5,7 @@ import { currencyList, countries } from "../../helpers/currencies";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
 import { Redirect } from 'react-router-dom'
+import backend from '../../../src/helpers/serverDetails';
 
 export class BankAccount extends Component {
 
@@ -54,7 +55,7 @@ export class BankAccount extends Component {
     axios.defaults.headers.common["authorization"] =
       "Bearer " + localStorage.getItem("token");
     var decodedToken = jwt_decode(localStorage.getItem('token'));
-    axios.post('http://localhost:8080/directexchange/bank-accounts/' + decodedToken.sub, data)
+    axios.post(`${backend}/directexchange/bank-accounts/` + decodedToken.sub, data)
         .then(response => {
             console.log("Status Code : ", response.status);
             if (response.status === 200) {

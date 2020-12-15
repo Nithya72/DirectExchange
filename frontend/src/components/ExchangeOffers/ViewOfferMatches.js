@@ -10,6 +10,7 @@ import ViewSingleMatches from "../Screens/ViewSingleMatches/ViewSingleMatches";
 import ViewSplitMatches from "../Screens/ViewSplitMatches/ViewSplitMatches";
 import ViewOtherSplitMatches from "../Screens/ViewOtherSplitMatches/ViewOtherSplitMatches";
 import PostOffer from "./PostOffer";
+import backend from '../../../src/helpers/serverDetails';
 
 export class ViewOfferMatches extends Component {
   constructor(props) {
@@ -47,7 +48,7 @@ export class ViewOfferMatches extends Component {
     var decodedToken = jwt_decode(localStorage.getItem('token'));
     console.log("decodedUserId: ", decodedToken.sub);
 
-    axios.get('http://localhost:8080/directexchange/user/allmatches/' + userId + "/" + remitAmount + "/" + srcCurrency + "/" + destCurrency)
+    axios.get(`${backend}/directexchange/user/allmatches/` + userId + "/" + remitAmount + "/" + srcCurrency + "/" + destCurrency)
         .then(response => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {

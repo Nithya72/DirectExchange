@@ -6,6 +6,7 @@ import SideBar from "../Navigation/SideBar";
 import jwt_decode from "jwt-decode";
 import CounterOfferComponent from "./CounterOfferComponent";
 import CounterSplitOfferComponent from "./CounterSplitOfferComponent";
+import backend from '../../../src/helpers/serverDetails';
 
 export class ViewCounterOffers extends Component {
   constructor(props) {
@@ -26,7 +27,7 @@ export class ViewCounterOffers extends Component {
     var decodedToken = jwt_decode(localStorage.getItem('token'));
     console.log("decodedUserId: ", decodedToken.sub);
     axios
-        .get("http://localhost:8080/directexchange/user/counteroffer/" + decodedToken.sub)
+        .get(`${backend}/directexchange/user/counteroffer/` + decodedToken.sub)
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {

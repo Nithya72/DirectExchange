@@ -6,6 +6,7 @@ import Header from "../../Navigation/Header";
 import SideBar from "../../Navigation/SideBar";
 import jwt_decode from "jwt-decode";
 import {Redirect} from "react-router";
+import backend from '../../../../src/helpers/serverDetails';
 
 export default class Home extends Component {
   constructor() {
@@ -32,7 +33,7 @@ export default class Home extends Component {
     var decodedToken = jwt_decode(localStorage.getItem("token"));
     axios
       .post(
-        "http://localhost:8080/directexchange/api/message/" +
+        `${backend}/directexchange/api/message/` +
           decodedToken.sub,
         formdata
       )
@@ -58,7 +59,7 @@ export default class Home extends Component {
       rejectMsgToEmail: this.props.location.state.offerObj.user.emailId,
     }
 
-    axios.put('http://localhost:8080/directexchange/user/counteroffer', data)
+    axios.put(`${backend}/directexchange/user/counteroffer`, data)
         .then(response => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -98,7 +99,7 @@ export default class Home extends Component {
 
     console.log("counter offer data: ", data);
 
-    // axios.post('http://localhost:8080/directexchange/api/transactions/' + decodedToken.sub, data)
+    // axios.post(`${backend}/directexchange/api/transactions/` + decodedToken.sub, data)
     //     .then(response => {
     //       console.log("Status Code : ", response.status);
     //       if (response.status === 200) {

@@ -4,6 +4,7 @@ import { exchangerates } from "../../helpers/exchangerates";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import "./PostOffer.css";
+import backend from '../../../src/helpers/serverDetails';
 
 export class PostOffer extends Component {
   constructor(props) {
@@ -75,7 +76,7 @@ export class PostOffer extends Component {
 
       axios
         .post(
-          "http://localhost:8080/directexchange/api/postoffer/" +
+          `${backend}/directexchange/api/postoffer/` +
             decodedToken.sub,
           data
         )

@@ -5,6 +5,7 @@ import { currencyList, countries } from "../../helpers/currencies";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
 import { Redirect } from 'react-router-dom'
+import backend from '../../../src/helpers/serverDetails';
 
 export class BankAccount extends Component {
 
@@ -25,7 +26,7 @@ export class BankAccount extends Component {
 
     axios
       .get(
-        "http://localhost:8080/directexchange/bank-accounts/" + decodedToken.sub
+        `${backend}/directexchange/bank-accounts/` + decodedToken.sub
       )
       .then((response) => {
         console.log("Status Code : ", response.status);

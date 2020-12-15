@@ -5,6 +5,7 @@ import SideBar from "../Navigation/SideBar";
 import TransactItems from "./TransactItems";
 import jwt_decode from "jwt-decode";
 import "./Transact.css";
+import backend from '../../../src/helpers/serverDetails';
 
 export class Transact extends Component {
   constructor(props) {
@@ -21,7 +22,7 @@ export class Transact extends Component {
 
     axios
       .get(
-        "http://localhost:8080/directexchange/api/transactions/" +
+        `${backend}/directexchange/api/transactions/` +
           decodedToken.sub
       )
       .then((response) => {

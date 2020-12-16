@@ -2,8 +2,6 @@ package edu.sjsu.cmpe275.service;
 
 import edu.sjsu.cmpe275.dao.ExchangeOffer;
 import edu.sjsu.cmpe275.repository.ExchangeOfferRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +17,6 @@ import java.util.Map;
 @Transactional
 public class ExchangeOfferService {
 
-  Logger log = LoggerFactory.getLogger(ExchangeOfferService.class);
   @Autowired
   private ExchangeOfferRepository exchangeOfferRepository;
 
@@ -32,7 +29,7 @@ public class ExchangeOfferService {
    */
   public ResponseEntity<Object> generateResponse(HttpStatus status, List<ExchangeOffer> singleMatches, List<List<ExchangeOffer>> splitMatches, List<List<ExchangeOffer>> otherSplitMatches) {
     Map<String, Object> response = new HashMap<>();
-    log.info("generate response:");
+
     try {
       response.put("status", status.value());
       response.put("singleMatches", singleMatches);
@@ -73,8 +70,6 @@ public class ExchangeOfferService {
     }
   }
 
-//Expiration date check - time zone??
-
   public ResponseEntity<?> getSingleMatches(Long userId, Integer remitAmount, String srcCurrency, String destCurrency) {
     try {
       List<ExchangeOffer> exchangeOffersList = exchangeOfferRepository.findSingleMatches(userId, remitAmount, srcCurrency, destCurrency); //LocalDate.now()
@@ -93,11 +88,8 @@ public class ExchangeOfferService {
 
     try {
       List<ExchangeOffer> singleMatches = exchangeOfferRepository.findSingleMatches(userId, remitAmount, srcCurrency, destCurrency); //LocalDate.now()
-      log.info("srcCurrency: ", srcCurrency);
 
       List<ExchangeOffer> exchangeOffersList = exchangeOfferRepository.getOffersBySrcCurrency(userId, srcCurrency, destCurrency);
-
-      log.info("exchangeOffersList: ", exchangeOffersList);
 
       List<List<ExchangeOffer>> splitMatches = fetchSplitMatches(exchangeOffersList, remitAmount);
 

@@ -8,8 +8,6 @@ import edu.sjsu.cmpe275.repository.UserRepository;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +16,6 @@ import java.util.List;
 @Aspect
 @Component
 public class ReputationAdvice {
-
-  private static Logger log = LoggerFactory.getLogger(LoggingAdvice.class);
 
   @Autowired
   ExchangeOfferRepository exchangeOfferRepository;
@@ -32,7 +28,6 @@ public class ReputationAdvice {
 
   @After("execution(* edu.sjsu.cmpe275.service.TransactionService.updateTransaction(..))")
   public void reputation(JoinPoint joinPoint) throws Throwable {
-    log.info("***************************************************inside reputation advice***************************************************");
 
     double totalTransactions = 0;
     double totalAtFaultTransactions = 0;
@@ -53,14 +48,12 @@ public class ReputationAdvice {
 
     if(totalTransactions > 0) {
       Integer rating = Math.toIntExact(Math.round(((1 - (totalAtFaultTransactions/totalTransactions)) * 4) + 1));
-      log.info("*****************************************************************: userId:::{} ---- totalTransactions:::{} ----- totalAtFaultTransactions:::{} ------ rating:::{}", userId, totalTransactions, totalAtFaultTransactions, rating);
-      userRepository.updateUserRating(userId, rating);
+       userRepository.updateUserRating(userId, rating);
     }
   }
 
   @After("execution(* edu.sjsu.cmpe275.service.TransactionService.getTransactions(..))")
   public void reputationAfterGet(JoinPoint joinPoint) throws Throwable {
-    log.info("***************************************************inside reputation advice***************************************************");
 
     double totalTransactions = 0;
     double totalAtFaultTransactions = 0;
@@ -78,7 +71,6 @@ public class ReputationAdvice {
 
     if(totalTransactions > 0) {
       Integer rating = Math.toIntExact(Math.round(((1 - (totalAtFaultTransactions/totalTransactions)) * 4) + 1));
-      log.info("*****************************************************************: userId:::{} ---- totalTransactions:::{} ----- totalAtFaultTransactions:::{} ------ rating:::{}", userId, totalTransactions, totalAtFaultTransactions, rating);
       userRepository.updateUserRating(userId, rating);
     }
   }

@@ -5,8 +5,6 @@ import edu.sjsu.cmpe275.dao.ExchangeOffer;
 import edu.sjsu.cmpe275.service.TransactionService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -34,8 +32,6 @@ public class TransactionController {
 
     @Autowired
     private TransactionService transactionService;
-
-    Logger log = LoggerFactory.getLogger(TransactionController.class);
 
     @PreAuthorize("#userId == authentication.principal")
     @PostMapping(value = "/{id}", produces = {"application/json"})
@@ -58,7 +54,6 @@ public class TransactionController {
         Long sourceOffer = Long.parseLong(String.valueOf(object.get("source_offer")));
         Float sourceOfferAmount = Float.parseFloat(String.valueOf(object.get("source_offer_amount")));
         Long counterOfferId = Long.parseLong(String.valueOf(object.get("counterOfferId")));
-        log.info("offersMatched value: {}", offersMatched);
 
         return transactionService.createNewTransaction(sourceOffer, offersMatched, sourceOfferAmount, counterOfferId);
     }

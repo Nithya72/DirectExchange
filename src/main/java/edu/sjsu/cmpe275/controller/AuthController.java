@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 @CrossOrigin
 @RequestMapping("auth")
 public class AuthController {
-    Logger logger = LoggerFactory.getLogger(AuthController.class);
+//    Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private static String regex = "^[0-9]+$";
     private static Pattern emailPattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
@@ -42,7 +42,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please fill in all fields");
         }
 
-        logger.info("email id - {} nickname - {}",emailId, nickname );
+//        logger.info("email id - {} nickname - {}",emailId, nickname );
         return authService.registerUser(emailId, nickname, password, RegistrationType.LOCAL);
     }
 
@@ -60,7 +60,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please provide a valid email id");
         }
 
-        logger.info("email id - {}",emailId );
+//        logger.info("email id - {}",emailId );
         return authService.loginUser(emailId, password);
     }
 

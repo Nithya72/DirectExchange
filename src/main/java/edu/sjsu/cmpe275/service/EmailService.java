@@ -157,7 +157,7 @@ public class EmailService {
         }
     }
 
-    public boolean sendCustomNotification(@NonNull String userName, @NonNull String emailId, @NonNull String emailMessage) {
+    public boolean sendCustomNotification(@NonNull String userName, @NonNull String emailId, @NonNull String emailSubject, @NonNull String emailMessage) {
 
         try {
 
@@ -166,15 +166,13 @@ public class EmailService {
                 emailId = appConfig.getEmail().getTestEmail();
             }
 
-            System.out.println("In here!\n\n\n" + emailId);
-
             Message message = new MimeMessage(getSession());
             message.setFrom(new InternetAddress(appConfig.getEmail().getUsername()));
             message.setRecipients(
                     Message.RecipientType.TO,
                     InternetAddress.parse(emailId)
             );
-            message.setSubject("DirectExchange - Complete Offer Transaction!");
+            message.setSubject(emailSubject);
             message.setText(
                     String.format("Dear %s,\n\n" + emailMessage, userName)
             );

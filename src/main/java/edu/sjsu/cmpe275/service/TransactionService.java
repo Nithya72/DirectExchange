@@ -107,7 +107,7 @@ public class TransactionService {
                 transactionsRepository.save(otherofferTransaction);
             }
             String emailMessage="Please complete your transaction in the next 10 minutes otherwise it will get aborted!";
-            emailService.sendCustomNotification(sourceOffer.getUser().getNickName(), sourceOffer.getUser().getEmailId(),emailMessage);
+            emailService.sendCustomNotification(sourceOffer.getUser().getNickName(), sourceOffer.getUser().getEmailId(),"DirectExchange - Complete Offer Transaction!", emailMessage);
             return ResponseEntity.status(HttpStatus.OK).body(newTransaction);
 
         }catch (Exception e){
@@ -154,6 +154,10 @@ public class TransactionService {
                 for(Transactions transaction:currentTransactions){
                     transaction.setTransactionStatus("completed");
                     transaction.getOfferDetails().setStatus("Fulfilled");
+                    ExchangeOffer completedOffer= transaction.getOfferDetails();
+                    float amount =Math.round(completedOffer.getFinalAmount() * 0.9995 *100)/100;
+                    String message ="Your transaction has been completed\n Recipient has received "+Float.toString(amount);
+                    emailService.sendCustomNotification(completedOffer.getUser().getNickName(), completedOffer.getUser().getEmailId(),"DirectExchange - Transaction Completed!", message);
                     offersCompleted.add(transaction.getOfferDetails().getOfferId());
                 }
                 List<String> otherTransactions = transactionsRepository.findOtherTransactions(offersCompleted,transaction_id);

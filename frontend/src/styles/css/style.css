@@ -9079,16 +9079,16 @@ button,
   .chart-stat h5 {
     margin-bottom: 5px; }
 
-.transaction-widget li {
+.transaction-widget tr {
   margin-bottom: 30px;
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(55, 55, 89, 0.1);
   align-items: center; }
   @media only screen and (max-width: 575px) {
-    .transaction-widget li {
+    .transaction-widget tr {
       align-items: flex-start;
       flex-direction: column; } }
-  .transaction-widget li:last-child {
+  .transaction-widget tr:last-child {
     border: 0px;
     padding-bottom: 0px;
     margin-bottom: 0px; }

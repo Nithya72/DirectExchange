@@ -18,6 +18,7 @@ import AddBankAccount from "./BankAccount/AddBankAccount";
 import ViewCounterOffers from "./ExchangeOffers/ViewCounterOffers";
 import ViewCounterOffer from "./Screens/ViewCounterOffer/ViewCounterOffer";
 import TransactHistory from "./ExchangeOffers/TransactHistory";
+import Report from "./Report/Report";
 
 //Create a Main Component
 class Main extends Component {
@@ -27,20 +28,36 @@ class Main extends Component {
         <Switch>
           <ProtectedRoute exact path="/" component={viewAllOffers} />
           <ProtectedRoute exact path="/ViewOffer" component={ViewOffer} />
-          <ProtectedRoute exact path="/ViewCounterOffer" component={ViewCounterOffer} />
+          <ProtectedRoute
+            exact
+            path="/ViewCounterOffer"
+            component={ViewCounterOffer}
+          />
           <Route exact path="/signup" component={SignUp} />
           <Route exact path="/login" component={Login} />
           <ProtectedRoute exact path="/getMyOffers" component={GetMyOffers} />
-          <Route exact path="/oauth2/redirect" component={OAuth2RedirectHandler} ></Route>
-          <ProtectedRoute exact path="/viewOfferMatches" component={ViewOfferMatches} />
+          <Route
+            exact
+            path="/oauth2/redirect"
+            component={OAuth2RedirectHandler}
+          ></Route>
+          <ProtectedRoute
+            exact
+            path="/viewOfferMatches"
+            component={ViewOfferMatches}
+          />
           <ProtectedRoute path="/transact" component={Transact} />
           <ProtectedRoute path="/rates" component={PrevailingRates} />
           <Route path="/verify" component={Verify} />
           <ProtectedRoute path="/profile" component={Profile} />
           <ProtectedRoute path="/account" component={BankAccount} />
           <ProtectedRoute path="/addAccount" component={AddBankAccount} />
-          <ProtectedRoute path="/viewCounterOffers" component={ViewCounterOffers} />
+          <ProtectedRoute
+            path="/viewCounterOffers"
+            component={ViewCounterOffers}
+          />
           <ProtectedRoute path="/transactHistory" component={TransactHistory} />
+          <ProtectedRoute path="/report" component={Report} />
           <Redirect to="/" />
         </Switch>
       </Router>

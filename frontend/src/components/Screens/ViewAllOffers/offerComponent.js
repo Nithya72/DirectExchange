@@ -55,7 +55,7 @@ export default class Home extends Component {
             style={{display: "flex", justifyContent: "center"}}
         >
           <div className="offerContainer">
-          <span>
+          <span>:wq
             Posted By: <span className="postedBy">{this.props.postedBy}</span> &emsp;
             {this.props.offerObj.user.rating > 0 ?
                 <span className="transaction-trigger" onClick={(e) => this.transactionHistoryHandler(this.props.offerObj, e)} data-toggle="modal" data-target="#transactionHistoryModalPopup">

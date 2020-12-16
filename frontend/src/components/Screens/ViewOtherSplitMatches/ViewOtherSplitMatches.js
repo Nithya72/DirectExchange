@@ -48,7 +48,8 @@ export default class Home extends Component {
         source_offer: this.state.offer.offerId,
         offers_matched1: offer1,
         offers_matched2: offer2,
-        source_offer_amount: this.state.offer.remitAmount
+        source_offer_amount: this.state.offer.remitAmount,
+        counterOfferId: -1
       }
     } else if (offerType === "accept-match") {
 
@@ -76,7 +77,8 @@ export default class Home extends Component {
         source_offer: this.state.offer.offerId,
         offers_matched1: offer1,
         offers_matched2: offer2,
-        source_offer_amount: final_source_offer_ammount
+        source_offer_amount: final_source_offer_ammount,
+        counterOfferId: -1
       }
     }
 

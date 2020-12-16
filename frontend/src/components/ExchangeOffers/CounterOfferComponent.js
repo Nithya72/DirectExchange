@@ -11,6 +11,7 @@ export default class Home extends Component {
           <span>
             Posted By: <span className="postedBy">{this.props.senderNickName}</span><br/>
             Counter Offer Amount: <span className="postedBy">{this.props.counterOfferAmount}</span><br/>
+            Status: <span className="postedBy">{this.props.status}</span><br/>
           </span>
             <div
                 style={{ display: "flex", flexDirection: "row", margin: "10px 0" }}

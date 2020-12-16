@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 /*
@@ -47,7 +48,7 @@ public class CounterOffer {
   private String status;
 
   @Column(name = "expiration_date", nullable = false)
-  private Date expirationDate;
+  private ZonedDateTime expirationDate;
 
   @Column
   private String type;
@@ -108,11 +109,11 @@ public class CounterOffer {
     this.receiver = receiver;
   }
 
-  public Date getExpirationDate() {
+  public ZonedDateTime getExpirationDate() {
     return expirationDate;
   }
 
-  public void setExpirationDate(Date expirationDate) {
+  public void setExpirationDate(ZonedDateTime expirationDate) {
     this.expirationDate = expirationDate;
   }
 

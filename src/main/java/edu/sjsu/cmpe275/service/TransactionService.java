@@ -1,15 +1,19 @@
 package edu.sjsu.cmpe275.service;
 
+import edu.sjsu.cmpe275.controller.TransactionController;
 import edu.sjsu.cmpe275.dao.BankAccount;
 import edu.sjsu.cmpe275.dao.ExchangeOffer;
 import edu.sjsu.cmpe275.dao.Transactions;
 import edu.sjsu.cmpe275.dao.User;
 import edu.sjsu.cmpe275.repository.BankAccountRepository;
+import edu.sjsu.cmpe275.repository.CounterOfferRepository;
 import edu.sjsu.cmpe275.repository.ExchangeOfferRepository;
 import edu.sjsu.cmpe275.repository.TransactionsRepository;
 import edu.sjsu.cmpe275.repository.UserRepository;
 import org.hibernate.Transaction;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +34,9 @@ public class TransactionService {
     private ExchangeOfferRepository exchangeOfferRepository;
 
     @Autowired
+    private CounterOfferRepository counterOfferRepository;
+
+    @Autowired
     private BankAccountRepository bankAccountRepository;
 
     @Autowired
@@ -43,6 +50,8 @@ public class TransactionService {
 
     private HashMap<String,Double> exchangeRate = new HashMap<String,Double>();
 
+    Logger log = LoggerFactory.getLogger(TransactionService.class);
+
     public TransactionService(){
         exchangeRate.put("GBP",1.33);
         exchangeRate.put("USD",1.0);
@@ -54,7 +63,7 @@ public class TransactionService {
 
 
     public ResponseEntity createNewTransaction(Long source_offer_id,
-                                               List<Long> offer_matched, float amount){
+                                               List<Long> offer_matched, float amount, Long counterOfferId){
 
         try {
             ExchangeOffer sourceOffer = exchangeOfferRepository.findByOfferIdAndStatus(source_offer_id,"Open");
@@ -82,6 +91,11 @@ public class TransactionService {
             Transactions newTransaction = new Transactions(trans_id, sourceOffer, sourceOffer.getUser().getUserId(),expirationDate,transaction_remit_amount);
             transactionsRepository.save(newTransaction);
             schedulerService.addNewTransaction(newTransaction.getTransactionId(),expirationDate);
+
+            if(counterOfferId != -1){
+                log.info("*************Going to change the counter offer status to accepted*************");
+                counterOfferRepository.updateCounterOfferStatus(counterOfferId, "accepted");
+            }
 
             for (ExchangeOffer offer : otheroffers) {
                 transaction_amount = offer.getRemitAmount()*exchangeRate.get(offer.getSrcCurrency());
@@ -228,7 +242,5 @@ public class TransactionService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong! Please try again later!");
         }
     }
-
-
 
 }

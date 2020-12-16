@@ -2,6 +2,7 @@ package edu.sjsu.cmpe275.service;
 
 import edu.sjsu.cmpe275.dao.CounterOffer;
 import edu.sjsu.cmpe275.dao.ExchangeOffer;
+import edu.sjsu.cmpe275.dao.Transactions;
 import edu.sjsu.cmpe275.repository.CounterOfferRepository;
 import edu.sjsu.cmpe275.repository.ExchangeOfferRepository;
 import org.slf4j.Logger;
@@ -12,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +36,9 @@ public class CounterOfferService {
 
   @Autowired
   private EmailService emailService;
+
+  @Autowired
+  private SchedulerService schedulerService;
 
   /**
    * @param status
@@ -60,7 +67,9 @@ public class CounterOfferService {
 
     try {
 
-      Date timeNow = new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5));
+//      Date timeNow = new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5));
+
+      ZonedDateTime timeNow = ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(5);
       log.info("time now: ", System.currentTimeMillis(), "---", timeNow);
 
       CounterOffer counterOffer = new CounterOffer();
@@ -79,6 +88,10 @@ public class CounterOfferService {
       }
 
       counterOfferRepository.save(counterOffer);
+      CounterOffer newCounterOffer = counterOfferRepository.saveAndFlush(counterOffer);
+      log.info("new counter offer details: {}", newCounterOffer.toString());
+      log.info("new counter offer atleast id: {}", newCounterOffer.getOfferId());
+      schedulerService.addNewCounter(newCounterOffer.getOfferId(), timeNow);
 
       ExchangeOffer eo = exchangeOfferRepository.findByofferId(senderOffer.getOfferId());
       eo.setStatus("CounterMade");
@@ -97,9 +110,6 @@ public class CounterOfferService {
   public ResponseEntity<?> getCounterOffers(Long userId) {
 
     try {
-
-//      counterOfferRepository.updateStatusOfExpiredCounterMade();
-//      counterOfferRepository.updateStatusOfExpCounterOffers();
 
       List<CounterOffer> mycounterOffers = counterOfferRepository.getMyCounterOffers(userId);
       List<CounterOffer> counterOffersForMe = counterOfferRepository.getCounterOffersForMe(userId);
@@ -122,6 +132,26 @@ public class CounterOfferService {
     }
     catch(Exception exception){
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Couldn't reject counter offer. Try after sometime.");
+    }
+
+  }
+
+
+  public void setExpirationToCounterOffers(Long counterOfferId){
+
+    try{
+      log.info("*************************************************************inside setExpirationToCounterOffers");
+      int updated = counterOfferRepository.updateExpiredStatus("expired",counterOfferId);
+      System.out.println("Updated "+updated+"\n\n\n");
+      if(updated!=0){
+        CounterOffer counterOffer = counterOfferRepository.getCounterOfferDetailById(counterOfferId);
+
+        log.info("resetting the status of the exchange offer: {} ", counterOffer.getSenderOffer().getOfferId());
+        exchangeOfferRepository.resetOfferStatusOfOne(counterOffer.getSenderOffer().getOfferId(),"Open");
+      }
+
+    }catch(Exception e){
+      System.out.println("Error "+e.getMessage());
     }
 
   }

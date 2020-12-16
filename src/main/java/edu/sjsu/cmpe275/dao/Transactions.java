@@ -137,4 +137,20 @@ public class Transactions {
     public void setTransaction_remit_amount(double transaction_remit_amount) {
         this.transaction_remit_amount = transaction_remit_amount;
     }
+
+    @Override
+    public String toString() {
+        return "Transactions{" +
+            "id=" + id +
+            ", transactionId='" + transactionId + '\'' +
+            ", userId=" + userId +
+            ", offerid=" + offerid +
+            ", is_complete=" + is_complete +
+            ", transactionStatus='" + transactionStatus + '\'' +
+            ", expirationDate=" + expirationDate +
+            ", remit_account_id=" + remit_account_id +
+            ", dest_account_id=" + dest_account_id +
+            ", transaction_remit_amount=" + transaction_remit_amount +
+            '}';
+    }
 }

@@ -89,7 +89,8 @@ export default class Home extends Component {
     var data = {
       source_offer: this.props.location.state.receiverOfferObj.offerId,
       offers_matched1: this.props.location.state.offerObj,
-      source_offer_amount: this.props.location.state.counterOfferAmount
+      source_offer_amount: this.props.location.state.counterOfferAmount,
+      counterOfferId: this.props.location.state.counterOfferId
     }
 
     console.log("counter offer accept data: ", data);
@@ -131,7 +132,8 @@ export default class Home extends Component {
       source_offer: this.props.location.state.receiverOfferObj.offerId,
       offers_matched1: this.props.location.state.offerObj,
       offers_matched2: this.props.location.state.thirdParty,
-      source_offer_amount: this.props.location.state.counterOfferAmount
+      source_offer_amount: this.props.location.state.counterOfferAmount,
+      counterOfferId: this.props.location.state.counterOfferId
     }
 
     console.log("split counter transaction data: ", data);

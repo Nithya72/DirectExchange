@@ -46,14 +46,16 @@ export default class Home extends Component {
       data = {
         source_offer: this.state.offer.offerId,
         offers_matched1: offer,
-        source_offer_amount: this.state.offer.remitAmount
+        source_offer_amount: this.state.offer.remitAmount,
+        counterOfferId: -1
       }
       console.log("accept - final data: ", data);
     } else if (offerType === "accept-match") {
       data = {
         source_offer: this.state.offer.offerId,
         offers_matched1: offer,
-        source_offer_amount: offer.finalAmount
+        source_offer_amount: offer.finalAmount,
+        counterOfferId: -1
       }
       console.log("accept-match - final data: ", data);
     }
@@ -297,9 +299,10 @@ export default class Home extends Component {
                             : "")}
                       </ul>
                     </div>
-                    {errorMsg}
+
                   </div>
               )) : <div> No matches yet!</div>}
+          {errorMsg}
         </div>
 
     )

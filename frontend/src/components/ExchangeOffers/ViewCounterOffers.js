@@ -88,6 +88,7 @@ export class ViewCounterOffers extends Component {
                                     receiverNickName={offerObj.receiver.nickName}
                                     counterOfferId={offerObj.offerId}
                                     type={offerObj.type}
+                                    status = {offerObj.status}
                                 />
                                 :
 
@@ -100,6 +101,7 @@ export class ViewCounterOffers extends Component {
                                     counterOfferId={offerObj.offerId}
                                     thirdParty={offerObj.thirdPartyOffer}
                                     type={offerObj.type}
+                                    status = {offerObj.status}
                                 />
                         )
                       }) : <div> No Counter Offer Posted Yet! </div>

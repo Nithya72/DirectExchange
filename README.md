@@ -8,6 +8,7 @@
 
 ### Application URL
 You can access the application here:
+ http://ec2-34-219-184-245.us-west-2.compute.amazonaws.com:3000/login
 
 ### Build Instructions
 

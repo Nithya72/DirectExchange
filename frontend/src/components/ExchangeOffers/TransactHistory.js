@@ -57,6 +57,11 @@ export default class Home extends Component {
                           <br/>
                           {history[3].substring(0,2)}
                         </td>
+                        <td>
+                          At-fault
+                          <br/>
+                          {history[8] == 1? "No" : "Yes"}
+                        </td>
                       </tr>
                   );
                 })}

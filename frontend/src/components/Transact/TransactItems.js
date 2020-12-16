@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import TransactDetails from "./TransactDetails";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import backend from '../../../src/helpers/serverDetails';
+import backend from "../../../src/helpers/serverDetails";
 
 export class TransactItems extends Component {
   constructor(props) {
@@ -61,8 +61,7 @@ export class TransactItems extends Component {
     var decodedToken = jwt_decode(localStorage.getItem("token"));
     axios
       .put(
-        `${backend}/directexchange/api/transactions/` +
-          decodedToken.sub,
+        `${backend}/directexchange/api/transactions/` + decodedToken.sub,
         formdata
       )
       .then((res) => {
@@ -89,13 +88,33 @@ export class TransactItems extends Component {
           </span>
         </td>
         <td>
-          Remit Amount
+          <small>Date</small>
+          <br />
+          {this.props.details.expirationDate.substr(0, 10)}
+        </td>
+        <td>
+          <small> Remit Amount</small>
           <br />
           {this.props.details.offerDetails.srcCurrency}{" "}
           {this.props.details.offerDetails.remitAmount}
         </td>
         <td>
-          Recipient gets
+          <small>Final Amount</small>
+          <br />
+          {this.props.details.offerDetails.destCurrency}{" "}
+          {this.props.details.offerDetails.finalAmount} <br />
+        </td>
+        <td>
+          <small>Service Fees</small>
+          <br />
+          {this.props.details.offerDetails.destCurrency}{" "}
+          {(
+            parseFloat(this.props.details.offerDetails.finalAmount) * 0.0005
+          ).toFixed(2)}{" "}
+        </td>
+        <td>
+          <br />
+          <small>Recipient gets</small>
           <br />
           {this.props.details.offerDetails.destCurrency}{" "}
           {this.state.receiptAmount.toFixed(2)}
@@ -105,7 +124,7 @@ export class TransactItems extends Component {
           </small>
         </td>
         <td>
-          Exchange Rate
+          <small> Exchange Rate</small>
           <br />
           {Math.round(this.props.details.offerDetails.exchangeRate * 1000) /
             1000}

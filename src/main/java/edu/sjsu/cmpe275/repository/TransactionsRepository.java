@@ -50,7 +50,7 @@ public interface TransactionsRepository extends JpaRepository<Transactions, Stri
 
     @Query(value = "select t.transaction_id, t.transaction_status, t.offerid, u.username, eo.remit_amount, eo.src_currency, eo.exchange_rate, eo.dest_currency, t.is_complete from transactions as t " +
         "join users as u on u.id = t.user_id join exchange_offer eo on eo.offer_id = t.offerid " +
-        "where transaction_id in (select t1.transaction_id from transactions t1 where t1.user_id = :userid) and t.user_id=:userid and " +
+        "where transaction_id in (select t1.transaction_id from transactions t1 where t1.user_id = :userid) and t.user_id!=:userid and " +
         "t.transaction_status in ('completed', 'aborted') order by t.transaction_status desc", nativeQuery = true)
     List<Object> fetchTransactionHistoryByUserID(Long userid);
 

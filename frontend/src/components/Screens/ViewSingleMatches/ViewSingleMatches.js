@@ -219,7 +219,7 @@ export default class Home extends Component {
 
                         {/*  directly accept offer modal - when ammount differs */}
 
-                        <div className="modal fade" id={"acceptOfferModalPopup" + offer.offerId} role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div className="modal fade" show="false" id={"acceptOfferModalPopup" + offer.offerId} role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 
                           <div className="modal-dialog modal-dialog-centered" role="document">
                             <div className="modal-content" style={{width: "1000px", background: "#eff2f7"}}>

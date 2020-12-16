@@ -79,7 +79,7 @@ export class BankAccount extends Component {
           </span>
           <br/>
           <span className="bankDetailsHeading">
-            Primary Cussrncy: &emsp; <span className="bankDetails">{account.primaryCurrency}</span>
+            Primary Currency: &emsp; <span className="bankDetails">{account.primaryCurrency}</span>
           </span>
           <br/>
           <span className="bankDetailsHeading">

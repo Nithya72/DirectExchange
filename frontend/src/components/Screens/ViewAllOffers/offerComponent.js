@@ -5,6 +5,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import TransactHistory from "../../ExchangeOffers/TransactHistory";
 import backend from '../../../../src/helpers/serverDetails';
+import './view-offer.css';
 
 export default class Home extends Component {
 
@@ -54,11 +55,14 @@ export default class Home extends Component {
             style={{display: "flex", justifyContent: "center"}}
         >
           <div className="offerContainer">
-          <span onClick={(e) => this.transactionHistoryHandler(this.props.offerObj, e)} data-toggle="modal" data-target="#transactionHistoryModalPopup">
+          <span>
             Posted By: <span className="postedBy">{this.props.postedBy}</span> &emsp;
             {this.props.offerObj.user.rating > 0 ?
+                <span className="transaction-trigger" onClick={(e) => this.transactionHistoryHandler(this.props.offerObj, e)} data-toggle="modal" data-target="#transactionHistoryModalPopup">
                 <span className="postedBy"><span style={{color: "#8691b4"}}>Rating: </span>{this.props.offerObj.user.rating}&nbsp;
-                  <span><StarRatings rating={1} starRatedColor="red" starDimension='17px' numberOfStars={1} name='rating'/></span>
+                  <span><StarRatings rating={1} starRatedColor="red" starDimension='17px'  numberOfStars={1} name='rating'/></span>
+                </span>
+
          </span>
                 : ""}
 

@@ -57,9 +57,10 @@ public class TransactionController {
 
         Long sourceOffer = Long.parseLong(String.valueOf(object.get("source_offer")));
         Float sourceOfferAmount = Float.parseFloat(String.valueOf(object.get("source_offer_amount")));
+        Long counterOfferId = Long.parseLong(String.valueOf(object.get("counterOfferId")));
         log.info("offersMatched value: {}", offersMatched);
 
-        return transactionService.createNewTransaction(sourceOffer, offersMatched, sourceOfferAmount);
+        return transactionService.createNewTransaction(sourceOffer, offersMatched, sourceOfferAmount, counterOfferId);
     }
 
 

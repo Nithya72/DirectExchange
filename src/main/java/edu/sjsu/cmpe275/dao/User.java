@@ -47,8 +47,8 @@ public class User {
     @Column(name = "validUser", columnDefinition = "boolean default 0", nullable = false)
     private Boolean validUser;
 
-    @Column(name="rating")
-    private String rating;
+    @Column(name="rating", columnDefinition = "int default 0")
+    private Integer rating;
 }
 
 

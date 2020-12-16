@@ -18,7 +18,8 @@ public interface TransactionsRepository extends JpaRepository<Transactions, Stri
     @Query(value="select distinct transaction_status from transactions where transaction_id=:transactionId and expiration_date>:currentTime", nativeQuery = true)
     String getTransactionStatus(String transactionId, ZonedDateTime currentTime);
 
-    @Query(value="select * from transactions where user_id=:userid order by transaction_status desc", nativeQuery = true)
+//    @Query(value="select * from transactions where user_id=:userid order by transaction_status desc", nativeQuery = true)
+    @Query(value="select * from transactions where user_id=:userid order by id desc", nativeQuery = true)
     List<Transactions> fetchTransactionsByUserID(Long userid);
 
     @Query(value="select * from transactions where transaction_id in(:transactionId) ", nativeQuery = true)
@@ -47,9 +48,12 @@ public interface TransactionsRepository extends JpaRepository<Transactions, Stri
     int updateAbortedTransactionStatus(String status,
                                 String transaction_id);
 
-    @Query(value = "select t.transaction_id, t.transaction_status, t.offerid, u.username, eo.remit_amount, eo.src_currency, eo.exchange_rate, eo.dest_currency from transactions as t " +
+    @Query(value = "select t.transaction_id, t.transaction_status, t.offerid, u.username, eo.remit_amount, eo.src_currency, eo.exchange_rate, eo.dest_currency, t.is_complete from transactions as t " +
         "join users as u on u.id = t.user_id join exchange_offer eo on eo.offer_id = t.offerid " +
         "where transaction_id in (select t1.transaction_id from transactions t1 where t1.user_id = :userid) and t.user_id!=:userid and " +
         "t.transaction_status in ('completed', 'aborted') order by t.transaction_status desc", nativeQuery = true)
     List<Object> fetchTransactionHistoryByUserID(Long userid);
+
+    @Query(value="select * from transactions where user_id = :userId and transaction_status!='pending'", nativeQuery = true)
+    List<Transactions> fetchTransactionsWithUserId(Long userId);
 }

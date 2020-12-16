@@ -11,6 +11,7 @@ export default class Home extends Component {
           <span>
             Posted By: <span className="postedBy">{this.props.senderNickName}</span><br/>
             Counter Offer Amount: <span className="postedBy">{this.props.counterOfferAmount}</span><br/>
+            Status: { this.props.status === 'expired' ? <span className="postedBy" style={{color:"red"}}>{this.props.status}</span> : <span className="postedBy">{this.props.status}</span> }<br/>
           </span>
             <div
                 style={{ display: "flex", flexDirection: "row", margin: "10px 0" }}
@@ -37,11 +38,11 @@ export default class Home extends Component {
                 </div>
               </div>
             </div>
-
+            {this.props.status == 'new' ?
             <Link
                 to={{ pathname: '/ViewCounterOffer', state: { offerObj: this.props.senderOffer, counterOfferId: this.props.counterOfferId, nickName: this.props.senderNickName, counterOfferAmount: this.props.counterOfferAmount, receiverOfferObj:this.props.receiverOffer, type: this.props.type } }}
                 className="customBtn"
-            >View Offer</Link>
+            >View Offer</Link> : "" }
           </div>
         </div>
     );

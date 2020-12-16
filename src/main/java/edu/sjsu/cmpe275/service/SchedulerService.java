@@ -22,8 +22,13 @@ public class SchedulerService {
 
     private Queue<ArrayList<Object>> queue = new LinkedList<>();
 
+    private Queue<ArrayList<Object>> counterQueue = new LinkedList<>();
+
     @Autowired
     public TransactionService transactionService;
+
+    @Autowired
+    public CounterOfferService counterOfferService;
 
     public void addNewTransaction(String transaction_id, ZonedDateTime expirationDate){
         System.out.println("In add new transaction");
@@ -42,6 +47,25 @@ public class SchedulerService {
             transactionService.setAtFaultTransactions((String) queue.peek().get(0));
             queue.remove();
         }
+    }
 
+    public void addNewCounter(Long counterOfferId, ZonedDateTime expirationDate){
+        System.out.println("In addNewCounter");
+        ArrayList<Object> arrayItems = new ArrayList<Object>();
+        arrayItems.add(counterOfferId);
+        arrayItems.add(expirationDate);
+        counterQueue.add(arrayItems);
+    }
+
+    @Scheduled(fixedRate = 30000)
+    public void reportCounterExpiration() {
+        ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneOffset.UTC);
+        log.info("Counter schedular - time is {}", currentDateTime);
+        log.info("counter offer queue size: {}", counterQueue.size());
+        if(counterQueue.size()>0 && currentDateTime.toInstant().compareTo(((ZonedDateTime) counterQueue.peek().get(1)).toInstant())>0){
+            log.info("Setting expired status to counter offers");
+            counterOfferService.setExpirationToCounterOffers((Long) counterQueue.peek().get(0));
+            counterQueue.remove();
+        }
     }
 }

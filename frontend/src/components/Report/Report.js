@@ -90,7 +90,9 @@ export class Report extends Component {
                       </div>
                       <div class="widget-info">
                         <h3>
-                          {parseFloat(this.state.totalRemitAmount) * 0.0005}
+                          {(
+                            parseFloat(this.state.totalRemitAmount) * 0.0005
+                          ).toFixed(2)}
                         </h3>
                         <p>USD</p>
                       </div>
